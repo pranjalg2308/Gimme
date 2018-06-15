@@ -5,13 +5,33 @@
     android:background="@color/colorAccent"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="bottom">
 
-    <TextView
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@mipmap/ic_launcher"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GIMME"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        android:paddingLeft="16dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pranjal Gupta"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="pranjalg2308@gmail.com"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+    </LinearLayout>
+
 
 </LinearLayout>

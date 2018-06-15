@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {-+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
 
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
