@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,52 +12,22 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDrawerLayout = findViewById(R.id.main_drawer_layout);
+        mDrawerLayout=(DrawerLayout)findViewById(R.id.main_drawer_layout);
+        mActionBarDrawerToggle=new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mActionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
-        NavigationView navigationView = findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-
-                        return true;
-                    }
-                });
-
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-
-            @Override
-            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-                // Respond when the drawer's position changes
-            }
-
-            @Override
-            public void onDrawerOpened(@NonNull View drawerView) {
-                // Respond when the drawer is opened
-            }
-
-            @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
-                // Respond when the drawer is closed
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                // Respond when the drawer motion state changes
-            }
-        });
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mActionBarDrawerToggle.onOptionsItemSelected(item))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 }
