@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "652166260537",
+    "firebase_url": "https://gimme-43150.firebaseio.com",
+    "project_id": "gimme-43150",
+    "storage_bucket": "gimme-43150.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652166260537:android:bdb435291d6328e9",
+        "android_client_info": {
+          "package_name": "com.kalabhedia.gimme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652166260537-3gs4n68i89qbdl55gjma0gbtonm7rogp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kalabhedia.gimme",
+            "certificate_hash": "0c7c725a45287829b033bb4f82f00cf2cf804919"
+          }
+        },
+        {
+          "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2EVIobxN76UyAguu4nieYD22__80vNwA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
