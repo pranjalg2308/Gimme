@@ -14,7 +14,6 @@
         android:id="@+id/nav_header_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"
-
         android:src="@mipmap/ic_launcher_round"/>
 
     <LinearLayout
@@ -27,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Pranjal Gupta"
+            android:layout_marginBottom="16dp"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>

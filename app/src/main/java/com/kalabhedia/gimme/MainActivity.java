@@ -1,9 +1,6 @@
 package com.kalabhedia.gimme;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,17 +14,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
-
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
         NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
+        navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
                         if (menuItem.getItemId() == R.id.nav_share) {
+                            navigationView.getMenu().getItem(0).setChecked(true);
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
                             String shareBody = "Check This Out";
@@ -76,15 +77,30 @@ public class MainActivity extends AppCompatActivity {
                             shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
                             startActivity(Intent.createChooser(shareIntent, "Share Using"));
                         } else if (menuItem.getItemId() == R.id.nav_rate) {
+                            navigationView.getMenu().getItem(0).setChecked(true);
                             Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
                             currentUser = mAuth.getCurrentUser();
                             if (currentUser != null) {
-                                mAuth.signOut();
-                                Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(MainActivity.this, loginActivity.class));
-                                finish();
+                                GoogleSignInClient mGoogleSignInClient ;
+                                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestIdToken(getString(R.string.default_web_client_id))
+                                        .requestEmail()
+                                        .build();
+                                mGoogleSignInClient = GoogleSignIn.getClient(getBaseContext(), gso);
+                                mGoogleSignInClient.signOut().addOnCompleteListener(/*CURRENT CLASS */MainActivity.this,
+                                        new OnCompleteListener<Void>() {  //signout Google
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                FirebaseAuth.getInstance().signOut(); //signout firebase
+                                                Intent setupIntent = new Intent(getBaseContext(), /*To ur activity calss*/loginActivity.class);
+                                                Toast.makeText(getBaseContext(), "Logged Out", Toast.LENGTH_LONG).show(); //if u want to show some text
+                                                setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(setupIntent);
+                                                finish();
+                                            }
+                                        });
                             }
                         }
                         return true;
@@ -109,36 +125,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, loginActivity.class));
             finish();
         }else{
+//            Log.e("MainActivity",currentUser.getPhoneNumber()+" ");
             NavHeaderUserName.setText(currentUser.getDisplayName());
             new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
         }
 
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

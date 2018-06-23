@@ -3,7 +3,7 @@ package com.kalabhedia.gimme;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class newSignUpAcitvity extends AppCompatActivity {
+public class newSignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
