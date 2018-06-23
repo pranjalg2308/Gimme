@@ -164,6 +164,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                             mErrorTextView.setText("There was some error in logging in");
                             mErrorTextView.setVisibility(View.VISIBLE);
+                            mSendButton.setEnabled(true);
 
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
