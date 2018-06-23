@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-//        if (currentUser == null) {
-//            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(MainActivity.this, loginActivity.class));
-//            finish();
-//        }else{
-//            NavHeaderUserName.setText(currentUser.getDisplayName());
-//            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
-//        }
+        if (currentUser == null) {
+            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MainActivity.this, loginActivity.class));
+            finish();
+        }else{
+            NavHeaderUserName.setText(currentUser.getDisplayName());
+            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
+        }
 
     }
 
