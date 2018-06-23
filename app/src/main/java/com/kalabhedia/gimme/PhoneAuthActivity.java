@@ -19,7 +19,6 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -67,6 +66,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
         mErrorTextView = (TextView) findViewById(R.id.errorTextView);
 
+
         mSendButton = (Button) findViewById(R.id.send_verification_button);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,19 +76,19 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                     String phonenumber = mPhoneText.getText().toString();
 
-                    if (phonenumber.length()==10){
+                    if (phonenumber.length() == 10) {
                         mPhoneBar.setVisibility(View.VISIBLE);
                         mPhoneText.setEnabled(false);
                         mSendButton.setEnabled(false);
-                        phonenumber="+91"+phonenumber;
+                        phonenumber = "+91" + phonenumber;
                         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                                 phonenumber,
                                 60,
                                 TimeUnit.SECONDS,
                                 PhoneAuthActivity.this,
                                 mCallBacks);
-                    }else
-                        Toast.makeText(PhoneAuthActivity.this,"Phone Number must be of 10 digits",Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(PhoneAuthActivity.this, "Phone Number must be of 10 digits", Toast.LENGTH_SHORT).show();
                 } else {
                     mSendButton.setEnabled(false);
                     mCodeBar.setVisibility(View.VISIBLE);
@@ -117,7 +117,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCodeSent(String verificationId,PhoneAuthProvider.ForceResendingToken token) {
+            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
                 // The SMS verification code has been sent to the provided phone number, we
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
@@ -152,11 +152,14 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                             Toast.makeText(PhoneAuthActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(PhoneAuthActivity.this, MainActivity.class));//starts main activity after successful login
+                            boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
+                            Log.d("MyTAG", "onComplete: " + (isNew ? "new user" : "old user"));
+                            if (isNew == false)
+                                startActivity(new Intent(PhoneAuthActivity.this, MainActivity.class));//starts main activity after successful login
+                            else
+                                startActivity(new Intent(PhoneAuthActivity.this,newUserActivity.class));//start newUser activity if user is new
                             finish();
 
-                            FirebaseUser user = task.getResult().getUser();
-                            // ...
                         } else {
 
                             mErrorTextView.setText("There was some error in logging in");

@@ -27,14 +27,14 @@
             android:gravity="center"
             android:paddingBottom="16dp"
             android:paddingTop="32dp"
-            android:text="@string/login_with_phone"
+            android:text="Welcome To Gimme"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/send_verification_button" />
 
         <LinearLayout
-            android:id="@+id/phoneLayout"
+            android:id="@+id/newUserNameLayout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
@@ -48,95 +48,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_phone" />
+                android:src="@drawable/ic_person" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="+91"
-                android:textSize="16sp"
-                android:gravity="center_vertical"/>
+
             <EditText
-                android:id="@+id/phoneEditText"
+                android:id="@+id/newUserName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Phone Number"
-                android:inputType="phone"
+                android:hint="Enter Username"
+                android:inputType="textCapWords"
                 android:textColor="#31471a" />
 
-            <ProgressBar
-                android:id="@+id/progressBarPhoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:visibility="gone" />
+
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/codeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:background="@drawable/round_edittext"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="invisible">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_lock" />
-
-            <EditText
-                android:id="@+id/codeEditText"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="1"
-                android:hint="Verification Code"
-                android:inputType="numberPassword" />
-
-            <ProgressBar
-                android:id="@+id/progressBarVerification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp" />
-
-        </LinearLayout>
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:padding="32dp"
-        android:text="@string/phone_verfication_text"
-        android:textColor="#b1d5aa"
-        app:layout_constraintBottom_toTopOf="@+id/send_verification_button" />
-
     <Button
-        android:id="@+id/send_verification_button"
+        android:id="@+id/submit_username_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
         android:background="@drawable/round_login_background"
-        android:text="Send Verification"
+        android:text="DONE!!!"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-
-
 
 </android.support.constraint.ConstraintLayout>

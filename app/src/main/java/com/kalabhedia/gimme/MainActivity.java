@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,18 +36,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth=FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
-            startActivity(authIntent);
-            finish();
-        }
-    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mAuth = FirebaseAuth.getInstance();
+//        currentUser = mAuth.getCurrentUser();
+//        if (currentUser == null) {
+//            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+//            startActivity(authIntent);
+//            finish();
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +59,29 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-
-
-
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.navigation);
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
         NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+            startActivity(authIntent);
+            finish();
+        }
+
+        Log.v("mainactivity", currentUser.getDisplayName().toString());
+        if (currentUser.getDisplayName() !=null&&currentUser!=null)
+        NavHeaderUserName.setText(currentUser.getDisplayName().toString());
+
+
+
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -89,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
                             mAuth.signOut();
-                            startActivity(new Intent(MainActivity.this,PhoneAuthActivity.class));
+                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
 
                         } else if (menuItem.getItemId() == R.id.nav_phone_auth) {
                             startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
