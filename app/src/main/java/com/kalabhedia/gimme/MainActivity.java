@@ -20,11 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -39,7 +34,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
-    GoogleSignInClient mGoogleSignInClient;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth=FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+            startActivity(authIntent);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+
 
 
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
@@ -68,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
                         if (menuItem.getItemId() == R.id.nav_share) {
-                            navigationView.getMenu().getItem(0).setChecked(true);
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
                             String shareBody = "Check This Out";
@@ -77,31 +85,14 @@ public class MainActivity extends AppCompatActivity {
                             shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
                             startActivity(Intent.createChooser(shareIntent, "Share Using"));
                         } else if (menuItem.getItemId() == R.id.nav_rate) {
-                            navigationView.getMenu().getItem(0).setChecked(true);
                             Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
-                            currentUser = mAuth.getCurrentUser();
-                            if (currentUser != null) {
-                                GoogleSignInClient mGoogleSignInClient ;
-                                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                        .requestIdToken(getString(R.string.default_web_client_id))
-                                        .requestEmail()
-                                        .build();
-                                mGoogleSignInClient = GoogleSignIn.getClient(getBaseContext(), gso);
-                                mGoogleSignInClient.signOut().addOnCompleteListener(/*CURRENT CLASS */MainActivity.this,
-                                        new OnCompleteListener<Void>() {  //signout Google
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                FirebaseAuth.getInstance().signOut(); //signout firebase
-                                                Intent setupIntent = new Intent(getBaseContext(), /*To ur activity calss*/loginActivity.class);
-                                                Toast.makeText(getBaseContext(), "Logged Out", Toast.LENGTH_LONG).show(); //if u want to show some text
-                                                setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(setupIntent);
-                                                finish();
-                                            }
-                                        });
-                            }
+                            mAuth.signOut();
+                            startActivity(new Intent(MainActivity.this,PhoneAuthActivity.class));
+
+                        } else if (menuItem.getItemId() == R.id.nav_phone_auth) {
+                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                         }
                         return true;
                     }
@@ -117,21 +108,14 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
-        if (currentUser == null) {
-            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(MainActivity.this, loginActivity.class));
-            finish();
-        }else{
-//            Log.e("MainActivity",currentUser.getPhoneNumber()+" ");
-            NavHeaderUserName.setText(currentUser.getDisplayName());
-            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
-        }
+//        if (currentUser!=null){
+//            NavHeaderUserName.setText(currentUser.getDisplayName());
+//            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
+//        }
+
 
     }
-
 
 
     @Override

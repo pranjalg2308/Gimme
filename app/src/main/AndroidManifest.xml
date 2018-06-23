@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".loginActivity" />
         <activity android:name=".newSignUpActivity" />
+        <activity android:name=".PhoneAuthActivity"></activity>
     </application>
 
 </manifest>
