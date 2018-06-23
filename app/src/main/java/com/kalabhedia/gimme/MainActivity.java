@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -28,15 +31,15 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    public ActionBar actionbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private TabLayout tabLayout;
+    public TabLayout tabLayout;
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
-
 
 
     @Override
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
+        actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
@@ -53,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.navigation);
-        View headerView=navigationView.getHeaderView(0);
-        NavHeaderUserName=(TextView)headerView.findViewById(R.id.nav_header_name);
-        NavHeaderImageView=(ImageView)headerView.findViewById(R.id.nav_header_photo);
+        View headerView = navigationView.getHeaderView(0);
+        NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
+        NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -101,14 +104,14 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        if (currentUser == null) {
-            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(MainActivity.this, loginActivity.class));
-            finish();
-        }else{
-            NavHeaderUserName.setText(currentUser.getDisplayName());
-            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
-        }
+//        if (currentUser == null) {
+//            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(MainActivity.this, loginActivity.class));
+//            finish();
+//        }else{
+//            NavHeaderUserName.setText(currentUser.getDisplayName());
+//            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
+//        }
 
     }
 
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             bmImage.setImageBitmap(result);
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -146,4 +150,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void swapFragment(@NonNull Fragment fragment, @Nullable Bundle args, @Nullable Fragment previousFragment) {
+        // Insert the fragment by replacing any existing fragment
+        if (args != null) {
+            fragment.setArguments(args);
+        }
+
+        if (previousFragment != null) {
+            // Removing previous fragment from history
+            getSupportFragmentManager().beginTransaction().remove(previousFragment).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+
+        // Bringing new fragment
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment)
+                .addToBackStack(fragment.getClass().getSimpleName()).commit();
+    }
 }
