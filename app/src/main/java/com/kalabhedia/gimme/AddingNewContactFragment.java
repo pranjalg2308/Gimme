@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ import java.util.ArrayList;
 public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     ArrayList<String> contactName;
     ArrayList<String> contactNumber;
-
+    private int READ_CONTACT_PERMISSION=1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,9 +41,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, contactName);
             contact.setThreshold(1);
             contact.setAdapter(adapter);
-        } else {
-            Toast.makeText(getContext(), "Give permissions of contacts to use the app", Toast.LENGTH_LONG).show();
-        }
+        } else
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
         return view;
     }
 

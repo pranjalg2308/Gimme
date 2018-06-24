@@ -23,8 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".loginActivity" />-->
-        <!--<activity android:name=".newSignUpAcitvity"></activity>-->
+        <activity android:name=".loginActivity" />
+        <activity android:name=".PhoneAuthActivity" />
+        <activity android:name=".newUserActivity" />
     </application>
 
 </manifest>
