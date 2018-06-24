@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        Log.v("mainactivity", currentUser.getDisplayName().toString());
         if (currentUser.getDisplayName()!=null&&currentUser!=null)
-        NavHeaderUserName.setText(currentUser.getDisplayName().toString());
+        NavHeaderUserName.setText(currentUser.getDisplayName());
 
 
 
