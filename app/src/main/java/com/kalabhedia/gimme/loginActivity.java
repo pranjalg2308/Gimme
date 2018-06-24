@@ -30,7 +30,7 @@ public class loginActivity extends AppCompatActivity {
     String TAG="LoginActivity";
     private FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
-    Button signInWithEmail,signUp;
+    Button signInWithEmail;
     SignInButton googleSignInButton;
     EditText enteredEmail, enteredPassword;
     @Override
@@ -46,13 +46,7 @@ public class loginActivity extends AppCompatActivity {
         enteredPassword=(EditText)findViewById(R.id.password_input_text);
         googleSignInButton=(SignInButton)findViewById(R.id.google_login_button);
 
-        signUp=(Button)findViewById(R.id.signup_button);//button for launching a sign up activity
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(loginActivity.this,newSignUpAcitvity.class));
-            }//starting activity for new user signup
-        });
+
 
         signInWithEmail=(Button)findViewById(R.id.login_button);//button for email login
         signInWithEmail.setOnClickListener(new View.OnClickListener() {

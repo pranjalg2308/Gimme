@@ -1,9 +1,6 @@
 package com.kalabhedia.gimme;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,8 +23,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
         NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+            startActivity(authIntent);
+            finish();
+        }
+
+        Log.v("mainactivity", currentUser.getDisplayName().toString());
+        if (currentUser.getDisplayName() !=null&&currentUser!=null)
+        NavHeaderUserName.setText(currentUser.getDisplayName().toString());
+
+
+
+        navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -79,13 +92,12 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
-                            currentUser = mAuth.getCurrentUser();
-                            if (currentUser != null) {
-                                mAuth.signOut();
-                                Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(MainActivity.this, loginActivity.class));
-                                finish();
-                            }
+                            mAuth.signOut();
+                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
+                            finish();
+
+                        } else if (menuItem.getItemId() == R.id.nav_phone_auth) {
+                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                         }
                         return true;
                     }
@@ -101,44 +113,15 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
-        if (currentUser == null) {
-            Toast.makeText(MainActivity.this, "You are not Logged In! Please LogIn", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(MainActivity.this, loginActivity.class));
-            finish();
-        } else {
-            NavHeaderUserName.setText(currentUser.getDisplayName());
-            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
-        }
+//        if (currentUser!=null){
+//            NavHeaderUserName.setText(currentUser.getDisplayName());
+//            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
+//        }
+
 
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
