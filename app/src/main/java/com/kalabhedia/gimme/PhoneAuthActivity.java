@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +37,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private ProgressBar mCodeBar;
 
     private Button mSendButton;
+    private CountryCodePicker ccp;
 
     private FirebaseAuth mAuth;
     private int btnType = 0;
@@ -66,21 +68,26 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
         mErrorTextView = (TextView) findViewById(R.id.errorTextView);
 
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
+
 
         mSendButton = (Button) findViewById(R.id.send_verification_button);
+        ccp.registerCarrierNumberEditText(mPhoneText);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (btnType == 0) {
 
-                    String phonenumber = mPhoneText.getText().toString();
+                    String phonenumber =ccp.getFormattedFullNumber();
 
-                    if (phonenumber.length() == 10) {
+
+                    if (ccp.isValidFullNumber()) {
                         mPhoneBar.setVisibility(View.VISIBLE);
                         mPhoneText.setEnabled(false);
                         mSendButton.setEnabled(false);
-                        phonenumber = "+91" + phonenumber;
+                        Log.v("Phone Number",phonenumber);
+                        phonenumber =  phonenumber;
                         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                                 phonenumber,
                                 60,
@@ -88,7 +95,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                 PhoneAuthActivity.this,
                                 mCallBacks);
                     } else
-                        Toast.makeText(PhoneAuthActivity.this, "Phone Number must be of 10 digits", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PhoneAuthActivity.this, "Number format not valid", Toast.LENGTH_SHORT).show();
                 } else {
                     mSendButton.setEnabled(false);
                     mCodeBar.setVisibility(View.VISIBLE);

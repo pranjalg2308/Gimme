@@ -105,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
                             mAuth.signOut();
                             startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                             finish();
-
-                        } else if (menuItem.getItemId() == R.id.nav_phone_auth) {
-                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                         }
                         return true;
                     }
