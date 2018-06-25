@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -76,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        Log.v("mainactivity", currentUser.getDisplayName().toString());
-        if (currentUser.getDisplayName() !=null&&currentUser!=null)
-        NavHeaderUserName.setText(currentUser.getDisplayName().toString());
+//        Log.v("mainactivity", currentUser.getDisplayName().toString());
+        if (currentUser.getDisplayName()!=null&&currentUser!=null)
+        NavHeaderUserName.setText(currentUser.getDisplayName());
 
 
 
@@ -106,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
                             mAuth.signOut();
                             startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                             finish();
-
-                        } else if (menuItem.getItemId() == R.id.nav_phone_auth) {
-                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
                         }
                         return true;
                     }
@@ -129,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 //            NavHeaderUserName.setText(currentUser.getDisplayName());
 //            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
 //        }
-
 
     }
 

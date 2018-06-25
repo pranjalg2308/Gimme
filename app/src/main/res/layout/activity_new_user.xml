@@ -20,7 +20,6 @@
             android:layout_height="96dp"
             android:layout_marginTop="48dp"
             android:src="@drawable/ic_launcher" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,7 +67,13 @@
 
     </LinearLayout>
 
-    <Button
+    service firebase.storage {
+    match /b/{bucket}/o {
+    match /{allPaths=**} {
+    allow read, write: if true;
+    }
+    }
+    }<Button
         android:id="@+id/submit_username_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"

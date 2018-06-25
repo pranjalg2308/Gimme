@@ -50,12 +50,15 @@
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/ic_phone" />
 
-            <TextView
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="+91"
-                android:textSize="16sp"
-                android:gravity="center_vertical"/>
+                android:layout_height="wrap_content"
+                app:ccp_countryAutoDetectionPref="LOCALE_SIM"
+                app:ccp_textSize="14sp"
+                app:ccp_contentColor="@color/colorPrimaryDark"
+                app:ccp_countryPreference="IN,US"/>
+
             <EditText
                 android:id="@+id/phoneEditText"
                 android:layout_width="0dp"
