@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.onesignal.OneSignal;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
@@ -62,11 +69,8 @@ public class MainActivity extends AppCompatActivity {
             Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
             startActivity(authIntent);
             finish();
-        }
-
-//        Log.v("mainactivity", currentUser.getDisplayName().toString());
-        if (currentUser.getDisplayName()!=null&&currentUser!=null)
-        NavHeaderUserName.setText(currentUser.getDisplayName());
+        } else if (currentUser.getDisplayName() != null && currentUser != null)
+            NavHeaderUserName.setText(currentUser.getDisplayName().toString());
 
 
 
@@ -103,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        adapter.AddFragment(new OneFragment(), "Friends");
-        adapter.AddFragment(new TwoFragment(), "Explore");
-        adapter.AddFragment(new ThreeFragment(), "Activity");
+        adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
+        adapter.AddFragment(new com.kalabhedia.gimme.TwoFragment(), "Explore");
+        adapter.AddFragment(new com.kalabhedia.gimme.ThreeFragment(), "Activity");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
