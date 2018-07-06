@@ -24,6 +24,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".loginActivity" />
+
+        <service
+            android:name=".MessageRecieverService"
+            android:enabled="true"
+            android:exported="true">
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_launcher" />
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
         <activity android:name=".PhoneAuthActivity" />
         <activity android:name=".newUserActivity" />
     </application>

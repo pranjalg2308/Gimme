@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 public class OneFragment extends Fragment {
     View view;
 
@@ -21,7 +22,7 @@ public class OneFragment extends Fragment {
         fab.setOnClickListener((View v) ->
         {
             ((MainActivity) getActivity()).tabLayout.setVisibility(View.GONE);
-            ((MainActivity) getActivity()).swapFragment(new AddingNewContactFragment(), null, null);
+            ((MainActivity) getActivity()).swapFragment(new com.kalabhedia.gimme.AddingNewContactFragment(), null, null);
         });
         return view;
     }
