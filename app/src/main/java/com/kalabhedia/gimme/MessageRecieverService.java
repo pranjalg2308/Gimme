@@ -6,11 +6,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Date;
 
 /**
  * Created by What's That Lambda on 11/6/17.
@@ -29,13 +32,35 @@ public class MessageRecieverService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         Log.w("onMessageReceived: ", remoteMessage.getData().get("title"));
         final String title = remoteMessage.getData().get("title");
-        final String message = remoteMessage.getData().get("body");
+        final String messageReceived = remoteMessage.getData().get("body");
+        String phoneNumber = "";
+        String message = "";
+        String[] checkingPhoneNumber = messageReceived.split(" ");
+        int i;
+        for (i = checkingPhoneNumber.length - 1; i > 0; i--) {
+            if (checkingPhoneNumber[i].charAt(0) == '+') {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+                break;
+            } else {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+            }
+        }
 
+
+        int j;
+        for (j = 0; j < i; j++) {
+            message += checkingPhoneNumber[j] + " ";
+        }
+
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString(phoneNumber, null);
+        message += " " + name;
         showNotifications(title, message);
     }
 
     private void showNotifications(String title, String msg) {
         Intent i = new Intent(this, MainActivity.class);
+        int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -57,7 +82,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setAutoCancel(true)
                     .build();
-            mNotificationManager.notify(0, notification1);
+            mNotificationManager.notify(uniqueId, notification1);
         } else {
             Notification notification = new Notification.Builder(this)
                     .setContentText(msg)
@@ -66,7 +91,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setAutoCancel(true)
                     .build();
-            mNotificationManager.notify(0, notification);
+            mNotificationManager.notify(uniqueId, notification);
         }
     }
 }

@@ -22,6 +22,7 @@ public class OneFragment extends Fragment {
         fab.setOnClickListener((View v) ->
         {
             ((MainActivity) getActivity()).tabLayout.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
             ((MainActivity) getActivity()).swapFragment(new com.kalabhedia.gimme.AddingNewContactFragment(), null, null);
         });
         return view;
