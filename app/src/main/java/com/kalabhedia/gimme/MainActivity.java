@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     public TabLayout tabLayout;
-    private ViewPager viewPager;
+    public ViewPager viewPager;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
@@ -147,5 +147,13 @@ public class MainActivity extends AppCompatActivity {
         // Bringing new fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment)
                 .addToBackStack(fragment.getClass().getSimpleName()).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        viewPager.setVisibility(View.VISIBLE);
+        OneFragment.fab.setVisibility(View.VISIBLE);
+        actionbar.setTitle("Gimme");
     }
 }

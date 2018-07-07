@@ -54,7 +54,11 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString(phoneNumber, null);
-        message += " " + name;
+        if (name == null) {
+            message += " " + phoneNumber;
+        } else {
+            message += " " + name;
+        }
         showNotifications(title, message);
     }
 

@@ -143,7 +143,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         }
                                     }
                                     if (receiverKey == null) {
-                                        Toast.makeText(getContext(), "Number not found", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "User does not contain this app", Toast.LENGTH_SHORT).show();
                                         //todo receiver not found in database
                                     } else {
                                         sendNotificationToUser(senderUserID, receiverKey, phoneNumber, amountEntered);
@@ -155,6 +155,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                     Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
                                 }
                             });
+                    ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
                 }
@@ -177,8 +178,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
         HashMap<String, String> item;
-        SharedPreferences sharedPref = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
         while (!cursor.isAfterLast()) {
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             contactName.add(name);
@@ -187,8 +186,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             item = new HashMap<>();
             item.put("Name", name);
             item.put("Number", number);
-            editor.putString(number, name);
-            editor.apply();
             contactdetail.add(item);
             cursor.moveToNext();
         }
