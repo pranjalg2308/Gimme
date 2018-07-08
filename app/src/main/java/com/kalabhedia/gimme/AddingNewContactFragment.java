@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -233,16 +234,15 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                 }
             } else if (conversion.length > 1) {
                 number = "";
-                for (String i : conversion1) {
+                for (String i : conversion) {
                     number += i;
                 }
             }
-            Log.w("Contact :", number);
             editor.putString(number, name);
             editor.apply();
             cursor.moveToNext();
         }
-//        Map<String,?> keys = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE).getAll();
+        Map<String, ?> keys = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE).getAll();
     }
 
     @Override
