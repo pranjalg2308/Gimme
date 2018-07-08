@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,7 +23,7 @@ import java.util.Date;
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
     private static final int NOTIFICATION_ID = 6578;
-
+    DataBaseHelper db;
     public MessageRecieverService() {
         super();
     }
@@ -59,19 +60,22 @@ public class MessageRecieverService extends FirebaseMessagingService {
         } else {
             message += " " + name;
         }
-        showNotifications(title, message);
+        showNotifications(title, message,phoneNumber);
     }
 
-    private void showNotifications(String title, String msg) {
+    private void showNotifications(String title, String msg, String phoneNumber) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        String moneyString=msg.split(" ")[0];
+        db = new DataBaseHelper(this);
+        db.getWritableDatabase();
+        Boolean result = db.insertData(phoneNumber, "", moneyString);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
 
         String CHANNEL_ID = "channel_money_request";// The id of the channel.
         CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
-
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

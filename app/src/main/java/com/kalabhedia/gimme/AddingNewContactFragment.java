@@ -65,6 +65,13 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
 
+    /**
+     *
+     * @param senderUserID
+     * @param receiverUserID
+     * @param phoneNumber
+     * @param amountEntered
+     */
     public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("phone_number", phoneNumber);
@@ -93,6 +100,13 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     }
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -159,12 +173,20 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
         Button button = view.findViewById(R.id.bn_save);
 
-
+/**
+ * click listener of save button
+ */
         button.setOnClickListener(view1 -> {
             int selectedId = radioGroup.getCheckedRadioButtonId();
+            radioButtonClaim=view.findViewById(selectedId);
+            String claimString=radioButtonClaim.getText().toString();
+
 
             button.setEnabled(false);
             amountEntered = amount.getText().toString();
+            if (claimString.equals("TAKEN")){
+                amountEntered="-"+amountEntered;
+            }
             if (number != null) {
                 if (!amountEntered.isEmpty()) {
                     String[] conversionNumber = number.split(" ");
@@ -172,7 +194,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                     for (String i : conversionNumber) {
                         number += i;
                     }
-                    amountEntered = "₹" + amountEntered;
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     database.getReference("Users").addListenerForSingleValueEvent(
                             new ValueEventListener() {
@@ -195,16 +216,16 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         Toast.makeText(getContext(), "User does not have this app", Toast.LENGTH_SHORT).show();
                                         //todo receiver not found in database
                                     } else {
-                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, amountEntered);
+                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1*Integer.parseInt(amountEntered))+"");
+
+
                                         String reason=discription.getText().toString()+"";
                                         radioButtonClaim=view.findViewById(selectedId);
                                         String claimString=radioButtonClaim.getText().toString();
                                         Log.v("Getinout",claimString);
-                                        amountEntered=amountEntered.substring(1);
-                                        if (claimString.equals("TAKEN")){
-                                            amountEntered="-"+amountEntered;
-                                        }
                                         saveInLocalDatabase(number,reason,amountEntered);
+
+
                                         OneFragment.fab.setVisibility(View.VISIBLE);
                                         ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                                         amount.setFocusable(false);
@@ -240,6 +261,12 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         }
     }
 
+    /**
+     *
+     * @param id
+     * @param args
+     * @return
+     */
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -248,6 +275,11 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         return cursorLoader;
     }
 
+    /**
+     *
+     * @param loader
+     * @param cursor
+     */
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
@@ -283,11 +315,18 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         Map<String, ?> keys = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE).getAll();
     }
 
+    /**
+     *
+     * @param loader
+     */
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -300,6 +339,10 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
+    /**
+     *
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         int moneyInt;
