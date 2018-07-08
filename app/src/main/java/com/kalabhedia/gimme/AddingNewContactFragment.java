@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -55,6 +57,10 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     EditText amount;
     String amountEntered;
     private String number;
+    private RadioGroup radioGroup;
+    private RadioButton radioButtonClaim;
+    private EditText reason;
+    DataBaseHelper db;
 
 
     Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
@@ -84,19 +90,28 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                 }
             });
         });
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        db = new DataBaseHelper(getContext());
+        db.getWritableDatabase();
         NotificationReferernce = FirebaseDatabase.getInstance().getReference().child("Notifications");
         ((MainActivity) getActivity()).actionbar.setTitle("Add Bill");
         contactName = new ArrayList<>();
         contactNumber = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
         contactdetail = new ArrayList<>();
+        EditText discription=view.findViewById(R.id.idReason);
+
         amount = view.findViewById(R.id.amount_entry);
+        radioGroup = view.findViewById(R.id.idClaim);
+
+
+
+        reason=view.findViewById(R.id.reason_text_view);
 
 
         bnAmount10 = view.findViewById(R.id.bn_amount_10);
@@ -143,7 +158,12 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         } else
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
         Button button = view.findViewById(R.id.bn_save);
+
+
         button.setOnClickListener(view1 -> {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+
+            button.setEnabled(false);
             amountEntered = amount.getText().toString();
             if (number != null) {
                 if (!amountEntered.isEmpty()) {
@@ -176,6 +196,15 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         //todo receiver not found in database
                                     } else {
                                         sendNotificationToUser(senderUserID, receiverKey, phoneNumber, amountEntered);
+                                        String reason=discription.getText().toString()+"";
+                                        radioButtonClaim=view.findViewById(selectedId);
+                                        String claimString=radioButtonClaim.getText().toString();
+                                        Log.v("Getinout",claimString);
+                                        amountEntered=amountEntered.substring(1);
+                                        if (claimString.equals("TAKEN")){
+                                            amountEntered="-"+amountEntered;
+                                        }
+                                        saveInLocalDatabase(number,reason,amountEntered);
                                         OneFragment.fab.setVisibility(View.VISIBLE);
                                         ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                                         amount.setFocusable(false);
@@ -200,6 +229,15 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             }
         });
         return view;
+    }
+
+    private void saveInLocalDatabase(String number, String reason, String amountEntered) {
+        Boolean result = db.insertData(number, reason, amountEntered);
+        if (result==true) {
+            Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Data Inserted Unsuccessfully", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @NonNull

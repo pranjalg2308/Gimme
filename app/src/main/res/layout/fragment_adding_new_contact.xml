@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Amount"
+                android:hint="Enter Amount"
                 android:inputType="number" />
         </LinearLayout>
         <HorizontalScrollView
@@ -171,6 +171,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/idReason"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_width="match_parent"

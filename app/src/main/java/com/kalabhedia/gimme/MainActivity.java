@@ -23,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -47,13 +48,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
+    private DataBaseHelper db;
 
+
+
+    @Override
+    public void onSupportActionModeStarted(@NonNull ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (checkExternalPermission()) {
             setContentView(R.layout.activity_main);
+            db = new DataBaseHelper(this);
 
             OneSignal.startInit(this)
                     .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
@@ -136,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             recreate();
         }
+
+
+
+
+
     }
 
 
