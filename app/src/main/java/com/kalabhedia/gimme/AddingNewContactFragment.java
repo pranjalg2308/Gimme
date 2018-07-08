@@ -10,13 +10,11 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,6 +146,11 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             amountEntered = amount.getText().toString();
             if (number != null) {
                 if (!amountEntered.isEmpty()) {
+                    String[] conversionNumber = number.split(" ");
+                    number = "";
+                    for (String i : conversionNumber) {
+                        number += i;
+                    }
                     amountEntered = "₹" + amountEntered;
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     database.getReference("Users").addListenerForSingleValueEvent(
@@ -209,6 +212,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
+        SharedPreferences sharedPref = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
         HashMap<String, String> item;
         while (!cursor.isAfterLast()) {
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
@@ -219,8 +224,25 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             item.put("Name", name);
             item.put("Number", number);
             contactdetail.add(item);
+            String[] conversion = number.split(" ");
+            String[] conversion1 = number.split("-");
+            if (conversion1.length > 1) {
+                number = "";
+                for (String i : conversion1) {
+                    number += i;
+                }
+            } else if (conversion.length > 1) {
+                number = "";
+                for (String i : conversion1) {
+                    number += i;
+                }
+            }
+            Log.w("Contact :", number);
+            editor.putString(number, name);
+            editor.apply();
             cursor.moveToNext();
         }
+//        Map<String,?> keys = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE).getAll();
     }
 
     @Override
