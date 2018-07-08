@@ -100,9 +100,15 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         senderUserID = sharedPreferences.getString("Current_user_id", null);
         Log.w("Sender id", senderUserID + " ");
         context = getContext();
+        Button clearText = view.findViewById(R.id.bn_clear_txt);
 
         AutoCompleteTextView contact = view.findViewById(R.id.contacts);
         if (checkExternalPermission()) {
+            clearText.setOnClickListener(view13 -> {
+                number = null;
+                contact.setText("");
+                contact.setFocusableInTouchMode(true);
+            });
             getActivity().getSupportLoaderManager().initLoader(1, null, this);
 //            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, contactName);
             SimpleAdapter adapter = new SimpleAdapter(getContext(),
@@ -116,14 +122,16 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                 HashMap<String, String> selected = (HashMap<String, String>) adapterView.getItemAtPosition(i);
                 contact.setText(selected.get("Name"));
                 number = selected.get("Number");
+                contact.setFocusable(false);
             });
         } else
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
         Button button = view.findViewById(R.id.bn_save);
         button.setOnClickListener(view1 -> {
-            amountEntered = "₹" + amount.getText().toString();
+            amountEntered = amount.getText().toString();
             if (number != null) {
                 if (!amountEntered.isEmpty()) {
+                    amountEntered = "₹" + amountEntered;
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     database.getReference("Users").addListenerForSingleValueEvent(
                             new ValueEventListener() {
@@ -143,10 +151,17 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         }
                                     }
                                     if (receiverKey == null) {
-                                        Toast.makeText(getContext(), "User does not contain this app", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "User does not have this app", Toast.LENGTH_SHORT).show();
                                         //todo receiver not found in database
                                     } else {
                                         sendNotificationToUser(senderUserID, receiverKey, phoneNumber, amountEntered);
+                                        OneFragment.fab.setVisibility(View.VISIBLE);
+                                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                                        amount.setFocusable(false);
+                                        contact.setFocusable(false);
+                                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                                        getFragmentManager().beginTransaction()
+                                                .remove(AddingNewContactFragment.this).commit();
                                     }
                                 }
 
