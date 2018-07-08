@@ -74,22 +74,68 @@
                 android:hint="Amount"
                 android:inputType="number" />
         </LinearLayout>
+       <HorizontalScrollView
+           android:layout_width="match_parent"
+           android:layout_height="48dp"
+           android:paddingTop="8dp"
+           android:scrollbars="none">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></ScrollView>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal">
 
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/my_button_bg"
+                   android:layout_marginLeft="8dp"
+                   android:text="+10" />
+
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/my_button_bg"
+                   android:layout_marginLeft="8dp"
+                   android:text="+50" />
+
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="8dp"
+                   android:background="@drawable/my_button_bg"
+                   android:text="+100" />
+
+               <Button
+                   android:layout_width="wrap_content"
+                   android:background="@drawable/my_button_bg"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="8dp"
+                   android:text="+500" />
+
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="8dp"
+                   android:background="@drawable/my_button_bg"
+                   android:baselineAligned="false"
+                   android:text="+1000" />
+
+
+           </LinearLayout>
+
+       </HorizontalScrollView>
         <Button
             android:id="@+id/bn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="22dp"
-            android:layout_marginRight="32dp"
+            android:layout_margin="16dp"
             android:background="@color/colorPrimaryDark"
             android:shadowColor="@color/colorPrimaryDark"
             android:shadowRadius="10"
             android:text="SAVE"
             android:textColor="@color/white" />
     </LinearLayout>
+
 </FrameLayout>

@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,22 +65,22 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         notificationData.put("Type", "request");
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
                 Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-            Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
-
-            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                        appleSnapshot.getRef().removeValue();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("Notification", "onCancelled", databaseError.toException());
-                }
-            });
+//            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
+//            Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+//
+//            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+//                        appleSnapshot.getRef().removeValue();
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    Log.e("Notification", "onCancelled", databaseError.toException());
+//                }
+//            });
         });
     }
 
@@ -222,6 +224,4 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         int res = getContext().checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
-
-
 }

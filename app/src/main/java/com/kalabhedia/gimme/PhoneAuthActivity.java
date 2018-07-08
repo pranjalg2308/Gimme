@@ -90,14 +90,11 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 if (btnType == 0) {
 
                     phonenumber = ccp.getFormattedFullNumber();
-
-
                     if (ccp.isValidFullNumber()) {
                         mPhoneBar.setVisibility(View.VISIBLE);
                         mPhoneText.setEnabled(false);
                         mSendButton.setEnabled(false);
                         Log.v("Phone Number", phonenumber);
-                        phonenumber = phonenumber;
                         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("phonenumber", phonenumber);
