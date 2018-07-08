@@ -21,8 +21,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:src="@drawable/ic_add_fab"
-        app:borderWidth="2dp"
-        app:fabSize="normal"
-        app:rippleColor="@color/colorPrimaryDark" />
+        app:elevation="12dp"
+        android:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal" />
 
 </FrameLayout>
