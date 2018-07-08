@@ -1,6 +1,7 @@
 package com.kalabhedia.gimme;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,6 +36,11 @@ public class newUserActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mUsername.getText().toString().trim() != null) {
                     Log.v("Username", mUsername.getText().toString());
+                    SharedPreferences sh=getSharedPreferences("UserProfile",MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit=sh.edit();
+                    myEdit.putString("UserName",mUsername.getText().toString());
+                    myEdit.apply();
+
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(mUsername.getText().toString())
                             .build();

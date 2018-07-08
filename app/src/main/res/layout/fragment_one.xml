@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".OneFragment">
 
-    <TextView
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friends_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

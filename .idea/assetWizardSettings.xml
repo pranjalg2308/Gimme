@@ -3,11 +3,6 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
-        <entry key="imageWizard">
-          <value>
-            <PersistentState />
-          </value>
-        </entry>
         <entry key="vectorWizard">
           <value>
             <PersistentState>
@@ -23,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_clear_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_close_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,13 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="3a3a3a" />
-                            <entry key="height" value="10" />
-                            <entry key="opacityPercent" value="68" />
-                            <entry key="outputName" value="ic_clear_black_10dp" />
-                            <entry key="overrideSize" value="true" />
+                            <entry key="outputName" value="ic_close" />
                             <entry key="sourceFile" value="C:\Users\Pranjal" />
-                            <entry key="width" value="10" />
                           </map>
                         </option>
                       </PersistentState>

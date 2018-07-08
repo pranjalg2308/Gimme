@@ -15,56 +15,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="With you and  "
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <AutoCompleteTextView
-                    android:id="@+id/contacts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:id="@+id/bn_clear_txt"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_clear_black_10dp" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <View style="@style/Divider" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:hint="Discription (Optional)" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="7dp"
-                android:fadingEdge="vertical"
-                android:src="@drawable/rupees" />
+                android:layout_height="match_parent"
+                android:textSize="32sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:gravity="bottom"
+                android:text="₹"/>
 
             <EditText
                 android:id="@+id/amount_entry"
@@ -74,22 +36,159 @@
                 android:hint="Amount"
                 android:inputType="number" />
         </LinearLayout>
-
-        <ScrollView
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ScrollView>
+            android:layout_height="48dp"
+            android:paddingTop="8dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/bn_amount_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/my_button_bg"
+                    android:layout_marginLeft="8dp"
+                    android:text="+10" />
+
+                <Button
+                    android:id="@+id/bn_amount_50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/my_button_bg"
+                    android:layout_marginLeft="8dp"
+                    android:text="+50" />
+
+                <Button
+                    android:id="@+id/bn_amount_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/my_button_bg"
+                    android:text="+100" />
+
+                <Button
+                    android:id="@+id/bn_amount_500"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/my_button_bg"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="+500" />
+
+                <Button
+                    android:id="@+id/bn_amount_1000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/my_button_bg"
+                    android:baselineAligned="false"
+                    android:text="+1000" />
+
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WAS"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+            <RadioGroup
+                android:id="@+id/idClaim"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="16dp"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/idGive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="GIVEN"/>
+                <RadioButton
+                    android:id="@+id/idTake"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/colorPrimary"
+                    android:layout_height="wrap_content"
+                    android:text="TAKEN"/>
+            </RadioGroup>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TO/FROM "
+            android:textSize="16dp"
+            android:gravity="center"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/contacts"
+                    android:hint="Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/bn_clear_txt"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/ic_close" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="FOR "
+            android:textSize="16dp"
+            android:gravity="center"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:hint="Discription (Optional)" />
+
 
         <Button
             android:id="@+id/bn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="22dp"
-            android:layout_marginRight="32dp"
+            android:layout_margin="16dp"
             android:background="@color/colorPrimaryDark"
             android:shadowColor="@color/colorPrimaryDark"
             android:shadowRadius="10"
             android:text="SAVE"
             android:textColor="@color/white" />
     </LinearLayout>
+
 </FrameLayout>

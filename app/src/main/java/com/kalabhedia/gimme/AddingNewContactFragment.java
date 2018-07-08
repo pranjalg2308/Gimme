@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,7 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
     private static DatabaseReference NotificationReferernce;
     private static Context context;
     ArrayList<String> contactName;
@@ -54,6 +56,9 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     EditText amount;
     String amountEntered;
     private String number;
+
+
+    Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
 
     public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
         HashMap<String, String> notificationData = new HashMap<>();
@@ -94,6 +99,18 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         contactdetail = new ArrayList<>();
         amount = view.findViewById(R.id.amount_entry);
 
+
+        bnAmount10 = view.findViewById(R.id.bn_amount_10);
+        bnAmount50 = view.findViewById(R.id.bn_amount_50);
+        bnAmount100 = view.findViewById(R.id.bn_amount_100);
+        bnAmount500 = view.findViewById(R.id.bn_amount_500);
+        bnAmount1000 = view.findViewById(R.id.bn_amount_1000);
+
+        bnAmount10.setOnClickListener(this::onClick);
+        bnAmount50.setOnClickListener(this::onClick);
+        bnAmount100.setOnClickListener(this::onClick);
+        bnAmount500.setOnClickListener(this::onClick);
+        bnAmount1000.setOnClickListener(this::onClick);
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString("phonenumber", null);
@@ -223,5 +240,38 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
-
+    @Override
+    public void onClick(View view) {
+        int moneyInt;
+        String moneyString = amount.getText().toString();
+        if (moneyString.isEmpty())
+            moneyInt=0;
+        else
+            moneyInt=Integer.parseInt(moneyString);
+        switch (view.getId()) {
+            case R.id.bn_amount_10:
+                moneyInt+=10;
+                amount.setText(moneyInt+"");
+                break;
+            case R.id.bn_amount_50:
+                moneyInt+=50;
+                amount.setText(moneyInt+"");
+                break;
+            case R.id.bn_amount_100:
+                moneyInt+=100;
+                amount.setText(moneyInt+"");
+                break;
+            case R.id.bn_amount_500:
+                moneyInt+=500;
+                amount.setText(moneyInt+"");
+                break;
+            case R.id.bn_amount_1000:
+                moneyInt+=1000;
+                amount.setText(moneyInt+"");
+                break;
+            default:
+                break;
+        }
+        amount.setSelection(amount.getText().length());
+    }
 }

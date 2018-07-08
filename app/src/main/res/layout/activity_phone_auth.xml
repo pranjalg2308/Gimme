@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:ccp_countryAutoDetectionPref="LOCALE_SIM"
-                app:ccp_textSize="14sp"
+                app:ccp_textSize="16sp"
                 app:ccp_contentColor="@color/colorPrimaryDark"
                 app:ccp_countryPreference="IN,US"/>
 
