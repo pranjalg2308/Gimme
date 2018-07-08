@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -50,13 +51,18 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     private int READ_CONTACT_PERMISSION = 1;
     private String senderUserID;
     private String receiverKey;
+    EditText amount;
+    String amountEntered;
+    private String number;
 
-    public static void sendNotificationToUser(String senderUserID, String receiverUserID) {
+    public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
         HashMap<String, String> notificationData = new HashMap<>();
+        notificationData.put("phone_number", phoneNumber);
+        notificationData.put("Amount", amountEntered);
         notificationData.put("From", senderUserID);
         notificationData.put("Type", "request");
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
-                Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnSuccessListener(aVoid -> {
+                Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
             Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
 
@@ -86,6 +92,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         contactNumber = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
         contactdetail = new ArrayList<>();
+        amount = view.findViewById(R.id.amount_entry);
 
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
@@ -93,9 +100,15 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         senderUserID = sharedPreferences.getString("Current_user_id", null);
         Log.w("Sender id", senderUserID + " ");
         context = getContext();
+        Button clearText = view.findViewById(R.id.bn_clear_txt);
 
         AutoCompleteTextView contact = view.findViewById(R.id.contacts);
         if (checkExternalPermission()) {
+            clearText.setOnClickListener(view13 -> {
+                number = null;
+                contact.setText("");
+                contact.setFocusableInTouchMode(true);
+            });
             getActivity().getSupportLoaderManager().initLoader(1, null, this);
 //            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, contactName);
             SimpleAdapter adapter = new SimpleAdapter(getContext(),
@@ -108,34 +121,62 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             contact.setOnItemClickListener((adapterView, view12, i, l) -> {
                 HashMap<String, String> selected = (HashMap<String, String>) adapterView.getItemAtPosition(i);
                 contact.setText(selected.get("Name"));
+                number = selected.get("Number");
+                contact.setFocusable(false);
             });
         } else
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
         Button button = view.findViewById(R.id.bn_save);
         button.setOnClickListener(view1 -> {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-            database.getReference("Users").addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                Log.w("Device numbers", data.child("device_number").getValue().toString());
-                                if (data.child("device_number").getValue().toString().equalsIgnoreCase("+91 96165 19454")) {
-                                    Log.w("result", "number present");
-                                    receiverKey = data.getKey();
-                                    Log.w("receiverKey", receiverKey);
+            amountEntered = amount.getText().toString();
+            if (number != null) {
+                if (!amountEntered.isEmpty()) {
+                    amountEntered = "₹" + amountEntered;
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    database.getReference("Users").addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
+                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
+                                        String converted = "";
+                                        for (String i : conversion) {
+                                            converted += i;
+                                        }
+                                        if (converted.equals(number)) {
+                                            Log.w("result", "number present");
+                                            receiverKey = data.getKey();
+                                            Log.w("receiverKey", receiverKey);
+                                        }
+                                    }
+                                    if (receiverKey == null) {
+                                        Toast.makeText(getContext(), "User does not have this app", Toast.LENGTH_SHORT).show();
+                                        //todo receiver not found in database
+                                    } else {
+                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, amountEntered);
+                                        OneFragment.fab.setVisibility(View.VISIBLE);
+                                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                                        amount.setFocusable(false);
+                                        contact.setFocusable(false);
+                                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                                        getFragmentManager().beginTransaction()
+                                                .remove(AddingNewContactFragment.this).commit();
+                                    }
                                 }
-                            }
-                            sendNotificationToUser(senderUserID, receiverKey);
 
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                        }
-                    });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
+                                }
+                            });
+                    ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                } else {
+                    Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "Contact Field can't be empty", Toast.LENGTH_SHORT).show();
+            }
         });
         return view;
     }
