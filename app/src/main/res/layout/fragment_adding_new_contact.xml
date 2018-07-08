@@ -171,8 +171,10 @@
             android:textStyle="bold" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:ems="10"
             android:hint="Discription (Optional)" />
