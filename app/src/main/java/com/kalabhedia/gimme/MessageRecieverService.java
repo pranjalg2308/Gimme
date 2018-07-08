@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -85,6 +86,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             mNotificationManager.createNotificationChannel(mChannel);
             Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
                     .setContentText(msg)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.ic_launcher)
@@ -95,6 +97,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             Notification notification = new Notification.Builder(this)
                     .setContentText(msg)
                     .setContentTitle(title)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setAutoCancel(true)
