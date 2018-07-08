@@ -108,11 +108,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
                     } else
                         Toast.makeText(PhoneAuthActivity.this, "Number format not valid", Toast.LENGTH_SHORT).show();
                 } else {
-                    mSendButton.setEnabled(false);
-                    mCodeBar.setVisibility(View.VISIBLE);
                     String verificationCode = mCodeText.getText().toString();
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
-                    signInWithPhoneAuthCredential(credential);
+                    if (!verificationCode.equals(""))
+                    {
+                        mSendButton.setEnabled(false);
+                        mCodeBar.setVisibility(View.VISIBLE);
+                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
+                        signInWithPhoneAuthCredential(credential);
+                    }else
+                        Toast.makeText(PhoneAuthActivity.this,"Enter OTP",Toast.LENGTH_SHORT).show();
                 }
 
             }

@@ -86,6 +86,7 @@
                android:orientation="horizontal">
 
                <Button
+                   android:id="@+id/bn_amount_10"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:background="@drawable/my_button_bg"
@@ -93,6 +94,7 @@
                    android:text="+10" />
 
                <Button
+                   android:id="@+id/bn_amount_50"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:background="@drawable/my_button_bg"
@@ -100,6 +102,7 @@
                    android:text="+50" />
 
                <Button
+                   android:id="@+id/bn_amount_100"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginLeft="8dp"
@@ -107,6 +110,7 @@
                    android:text="+100" />
 
                <Button
+                   android:id="@+id/bn_amount_500"
                    android:layout_width="wrap_content"
                    android:background="@drawable/my_button_bg"
                    android:layout_height="wrap_content"
@@ -114,6 +118,7 @@
                    android:text="+500" />
 
                <Button
+                   android:id="@+id/bn_amount_1000"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginLeft="8dp"

@@ -41,7 +41,7 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,View.OnClickListener {
     private static DatabaseReference NotificationReferernce;
     private static Context context;
     ArrayList<String> contactName;
@@ -57,6 +57,9 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     String amountEntered;
     private String number;
 
+
+    Button bnAmount10,bnAmount50,bnAmount100,bnAmount500,bnAmount1000;
+
     public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("phone_number", phoneNumber);
@@ -65,22 +68,22 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         notificationData.put("Type", "request");
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
                 Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
-//            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-//            Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
-//
-//            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-//                        appleSnapshot.getRef().removeValue();
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//                    Log.e("Notification", "onCancelled", databaseError.toException());
-//                }
-//            });
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
+            Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+
+            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                        appleSnapshot.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("Notification", "onCancelled", databaseError.toException());
+                }
+            });
         });
     }
 
@@ -95,7 +98,19 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
         contactdetail = new ArrayList<>();
         amount = view.findViewById(R.id.amount_entry);
+        amount.setText("0");
 
+        bnAmount10=view.findViewById(R.id.bn_amount_10);
+        bnAmount50=view.findViewById(R.id.bn_amount_50);
+        bnAmount100=view.findViewById(R.id.bn_amount_100);
+        bnAmount500=view.findViewById(R.id.bn_amount_500);
+        bnAmount1000=view.findViewById(R.id.bn_amount_1000);
+
+        bnAmount10.setOnClickListener(this::onClick);
+        bnAmount50.setOnClickListener(this::onClick);
+        bnAmount100.setOnClickListener(this::onClick);
+        bnAmount500.setOnClickListener(this::onClick);
+        bnAmount1000.setOnClickListener(this::onClick);
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString("phonenumber", null);
@@ -223,5 +238,28 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         String permission = android.Manifest.permission.READ_CONTACTS;
         int res = getContext().checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.bn_amount_10:
+                amount.setText((Integer.parseInt(amount.getText().toString())+10)+"");
+                break;
+            case R.id.bn_amount_50:
+                amount.setText((Integer.parseInt(amount.getText().toString())+50)+"");
+                break;
+            case R.id.bn_amount_100:
+                amount.setText((Integer.parseInt(amount.getText().toString())+100)+"");
+                break;
+            case R.id.bn_amount_500:
+                amount.setText((Integer.parseInt(amount.getText().toString())+500)+"");
+                break;
+            case R.id.bn_amount_1000:
+                amount.setText((Integer.parseInt(amount.getText().toString())+1000)+"");
+                break;
+                default:
+                    break;
+        }
     }
 }
