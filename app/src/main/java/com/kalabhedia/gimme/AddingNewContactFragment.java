@@ -41,7 +41,7 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,View.OnClickListener {
+public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
     private static DatabaseReference NotificationReferernce;
     private static Context context;
     ArrayList<String> contactName;
@@ -58,7 +58,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     private String number;
 
 
-    Button bnAmount10,bnAmount50,bnAmount100,bnAmount500,bnAmount1000;
+    Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
 
     public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
         HashMap<String, String> notificationData = new HashMap<>();
@@ -98,13 +98,13 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
         contactdetail = new ArrayList<>();
         amount = view.findViewById(R.id.amount_entry);
-        amount.setText("0");
 
-        bnAmount10=view.findViewById(R.id.bn_amount_10);
-        bnAmount50=view.findViewById(R.id.bn_amount_50);
-        bnAmount100=view.findViewById(R.id.bn_amount_100);
-        bnAmount500=view.findViewById(R.id.bn_amount_500);
-        bnAmount1000=view.findViewById(R.id.bn_amount_1000);
+
+        bnAmount10 = view.findViewById(R.id.bn_amount_10);
+        bnAmount50 = view.findViewById(R.id.bn_amount_50);
+        bnAmount100 = view.findViewById(R.id.bn_amount_100);
+        bnAmount500 = view.findViewById(R.id.bn_amount_500);
+        bnAmount1000 = view.findViewById(R.id.bn_amount_1000);
 
         bnAmount10.setOnClickListener(this::onClick);
         bnAmount50.setOnClickListener(this::onClick);
@@ -242,24 +242,36 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        int moneyInt;
+        String moneyString = amount.getText().toString();
+        if (moneyString.isEmpty())
+            moneyInt=0;
+        else
+            moneyInt=Integer.parseInt(moneyString);
+        switch (view.getId()) {
             case R.id.bn_amount_10:
-                amount.setText((Integer.parseInt(amount.getText().toString())+10)+"");
+                moneyInt+=10;
+                amount.setText(moneyInt+"");
                 break;
             case R.id.bn_amount_50:
-                amount.setText((Integer.parseInt(amount.getText().toString())+50)+"");
+                moneyInt+=50;
+                amount.setText(moneyInt+"");
                 break;
             case R.id.bn_amount_100:
-                amount.setText((Integer.parseInt(amount.getText().toString())+100)+"");
+                moneyInt+=100;
+                amount.setText(moneyInt+"");
                 break;
             case R.id.bn_amount_500:
-                amount.setText((Integer.parseInt(amount.getText().toString())+500)+"");
+                moneyInt+=500;
+                amount.setText(moneyInt+"");
                 break;
             case R.id.bn_amount_1000:
-                amount.setText((Integer.parseInt(amount.getText().toString())+1000)+"");
+                moneyInt+=1000;
+                amount.setText(moneyInt+"");
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
+        amount.setSelection(amount.getText().length());
     }
 }
