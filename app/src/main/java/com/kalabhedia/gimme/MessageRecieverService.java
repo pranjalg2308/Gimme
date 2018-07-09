@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -79,6 +80,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
             mNotificationManager.createNotificationChannel(mChannel);
             Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
@@ -86,6 +88,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
+                    .addAction(R.drawable.accept,"Decline",pendingIntent)
+                    .addAction(R.drawable.decline,"Accept",pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
                     .build();
@@ -98,6 +102,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
+                    .addAction(R.drawable.accept,"Accept",pendingIntent)
+                    .addAction(R.drawable.decline,"Decline",pendingIntent)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
         }

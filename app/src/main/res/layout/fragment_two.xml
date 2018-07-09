@@ -4,14 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TwoFragment">
-    <TextView
-        android:id="@+id/errorTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:gravity="center"
-        android:text="Unable to fetch user"
-        android:textColor="#f13232" />
 
     <ListView
         android:id="@+id/UserListView"
