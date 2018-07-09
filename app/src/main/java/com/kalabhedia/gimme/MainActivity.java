@@ -151,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
-        adapter.AddFragment(new com.kalabhedia.gimme.TwoFragment(), "Explore");
         adapter.AddFragment(new com.kalabhedia.gimme.ThreeFragment(), "Activity");
+        adapter.AddFragment(new com.kalabhedia.gimme.TwoFragment(), "Explore");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
