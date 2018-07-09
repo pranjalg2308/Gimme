@@ -17,6 +17,7 @@ public class ThreeFragment extends Fragment {
     View view;
     DataBaseHelper db;
 
+
     public ThreeFragment() {
         // Required empty public constructor
     }
@@ -53,5 +54,11 @@ public class ThreeFragment extends Fragment {
         listView.setAdapter(adapter);
 
     }
-
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+    }
 }

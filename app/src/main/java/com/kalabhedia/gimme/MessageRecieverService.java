@@ -37,8 +37,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String reason = "";
         if (location != -1) {
             reason = messageReceived.substring(location);
+            messageReceived =messageReceived.substring(0, location);
         }
-        messageReceived =messageReceived.substring(0, location);
         String phoneNumber = "";
         String message = "";
         String[] checkingPhoneNumber = messageReceived.split(" ");
@@ -113,6 +113,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .addAction(R.drawable.decline, "Decline", pendingIntent)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
+
         }
     }
 }
