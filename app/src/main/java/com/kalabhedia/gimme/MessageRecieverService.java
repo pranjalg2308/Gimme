@@ -17,9 +17,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Date;
 
-/**
- * Created by What's That Lambda on 11/6/17.
- */
+
 
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
@@ -89,7 +87,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
                     .build();
             mNotificationManager.notify(uniqueId, notification1);
@@ -99,7 +97,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentTitle(title)
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
