@@ -68,7 +68,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
 
     /**
-     *
      * @param senderUserID
      * @param receiverUserID
      * @param phoneNumber
@@ -103,7 +102,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     /**
-     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -120,14 +118,13 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         contactNumber = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
         contactdetail = new ArrayList<>();
-        EditText discription=view.findViewById(R.id.idReason);
+        EditText discription = view.findViewById(R.id.idReason);
 
         amount = view.findViewById(R.id.amount_entry);
         radioGroup = view.findViewById(R.id.idClaim);
 
 
-
-        reason=view.findViewById(R.id.reason_text_view);
+        reason = view.findViewById(R.id.reason_text_view);
 
 
         bnAmount10 = view.findViewById(R.id.bn_amount_10);
@@ -181,13 +178,13 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         button.setOnClickListener(view1 -> {
             hideKeyboard(getActivity());
             int selectedId = radioGroup.getCheckedRadioButtonId();
-            radioButtonClaim=view.findViewById(selectedId);
-            String claimString=radioButtonClaim.getText().toString();
+            radioButtonClaim = view.findViewById(selectedId);
+            String claimString = radioButtonClaim.getText().toString();
 
 
             amountEntered = amount.getText().toString();
-            if (claimString.equals("TAKEN")){
-                amountEntered="-"+amountEntered;
+            if (claimString.equals("TAKEN")) {
+                amountEntered = "-" + amountEntered;
             }
             if (number != null) {
                 if (!amountEntered.isEmpty()) {
@@ -222,14 +219,14 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         //todo receiver not found in database
                                     } else {
                                         button.setEnabled(false);
-                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1*Integer.parseInt(amountEntered))+"");
+                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "");
 
 
-                                        String reason=discription.getText().toString()+"";
-                                        radioButtonClaim=view.findViewById(selectedId);
-                                        String claimString=radioButtonClaim.getText().toString();
-                                        Log.v("Getinout",claimString);
-                                        saveInLocalDatabase(number,reason,amountEntered);
+                                        String reason = discription.getText().toString() + "";
+                                        radioButtonClaim = view.findViewById(selectedId);
+                                        String claimString = radioButtonClaim.getText().toString();
+                                        Log.v("Getinout", claimString);
+                                        saveInLocalDatabase(number, reason, amountEntered);
 
 
                                         OneFragment.fab.setVisibility(View.VISIBLE);
@@ -271,7 +268,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     private void saveInLocalDatabase(String number, String reason, String amountEntered) {
         Boolean result = db.insertData(number, reason, amountEntered);
-        if (result==true) {
+        if (result == true) {
             Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Data Inserted Unsuccessfully", Toast.LENGTH_SHORT).show();
@@ -279,7 +276,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     /**
-     *
      * @param id
      * @param args
      * @return
@@ -293,7 +289,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     /**
-     *
      * @param loader
      * @param cursor
      */
@@ -312,6 +307,9 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             item.put("Name", name);
             item.put("Number", number);
             contactdetail.add(item);
+            if (!number.startsWith("+91")) {
+                number = "+91" + number;
+            }
             String[] conversion = number.split(" ");
             String[] conversion1 = number.split("-");
             if (conversion1.length > 1) {
@@ -333,7 +331,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     /**
-     *
      * @param loader
      */
     @Override
@@ -357,7 +354,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     /**
-     *
      * @param view
      */
     @Override
@@ -365,29 +361,29 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         int moneyInt;
         String moneyString = amount.getText().toString();
         if (moneyString.isEmpty())
-            moneyInt=0;
+            moneyInt = 0;
         else
-            moneyInt=Integer.parseInt(moneyString);
+            moneyInt = Integer.parseInt(moneyString);
         switch (view.getId()) {
             case R.id.bn_amount_10:
-                moneyInt+=10;
-                amount.setText(moneyInt+"");
+                moneyInt += 10;
+                amount.setText(moneyInt + "");
                 break;
             case R.id.bn_amount_50:
-                moneyInt+=50;
-                amount.setText(moneyInt+"");
+                moneyInt += 50;
+                amount.setText(moneyInt + "");
                 break;
             case R.id.bn_amount_100:
-                moneyInt+=100;
-                amount.setText(moneyInt+"");
+                moneyInt += 100;
+                amount.setText(moneyInt + "");
                 break;
             case R.id.bn_amount_500:
-                moneyInt+=500;
-                amount.setText(moneyInt+"");
+                moneyInt += 500;
+                amount.setText(moneyInt + "");
                 break;
             case R.id.bn_amount_1000:
-                moneyInt+=1000;
-                amount.setText(moneyInt+"");
+                moneyInt += 1000;
+                amount.setText(moneyInt + "");
                 break;
             default:
                 break;

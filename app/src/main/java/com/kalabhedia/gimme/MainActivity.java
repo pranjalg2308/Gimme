@@ -12,6 +12,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,9 +43,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.onesignal.OneSignal;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -88,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         currentUser = mAuth.getCurrentUser();
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        SharedPreferences sh=getSharedPreferences("UserProfile",MODE_PRIVATE);
-        NavHeaderUserName.setText(sh.getString("UserName",""));
+        SharedPreferences sh = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        NavHeaderUserName.setText(sh.getString("UserName", ""));
         if (currentUser == null) {
             Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
             startActivity(authIntent);
@@ -122,6 +128,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
                             mAuth.signOut();
+                            if (!isNetworkAvailable()) {
+                                try {
+                                    setMobileDataEnabled(getApplicationContext(), true);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
+                            reference.setValue(null);
                             clearApplicationData();
                             sh.edit().clear().commit();
                             startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
@@ -252,4 +267,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void setMobileDataEnabled(Context context, boolean enabled) throws Exception {
+        final ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Class conmanClass = null;
+        try {
+            conmanClass = Class.forName(conman.getClass().getName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+        iConnectivityManagerField.setAccessible(true);
+        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+        setMobileDataEnabledMethod.setAccessible(true);
+        setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled);
+    }
+
+    public String getName(String phoneNumber) {
+        String[] conversionNumber = phoneNumber.split(" ");
+        phoneNumber = "";
+        for (String i : conversionNumber) {
+            phoneNumber += i;
+        }
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString(phoneNumber, null);
+        if (name == null) {
+            return phoneNumber;
+        } else {
+            return name;
+        }
+
+    }
 }
