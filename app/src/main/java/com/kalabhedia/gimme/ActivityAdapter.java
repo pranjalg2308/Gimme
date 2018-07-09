@@ -38,20 +38,22 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String statement = activityArray.name;
         String reasonStatement = activityArray.reason;
         if (reasonStatement.trim().isEmpty()) {
-            reasonStatement = "     -----------------------";
-        }
+//            reasonStatement = "for     -----------------------";
+            reasonStatement = " ";
+        } else
+            reasonStatement = "For " + reasonStatement;
         int moneyInt=Integer.parseInt(moneyString);
         if (moneyInt<0){
             moneyInt=(-1)*moneyInt;
             im.setImageResource(R.drawable.circle_minus);
-            statement = "is to be given to " + statement;
+            statement = "to be given to " + statement;
         } else {
             im.setImageResource(R.drawable.circle_plus);
-            statement = "is to be taken from " + statement;
+            statement = "to be taken from " + statement;
         }
         tvMoney.setText("₹"+moneyInt);
         tvOwe.setText(statement + "");
-        tvReason.setText("For " + reasonStatement);
+        tvReason.setText(reasonStatement);
 
         return convertView;
     }

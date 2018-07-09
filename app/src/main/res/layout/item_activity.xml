@@ -18,22 +18,25 @@
             android:layout_weight="2"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/color_wheel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:src="@drawable/circle_plus" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/color_wheel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:src="@drawable/circle_plus" />
 
                     <TextView
                         android:id="@+id/money_text_view"
@@ -43,8 +46,7 @@
                         android:layout_marginStart="8dp"
                         android:text="₹20"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textColor="#000000"
-                        android:textStyle="bold" />
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/owe_text_view"
@@ -58,18 +60,17 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/reason_text_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="12dp"
                         android:text="for maggi"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#000000" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#737373" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -81,43 +82,51 @@
                         android:id="@+id/time_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginLeft="12dp"
                         android:text="June7"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#737373" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginStart="16dp"-->
+                    <!--android:text="Claim:"-->
+                    <!--android:textColor="#000"-->
+                    <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                    <!--android:textStyle="bold" />-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:text="Claim:"
-                        android:textColor="#000"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textStyle="bold" />
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/bn_accept"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="8dp"
-                        android:background="@drawable/activity_item_view_button_accept"
-                        android:text="Accept"
-                        android:textColor="@color/colorPrimary" />
+                        <Button
+                            android:id="@+id/bn_accept"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="8dp"
+                            android:background="@drawable/activity_item_view_button_accept"
+                            android:text="Accept"
+                            android:textColor="@color/colorPrimary" />
 
-                    <Button
-                        android:id="@+id/bn_reject"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="8dp"
-                        android:background="@drawable/activity_item_view_button_reject"
-                        android:text="Reject"
-                        android:textColor="#F57F17" />
+                        <Button
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/ic_refresh" />
 
-                    <Button
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        <Button
+                            android:id="@+id/bn_reject"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="8dp"
+                            android:background="@drawable/activity_item_view_button_reject"
+                            android:text="Reject"
+                            android:textColor="#F57F17" />
+                    </LinearLayout>
 
-                        android:background="@drawable/ic_refresh" />
+
 
                 </LinearLayout>
 
