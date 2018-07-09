@@ -43,7 +43,7 @@ public class ThreeFragment extends Fragment {
         if (cr != null && cr.getCount() > 0) {
             while (cr.moveToNext()) {
                 String name=((MainActivity)getActivity()).getName(cr.getString(1));
-                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3)));
+                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
 
             }
         }

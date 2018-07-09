@@ -75,7 +75,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
-        Boolean result = db.insertData(phoneNumber, "", moneyString);
+        Boolean result = db.insertData(phoneNumber, "", moneyString, "0", "1");
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
