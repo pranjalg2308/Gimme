@@ -66,14 +66,7 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    service firebase.storage {
-    match /b/{bucket}/o {
-    match /{allPaths=**} {
-    allow read, write: if true;
-    }
-    }
-    }<Button
+    <Button
         android:id="@+id/submit_username_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"

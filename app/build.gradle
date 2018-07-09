@@ -47,6 +47,8 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:27.1.1'
     implementation 'com.hbb20:ccp:2.2.1'//for country phone number code spinner
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
@@ -62,8 +64,7 @@ dependencies {
     implementation 'com.onesignal:OneSignal:3.9.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:design:27.1.1'
+
 }
 
 

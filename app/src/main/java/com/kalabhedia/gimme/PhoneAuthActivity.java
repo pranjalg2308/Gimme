@@ -3,6 +3,7 @@ package com.kalabhedia.gimme;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     public String phonenumber;
     private DatabaseReference databaseReference;
     private String online_user_id;
+    private int READ_CONTACT_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

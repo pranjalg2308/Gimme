@@ -36,6 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.onesignal.OneSignal;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public ActionBar actionbar;
@@ -50,108 +52,116 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ImageView NavHeaderImageView;
     private DataBaseHelper db;
 
-
-
     @Override
     public void onSupportActionModeStarted(@NonNull ActionMode mode) {
         super.onSupportActionModeStarted(mode);
-
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (checkExternalPermission()) {
-            setContentView(R.layout.activity_main);
-            db = new DataBaseHelper(this);
+        setContentView(R.layout.activity_main);
+        db = new DataBaseHelper(this);
 
-            OneSignal.startInit(this)
-                    .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                    .unsubscribeWhenNotificationsAreDisabled(true)
-                    .init();
-
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            actionbar = getSupportActionBar();
-            actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
 
-            mDrawerLayout = findViewById(R.id.main_drawer_layout);
+        mDrawerLayout = findViewById(R.id.main_drawer_layout);
 
-            NavigationView navigationView = findViewById(R.id.navigation);
-            View headerView = navigationView.getHeaderView(0);
-            NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
-            NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
-
-            mAuth = FirebaseAuth.getInstance();
-            currentUser = mAuth.getCurrentUser();
-            mAuth = FirebaseAuth.getInstance();
-            currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
-                startActivity(authIntent);
-                finish();
-            } else if (currentUser.getDisplayName() != null && currentUser != null)
-                NavHeaderUserName.setText(currentUser.getDisplayName().toString());
+        NavigationView navigationView = findViewById(R.id.navigation);
+        View headerView = navigationView.getHeaderView(0);
+        NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
+//        NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
 
 
-            navigationView.getMenu().getItem(0).setChecked(true);
-            navigationView.setNavigationItemSelectedListener(
-                    new NavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(MenuItem menuItem) {
-                            // set item as selected to persist highlight
-                            menuItem.setChecked(true);
-                            // close drawer when item is tapped
-                            mDrawerLayout.closeDrawers();
-                            if (menuItem.getItemId() == R.id.nav_share) {
-                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                                shareIntent.setType("text/plain");
-                                String shareBody = "Check This Out";
-                                String shareSub = "this is the link";
-                                shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
-                                shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
-                                startActivity(Intent.createChooser(shareIntent, "Share Using"));
-                            } else if (menuItem.getItemId() == R.id.nav_rate) {
-                                Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
-                            } else if (menuItem.getItemId() == R.id.nav_logout) {
-                                mAuth = FirebaseAuth.getInstance();
-                                mAuth.signOut();
-                                startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
-                                finish();
-                            }
-                            return true;
-                        }
-                    });
-
-            tabLayout = (TabLayout) findViewById(R.id.tab_layout_id);
-            viewPager = (ViewPager) findViewById(R.id.viewpager_id);
-            ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-            adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
-            adapter.AddFragment(new com.kalabhedia.gimme.TwoFragment(), "Explore");
-            adapter.AddFragment(new com.kalabhedia.gimme.ThreeFragment(), "Activity");
-
-            viewPager.setAdapter(adapter);
-            tabLayout.setupWithViewPager(viewPager);
-
-//        if (currentUser!=null){
-//            NavHeaderUserName.setText(currentUser.getDisplayName());
-//            new DownloadImageTask(NavHeaderImageView).execute(String.valueOf(currentUser.getPhotoUrl()));
-//        }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
-            }
-            recreate();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        SharedPreferences sh=getSharedPreferences("UserProfile",MODE_PRIVATE);
+        NavHeaderUserName.setText(sh.getString("UserName",""));
+        if (currentUser == null) {
+            Intent authIntent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+            startActivity(authIntent);
+            finish();
+        } else if (currentUser.getDisplayName() != null && currentUser != null) {
+            NavHeaderUserName.setText(currentUser.getDisplayName().toString());
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
 
+        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+                        if (menuItem.getItemId() == R.id.nav_share) {
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            String shareBody = "Check This Out";
+                            String shareSub = "this is the link";
+                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
+                            startActivity(Intent.createChooser(shareIntent, "Share Using"));
+                        } else if (menuItem.getItemId() == R.id.nav_rate) {
+                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
+                        } else if (menuItem.getItemId() == R.id.nav_logout) {
+                            mAuth = FirebaseAuth.getInstance();
+                            mAuth.signOut();
+                            clearApplicationData();
+                            sh.edit().clear().commit();
+                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
+                            finish();
+                        }
+                        return true;
+                    }
+                });
 
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout_id);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_id);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
+        adapter.AddFragment(new com.kalabhedia.gimme.TwoFragment(), "Explore");
+        adapter.AddFragment(new com.kalabhedia.gimme.ThreeFragment(), "Activity");
 
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    public void clearApplicationData() {
+        File cacheDirectory = getCacheDir();
+        File applicationDirectory = new File(cacheDirectory.getParent());
+        if (applicationDirectory.exists()) {
+            String[] fileNames = applicationDirectory.list();
+            for (String fileName : fileNames) {
+                if (!fileName.equals("lib")) {
+                    deleteDir(new File(applicationDirectory, fileName));
+                }
+            }
+        }
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 
 

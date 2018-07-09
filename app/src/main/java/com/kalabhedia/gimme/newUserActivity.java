@@ -34,7 +34,7 @@ public class    newUserActivity extends AppCompatActivity {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mUsername.getText().toString().trim() != null) {
+                if (!mUsername.getText().toString().trim().equals("")) {
                     Log.v("Username", mUsername.getText().toString());
                     SharedPreferences sh=getSharedPreferences("UserProfile",MODE_PRIVATE);
                     SharedPreferences.Editor myEdit=sh.edit();

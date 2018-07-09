@@ -1,6 +1,7 @@
 package com.kalabhedia.gimme;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -177,12 +179,12 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
  * click listener of save button
  */
         button.setOnClickListener(view1 -> {
+            hideKeyboard(getActivity());
             int selectedId = radioGroup.getCheckedRadioButtonId();
             radioButtonClaim=view.findViewById(selectedId);
             String claimString=radioButtonClaim.getText().toString();
 
 
-            button.setEnabled(false);
             amountEntered = amount.getText().toString();
             if (claimString.equals("TAKEN")){
                 amountEntered="-"+amountEntered;
@@ -216,6 +218,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         Toast.makeText(getContext(), "User does not have this app", Toast.LENGTH_SHORT).show();
                                         //todo receiver not found in database
                                     } else {
+                                        button.setEnabled(false);
                                         sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1*Integer.parseInt(amountEntered))+"");
 
 
@@ -250,6 +253,17 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             }
         });
         return view;
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void saveInLocalDatabase(String number, String reason, String amountEntered) {
