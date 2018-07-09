@@ -18,11 +18,11 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Date;
 
 
-
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
     private static final int NOTIFICATION_ID = 6578;
     DataBaseHelper db;
+
     public MessageRecieverService() {
         super();
     }
@@ -32,7 +32,13 @@ public class MessageRecieverService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         Log.w("onMessageReceived: ", remoteMessage.getData().get("title"));
         final String title = remoteMessage.getData().get("title");
-        final String messageReceived = remoteMessage.getData().get("body");
+        String messageReceived = remoteMessage.getData().get("body");
+        int location = messageReceived.indexOf("for");
+        String reason = "";
+        if (location != -1) {
+            reason = messageReceived.substring(location);
+        }
+        messageReceived =messageReceived.substring(0, location);
         String phoneNumber = "";
         String message = "";
         String[] checkingPhoneNumber = messageReceived.split(" ");
@@ -59,13 +65,14 @@ public class MessageRecieverService extends FirebaseMessagingService {
         } else {
             message += " " + name;
         }
-        showNotifications(title, message,phoneNumber);
+        message=message+" "+reason;
+        showNotifications(title, message, phoneNumber);
     }
 
     private void showNotifications(String title, String msg, String phoneNumber) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        String moneyString=msg.split(" ")[0];
+        String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
         Boolean result = db.insertData(phoneNumber, "", moneyString);
@@ -88,8 +95,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.accept,"Decline",pendingIntent)
-                    .addAction(R.drawable.decline,"Accept",pendingIntent)
+                    .addAction(R.drawable.accept, "Decline", pendingIntent)
+                    .addAction(R.drawable.decline, "Accept", pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
                     .build();
@@ -102,8 +109,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
-                    .addAction(R.drawable.accept,"Accept",pendingIntent)
-                    .addAction(R.drawable.decline,"Decline",pendingIntent)
+                    .addAction(R.drawable.accept, "Accept", pendingIntent)
+                    .addAction(R.drawable.decline, "Decline", pendingIntent)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
         }

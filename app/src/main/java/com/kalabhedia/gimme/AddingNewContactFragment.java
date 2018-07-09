@@ -38,7 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -72,12 +71,14 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
      * @param receiverUserID
      * @param phoneNumber
      * @param amountEntered
+     * @param reason
      */
-    public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered) {
+    public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("phone_number", phoneNumber);
         notificationData.put("Amount", amountEntered);
         notificationData.put("From", senderUserID);
+        notificationData.put("Reason", reason);
         notificationData.put("Type", "request");
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
                 Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
@@ -219,10 +220,12 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         //todo receiver not found in database
                                     } else {
                                         button.setEnabled(false);
-                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "");
-
 
                                         String reason = discription.getText().toString() + "";
+                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
+                                                reason);
+
+
                                         radioButtonClaim = view.findViewById(selectedId);
                                         String claimString = radioButtonClaim.getText().toString();
                                         Log.v("Getinout", claimString);
