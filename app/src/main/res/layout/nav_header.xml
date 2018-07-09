@@ -31,7 +31,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:text="Pranjal Gupta" />
+            tools:text="Noob Dev" />
 
     </LinearLayout>
 
