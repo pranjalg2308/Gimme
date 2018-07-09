@@ -178,6 +178,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:ems="10"
+            android:maxLength="40"
             android:hint="Discription (Optional)" />
 
 
