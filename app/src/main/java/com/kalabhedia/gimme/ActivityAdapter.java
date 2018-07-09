@@ -10,7 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
@@ -32,7 +35,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         TextView tvReason = convertView.findViewById(R.id.reason_text_view);
 
         tvOwe.setText(""+activityArray.name);
-        tvTime.setText(activityArray.time);
+        tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
         int moneyInt=Integer.parseInt(moneyString);
         if (moneyInt<0){
@@ -45,6 +48,18 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         tvReason.setText(""+activityArray.reason);
 
         return convertView;
+    }
+
+    private String formatDate(String dateStr) {
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = fmt.parse(dateStr);
+            SimpleDateFormat fmtOut = new SimpleDateFormat("MMM d");
+            return fmtOut.format(date);
+        } catch (ParseException e) {
+
+        }
+        return "";
     }
 }
 
