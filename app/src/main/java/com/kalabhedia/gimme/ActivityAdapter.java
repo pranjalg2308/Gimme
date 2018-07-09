@@ -33,19 +33,25 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         TextView tvTime = convertView.findViewById(R.id.time_text_view);
         TextView tvMoney = convertView.findViewById(R.id.money_text_view);
         TextView tvReason = convertView.findViewById(R.id.reason_text_view);
-
-        tvOwe.setText(""+activityArray.name);
         tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
+        String statement = activityArray.name;
+        String reasonStatement = activityArray.reason;
+        if (reasonStatement.trim().isEmpty()) {
+            reasonStatement = "     -----------------------";
+        }
         int moneyInt=Integer.parseInt(moneyString);
         if (moneyInt<0){
             moneyInt=(-1)*moneyInt;
             im.setImageResource(R.drawable.circle_minus);
-        }
-        else
+            statement = "is to be given to " + statement;
+        } else {
             im.setImageResource(R.drawable.circle_plus);
+            statement = "is to be taken from " + statement;
+        }
         tvMoney.setText("₹"+moneyInt);
-        tvReason.setText(""+activityArray.reason);
+        tvOwe.setText(statement + "");
+        tvReason.setText("For " + reasonStatement);
 
         return convertView;
     }
