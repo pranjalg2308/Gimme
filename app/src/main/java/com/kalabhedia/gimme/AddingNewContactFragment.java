@@ -61,6 +61,9 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     private RadioGroup radioGroup;
     private RadioButton radioButtonClaim;
     private EditText reason;
+    private String NO = "2";
+    private String YES = "1";
+    private String NULL = "0";
     DataBaseHelper db;
 
 
@@ -270,7 +273,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     }
 
     private void saveInLocalDatabase(String number, String reason, String amountEntered) {
-        Boolean result = db.insertData(number, reason, amountEntered);
+        Boolean result = db.insertData(number, reason, amountEntered, YES, NULL);
         if (result == true) {
             Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
         } else {
