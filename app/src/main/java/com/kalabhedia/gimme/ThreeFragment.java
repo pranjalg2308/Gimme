@@ -38,12 +38,11 @@ public class ThreeFragment extends Fragment {
         db = new DataBaseHelper(getContext());
         Cursor cr = db.getAllData();
 
-        ArrayList<ActivityArray> arrayOfActivity = new ArrayList<ActivityArray>();
-//        ActivityArray activityArray=new ActivityArray("6:35","Divyanshu","20","ugtv");
-//        arrayOfActivity.add(activityArray);
+        ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
         if (cr != null && cr.getCount() > 0) {
             while (cr.moveToNext()) {
-                arrayOfActivity.add(new ActivityArray(cr.getString(0), cr.getString(1), cr.getString(2), cr.getString(3)));
+                String name=((MainActivity)getActivity()).getName(cr.getString(1));
+                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3)));
 
             }
         }

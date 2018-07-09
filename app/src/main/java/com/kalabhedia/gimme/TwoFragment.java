@@ -20,6 +20,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 
@@ -34,7 +40,6 @@ public class TwoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_two, container, false);
-        TextView error = view.findViewById(R.id.errorTextView);
         ListView listOfUsers = view.findViewById(R.id.UserListView);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         TreeSet<String> contactsContainingApp = new TreeSet<>();
@@ -54,8 +59,15 @@ public class TwoFragment extends Fragment {
                                 contactsContainingApp.add(sharedPreferences.getString(converted, null));
                             }
                         }
+                        try {
+                            FileOutputStream fileOutputStream = getContext().openFileOutput("Saved Contacts", Context.MODE_PRIVATE);
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                            objectOutputStream.writeObject(contactsContainingApp);
+                            objectOutputStream.close();
+                        } catch (java.io.IOException e) {
+                            e.printStackTrace();
+                        }
                         if (contactsContainingApp.size() != 0) {
-                            error.setVisibility(View.GONE);
                             ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, contactsContainingApp.toArray());
                             listOfUsers.setAdapter(arrayAdapter);
                         }
@@ -67,6 +79,20 @@ public class TwoFragment extends Fragment {
                         Toast.makeText(getContext(), "Unable to fetch users", Toast.LENGTH_SHORT).show();
                     }
                 });
+        TreeSet<String> cachedList=new TreeSet<>();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = getContext().openFileInput("Saved Contacts");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            cachedList=(TreeSet<String>) objectInputStream.readObject();
+            objectInputStream.close();
+        } catch (java.io.IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (cachedList.size() != 0) {
+            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, cachedList.toArray());
+            listOfUsers.setAdapter(arrayAdapter);
+        }
         return view;
     }
 }

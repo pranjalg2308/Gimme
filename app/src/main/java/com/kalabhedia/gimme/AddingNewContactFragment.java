@@ -327,7 +327,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
             editor.apply();
             cursor.moveToNext();
         }
-        Map<String, ?> keys = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE).getAll();
     }
 
     /**
