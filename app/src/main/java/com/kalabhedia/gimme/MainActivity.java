@@ -5,6 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NavigationView navigationView = findViewById(R.id.navigation);
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
-//        NavHeaderImageView = (ImageView) headerView.findViewById(R.id.nav_header_photo);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -245,4 +251,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int res = getApplicationContext().checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
+
 }

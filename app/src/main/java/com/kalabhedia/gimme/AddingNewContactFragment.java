@@ -196,6 +196,9 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                     for (String i : conversionNumber) {
                         number += i;
                     }
+                    if (!number.startsWith("+91")) {
+                        number = "+91" + number;
+                    }
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     database.getReference("Users").addListenerForSingleValueEvent(
                             new ValueEventListener() {
