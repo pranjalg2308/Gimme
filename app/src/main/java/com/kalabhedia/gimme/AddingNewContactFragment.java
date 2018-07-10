@@ -180,6 +180,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
  * click listener of save button
  */
         button.setOnClickListener(view1 -> {
+//            button.setEnabled(false);
             hideKeyboard(getActivity());
             int selectedId = radioGroup.getCheckedRadioButtonId();
             radioButtonClaim = view.findViewById(selectedId);
@@ -239,6 +240,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                                         amount.setFocusable(false);
                                         contact.setFocusable(false);
+                                        ;
                                         ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
                                         getFragmentManager().beginTransaction()
                                                 .remove(AddingNewContactFragment.this).commit();
@@ -274,52 +276,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     private void saveInLocalDatabase(String number, String reason, String amountEntered) {
         Boolean result = db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, YES, NULL);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-        db.insertData(number, reason, amountEntered, NULL, YES);
-
 
         if (result == true) {
             Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
