@@ -79,6 +79,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, BroadCastReceiver.class);
+        PendingIntent accept = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         String CHANNEL_ID = "channel_money_request";// The id of the channel.
         CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
@@ -96,7 +98,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
                     .addAction(R.drawable.accept, "Decline", pendingIntent)
-                    .addAction(R.drawable.decline, "Accept", pendingIntent)
+                    .addAction(R.drawable.decline, "Accept", accept)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
                     .build();
@@ -109,8 +111,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
-                    .addAction(R.drawable.accept, "Accept", pendingIntent)
-                    .addAction(R.drawable.decline, "Decline", pendingIntent)
+                    .addAction(R.drawable.accept, "Decline", pendingIntent)
+                    .addAction(R.drawable.decline, "Accept", accept)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
 
