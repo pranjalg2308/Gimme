@@ -35,17 +35,21 @@ public class ThreeFragment extends Fragment {
         return view;
 
     }
+
     private void updateUi() {
         db = new DataBaseHelper(getContext());
         Cursor cr = db.getAllData();
 
         ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
         if (cr != null && cr.getCount() > 0) {
-            while (cr.moveToNext()) {
-                String name=((MainActivity)getActivity()).getName(cr.getString(1));
+            cr.moveToLast();
+            do {
+                String name = ((MainActivity) getActivity()).getName(cr.getString(1));
                 arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
 
             }
+            while (cr.moveToPrevious());
+
         }
 
 
@@ -54,6 +58,7 @@ public class ThreeFragment extends Fragment {
         listView.setAdapter(adapter);
 
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
