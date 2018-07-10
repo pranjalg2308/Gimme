@@ -56,6 +56,7 @@ public class ThreeFragment extends Fragment {
         ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity);
         ListView listView = view.findViewById(R.id.lvItems);
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 

@@ -58,5 +58,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor cr=db.rawQuery("Select * from "+TABLE_NAME,null);
         return cr;
     }
+
+    public boolean updateData(String id, String code1, String code2) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_5, code1);
+        contentValues.put(COL_6, code2);
+        int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    }
+
 }
 

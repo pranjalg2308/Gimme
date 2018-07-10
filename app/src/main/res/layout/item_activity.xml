@@ -42,8 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="to be given to Divyanshu"
-                android:textSize="18sp"
-                android:textColor="#141414" />
+                android:textColor="#141414"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -62,9 +62,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_marginStart="8dp"
-                android:textSize="16sp"
                 android:text="for maggi"
-                android:textColor="#737373" />
+                android:textColor="#737373"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -90,9 +90,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
-                android:layout_marginBottom="8dp"
                 android:gravity="left"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
 
                 <Button
                     android:id="@+id/bn_accept"
@@ -101,32 +101,30 @@
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="8dp"
                     android:background="@drawable/activity_item_view_button_accept"
+                    android:elevation="15dp"
                     android:paddingHorizontal="16dp"
-                    android:elevation="5dp"
-                    android:translationZ="5dp"
                     android:text="Accept"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:translationZ="5dp" />
 
                 <Button
                     android:id="@+id/bn_reject"
                     style="@style/MyButtonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:elevation="5dp"
-                    android:translationZ="5dp"
                     android:layout_marginHorizontal="8dp"
                     android:background="@drawable/activity_item_view_button_reject"
+                    android:elevation="15dp"
                     android:paddingHorizontal="16dp"
                     android:text="Reject"
                     android:textColor="#F57F17"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:translationZ="5dp" />
 
                 <Button
                     android:id="@+id/bn_refresh"
                     android:layout_width="24dp"
-                    android:elevation="5dp"
-                    android:translationZ="5dp"
                     android:layout_height="24dp"
                     android:background="@drawable/ic_refresh" />
             </LinearLayout>
