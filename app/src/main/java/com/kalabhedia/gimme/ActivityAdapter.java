@@ -1,6 +1,8 @@
 package com.kalabhedia.gimme;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -21,16 +23,21 @@ import java.util.Date;
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
     DataBaseHelper db;
+    ArrayList<ActivityArray> activity;
+    Context context;
 
     public ActivityAdapter(Context context, ArrayList<ActivityArray> activity) {
         super(context, 0, activity);
+        this.activity = activity;
+        this.context = context;
     }
+
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
-        ActivityArray activityArray = getItem(position);
+        ActivityArray activityArray = activity.get(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_activity, parent, false);
             holder = new ViewHolder();
@@ -44,35 +51,42 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh = convertView.findViewById(R.id.bn_refresh);
             convertView.setTag(holder);
         } else {
+            db = new DataBaseHelper(getContext());
             holder = (ViewHolder) convertView.getTag();
+            holder.bnAccept.setText("Accept");
+            holder.bnAccept.setVisibility(View.VISIBLE);
+            holder.bnAccept.setEnabled(true);
+
+            holder.bnReject.setText("Reject");
+            holder.bnReject.setVisibility(View.VISIBLE);
+            holder.bnReject.setEnabled(true);
+
+            holder.bnRefresh.setVisibility(View.VISIBLE);
+            holder.bnRefresh.setEnabled(true);
         }
 
 
         db = new DataBaseHelper(getContext());
 
-        holder.bnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-                Boolean check = db.updateData(activityArray.time, "1", "1");
-                Log.v("Update SQL", check.toString());
-                holder.bnAccept.setText("Accepted");
-                holder.bnAccept.setEnabled(false);
-                holder.bnReject.setVisibility(View.GONE);
-                holder.bnRefresh.setVisibility(View.GONE);
-            }
+        holder.bnAccept.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
+            Boolean check = db.updateData(activityArray.time, "1", "1");
+            Log.v("Update SQL", check.toString());
+            holder.bnAccept.setText("Accepted");
+            holder.bnAccept.setEnabled(false);
+            holder.bnReject.setVisibility(View.GONE);
+            holder.bnRefresh.setVisibility(View.GONE);
+            notifyingdataChanged();
         });
-        holder.bnReject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-                Boolean check = db.updateData(activityArray.time, "1", "2");
-                Log.v("Update SQL", check.toString());
-                holder.bnAccept.setVisibility(View.GONE);
-                holder.bnReject.setEnabled(false);
-                holder.bnReject.setText("Rejected");
-                holder.bnRefresh.setVisibility(View.GONE);
-            }
+        holder.bnReject.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
+            Boolean check = db.updateData(activityArray.time, "1", "2");
+            Log.v("Update SQL", check.toString());
+            holder.bnAccept.setVisibility(View.GONE);
+            holder.bnReject.setEnabled(false);
+            holder.bnReject.setText("Rejected");
+            holder.bnRefresh.setVisibility(View.GONE);
+            notifyingdataChanged();
         });
 
         String code1 = activityArray.code1;
@@ -128,6 +142,34 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         return convertView;
     }
 
+    private void notifyingdataChanged() {
+        db = new DataBaseHelper(getContext());
+        Cursor cr = db.getAllData();
+        ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToLast();
+            do {
+                String phoneNumber = cr.getString(1);
+                String[] conversionNumber = phoneNumber.split(" ");
+                phoneNumber = "";
+                for (String i : conversionNumber) {
+                    phoneNumber += i;
+                }
+                SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+                String name = sharedPreferences.getString(phoneNumber, null);
+                if (name == null) {
+                    name = phoneNumber;
+                }
+                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
+
+            }
+            while (cr.moveToPrevious());
+        }
+        activity.clear();
+        activity.addAll(arrayOfActivity);
+        notifyDataSetChanged();
+    }
+
     private String formatDate(String dateStr) {
         try {
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -151,4 +193,3 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         private Button bnRefresh;
     }
 }
-

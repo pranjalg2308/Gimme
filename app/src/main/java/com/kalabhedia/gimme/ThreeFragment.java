@@ -8,10 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,7 +61,10 @@ public class ThreeFragment extends Fragment {
         ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity);
         ListView listView = view.findViewById(R.id.lvItems);
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Toast.makeText(getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+            adapter.notifyDataSetChanged();
+        });
 
     }
 
