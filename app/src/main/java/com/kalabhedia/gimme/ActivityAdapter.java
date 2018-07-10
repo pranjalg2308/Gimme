@@ -29,43 +29,49 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        ViewHolder holder;
         ActivityArray activityArray = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_activity, parent, false);
+            holder = new ViewHolder();
+            holder.im = convertView.findViewById(R.id.color_wheel);
+            holder.tvOwe = convertView.findViewById(R.id.owe_text_view);
+            holder.tvTime = convertView.findViewById(R.id.time_text_view);
+            holder.tvMoney = convertView.findViewById(R.id.money_text_view);
+            holder.tvReason = convertView.findViewById(R.id.reason_text_view);
+            holder.bnAccept = convertView.findViewById(R.id.bn_accept);
+            holder.bnReject = convertView.findViewById(R.id.bn_reject);
+            holder.bnRefresh = convertView.findViewById(R.id.bn_refresh);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        ImageView im = convertView.findViewById(R.id.color_wheel);
-        TextView tvOwe = convertView.findViewById(R.id.owe_text_view);
-        TextView tvTime = convertView.findViewById(R.id.time_text_view);
-        TextView tvMoney = convertView.findViewById(R.id.money_text_view);
-        TextView tvReason = convertView.findViewById(R.id.reason_text_view);
-        Button bnAccept = convertView.findViewById(R.id.bn_accept);
-        Button bnReject = convertView.findViewById(R.id.bn_reject);
-        Button bnRefresh = convertView.findViewById(R.id.bn_refresh);
+
 
         db = new DataBaseHelper(getContext());
 
-        bnAccept.setOnClickListener(new View.OnClickListener() {
+        holder.bnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
                 Boolean check = db.updateData(activityArray.time, "1", "1");
                 Log.v("Update SQL", check.toString());
-                bnAccept.setText("Accepted");
-                bnAccept.setEnabled(false);
-                bnReject.setVisibility(View.GONE);
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setText("Accepted");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
             }
         });
-        bnReject.setOnClickListener(new View.OnClickListener() {
+        holder.bnReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
                 Boolean check = db.updateData(activityArray.time, "1", "2");
                 Log.v("Update SQL", check.toString());
-                bnAccept.setVisibility(View.GONE);
-                bnReject.setEnabled(false);
-                bnReject.setText("Rejected");
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                holder.bnRefresh.setVisibility(View.GONE);
             }
         });
 
@@ -75,30 +81,30 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String checkCode = code1 + code2;
         switch (checkCode) {
             case "10":
-                bnAccept.setText("Pending.....");
-                bnAccept.setEnabled(false);
-                bnReject.setVisibility(View.GONE);
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setText("Pending.....");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
                 break;
             case "01":
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
                 break;
             case "11":
-                bnAccept.setText("Accepted");
-                bnAccept.setEnabled(false);
-                bnReject.setVisibility(View.GONE);
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setText("Accepted");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
                 break;
             case "12":
-                bnAccept.setVisibility(View.GONE);
-                bnReject.setEnabled(false);
-                bnReject.setText("Rejected");
-                bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                holder.bnRefresh.setVisibility(View.GONE);
             default:
                 break;
         }
 
-        tvTime.setText(formatDate(activityArray.time));
+        holder.tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
         String statement = activityArray.name;
         String reasonStatement = activityArray.reason;
@@ -109,15 +115,15 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         int moneyInt = Integer.parseInt(moneyString);
         if (moneyInt < 0) {
             moneyInt = (-1) * moneyInt;
-            im.setImageResource(R.drawable.circle_minus);
+            holder.im.setImageResource(R.drawable.circle_minus);
             statement = "to be given to " + statement;
         } else {
-            im.setImageResource(R.drawable.circle_plus);
+            holder.im.setImageResource(R.drawable.circle_plus);
             statement = "to be taken from " + statement;
         }
-        tvMoney.setText("₹" + moneyInt);
-        tvOwe.setText(statement + "");
-        tvReason.setText(reasonStatement);
+        holder.tvMoney.setText("₹" + moneyInt);
+        holder.tvOwe.setText(statement + "");
+        holder.tvReason.setText(reasonStatement);
 
         return convertView;
     }
@@ -132,6 +138,17 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
         }
         return "";
+    }
+
+    static class ViewHolder {
+        private ImageView im;
+        private TextView tvOwe;
+        private TextView tvTime;
+        private TextView tvMoney;
+        private TextView tvReason;
+        private Button bnAccept;
+        private Button bnReject;
+        private Button bnRefresh;
     }
 }
 
