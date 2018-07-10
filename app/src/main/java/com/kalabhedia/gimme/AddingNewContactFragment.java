@@ -274,6 +274,53 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
 
     private void saveInLocalDatabase(String number, String reason, String amountEntered) {
         Boolean result = db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, YES, NULL);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+        db.insertData(number, reason, amountEntered, NULL, YES);
+
+
         if (result == true) {
             Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
         } else {
