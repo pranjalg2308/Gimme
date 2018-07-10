@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -22,7 +22,7 @@
 
             <ImageView
                 android:id="@+id/color_wheel"
-                android:layout_width="wrap_content"
+                android:layout_width="8dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom"
                 android:src="@drawable/circle_plus" />
@@ -31,18 +31,18 @@
                 android:id="@+id/money_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
                 android:layout_marginStart="8dp"
                 android:text="₹20"
                 android:textColor="#000000"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/owe_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
+                android:layout_marginStart="4dp"
                 android:text="to be given to Divyanshu"
+                android:textSize="18sp"
                 android:textColor="#141414" />
 
         </LinearLayout>
@@ -51,30 +51,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom" />
+
             <TextView
                 android:id="@+id/reason_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:layout_marginStart="12dp"
-                android:paddingHorizontal="16dp"
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"
                 android:text="for maggi"
                 android:textColor="#737373" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom" />
 
             <TextView
                 android:id="@+id/time_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="12dp"
+                android:layout_marginStart="8dp"
                 android:text="June7"
                 android:textColor="#737373"
-
                 android:textSize="16sp" />
 
 
@@ -82,6 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="left"
                 android:orientation="horizontal">
 
@@ -93,6 +102,8 @@
                     android:layout_marginHorizontal="8dp"
                     android:background="@drawable/activity_item_view_button_accept"
                     android:paddingHorizontal="16dp"
+                    android:elevation="5dp"
+                    android:translationZ="5dp"
                     android:text="Accept"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
@@ -102,6 +113,8 @@
                     style="@style/MyButtonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:elevation="5dp"
+                    android:translationZ="5dp"
                     android:layout_marginHorizontal="8dp"
                     android:background="@drawable/activity_item_view_button_reject"
                     android:paddingHorizontal="16dp"
@@ -112,6 +125,8 @@
                 <Button
                     android:id="@+id/bn_refresh"
                     android:layout_width="24dp"
+                    android:elevation="5dp"
+                    android:translationZ="5dp"
                     android:layout_height="24dp"
                     android:background="@drawable/ic_refresh" />
             </LinearLayout>
