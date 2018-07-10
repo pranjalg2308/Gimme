@@ -8,7 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -56,6 +59,7 @@ public class ThreeFragment extends Fragment {
         ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity);
         ListView listView = view.findViewById(R.id.lvItems);
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -66,4 +70,5 @@ public class ThreeFragment extends Fragment {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
+
 }
