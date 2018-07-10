@@ -42,10 +42,7 @@
         <activity android:name=".PhoneAuthActivity" />
         <activity android:name=".newUserActivity" />
 
-        <receiver
-            android:name=".MyReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
+        <receiver android:name=".NotificationBroadCastReceiver" />
     </application>
 
 </manifest>

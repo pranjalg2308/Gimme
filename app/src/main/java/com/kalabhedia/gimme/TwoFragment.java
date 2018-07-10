@@ -1,10 +1,12 @@
 package com.kalabhedia.gimme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,17 +22,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.TreeSet;
 
 
 public class TwoFragment extends Fragment {
     View view;
-
+    private FloatingActionButton fabAddFriend;
     public TwoFragment() {
 
     }
@@ -41,6 +40,22 @@ public class TwoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_two, container, false);
         ListView listOfUsers = view.findViewById(R.id.UserListView);
+
+        fabAddFriend = view.findViewById(R.id.fabAddFriend);
+        fabAddFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                String shareBody = "Check This Out";
+                String shareSub = "this is the link";
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
+                startActivity(Intent.createChooser(shareIntent, "Share Using"));
+            }
+        });
+
+
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         TreeSet<String> contactsContainingApp = new TreeSet<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();

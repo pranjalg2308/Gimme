@@ -77,6 +77,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
      * @param reason
      */
     public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
+        reason = reason.trim();
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("phone_number", phoneNumber);
         notificationData.put("Amount", amountEntered);
@@ -180,7 +181,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
  * click listener of save button
  */
         button.setOnClickListener(view1 -> {
-//            button.setEnabled(false);
+            button.setEnabled(false);
             hideKeyboard(getActivity());
             int selectedId = radioGroup.getCheckedRadioButtonId();
             radioButtonClaim = view.findViewById(selectedId);
@@ -240,7 +241,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                                         amount.setFocusable(false);
                                         contact.setFocusable(false);
-                                        ;
                                         ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
                                         getFragmentManager().beginTransaction()
                                                 .remove(AddingNewContactFragment.this).commit();
@@ -305,36 +305,40 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
         SharedPreferences sharedPref = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        HashMap<String, String> item;
-        while (!cursor.isAfterLast()) {
-            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            contactName.add(name);
-            String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            contactNumber.add(number);
-            item = new HashMap<>();
-            item.put("Name", name);
-            item.put("Number", number);
-            contactdetail.add(item);
-            if (!number.startsWith("+91")) {
-                number = "+91" + number;
-            }
-            String[] conversion = number.split(" ");
-            String[] conversion1 = number.split("-");
-            if (conversion1.length > 1) {
-                number = "";
-                for (String i : conversion1) {
-                    number += i;
+        if (sharedPref != null) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            HashMap<String, String> item;
+            while (!cursor.isAfterLast()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                contactName.add(name);
+                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                contactNumber.add(number);
+                item = new HashMap<>();
+                item.put("Name", name);
+                item.put("Number", number);
+                contactdetail.add(item);
+                if (!number.startsWith("+91")) {
+                    number = "+91" + number;
                 }
-            } else if (conversion.length > 1) {
-                number = "";
-                for (String i : conversion) {
-                    number += i;
+                String[] conversion = number.split(" ");
+                String[] conversion1 = number.split("-");
+                if (conversion1.length > 1) {
+                    number = "";
+                    for (String i : conversion1) {
+                        number += i;
+                    }
+                } else if (conversion.length > 1) {
+                    number = "";
+                    for (String i : conversion) {
+                        number += i;
+                    }
                 }
+                editor.putString(number, name);
+                editor.apply();
+                cursor.moveToNext();
             }
-            editor.putString(number, name);
-            editor.apply();
-            cursor.moveToNext();
+        } else {
+            Toast.makeText(getContext(), "Unable to load", Toast.LENGTH_SHORT).show();
         }
     }
 

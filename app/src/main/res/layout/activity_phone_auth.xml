@@ -56,8 +56,9 @@
                 android:layout_height="wrap_content"
                 app:ccp_countryAutoDetectionPref="LOCALE_SIM"
                 app:ccp_textSize="16sp"
+                app:ccp_clickable="false"
                 app:ccp_contentColor="@color/colorPrimaryDark"
-                app:ccp_countryPreference="IN,US"/>
+                app:ccp_countryPreference="IN" />
 
             <EditText
                 android:id="@+id/phoneEditText"
@@ -66,6 +67,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:textSize="16sp"
                 android:hint="Phone Number"
                 android:inputType="phone"
                 android:textColor="#31471a" />

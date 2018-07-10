@@ -20,7 +20,6 @@ import java.util.Date;
 
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
-    private static final int NOTIFICATION_ID = 6578;
     DataBaseHelper db;
 
     public MessageRecieverService() {
@@ -30,6 +29,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
         Log.w("onMessageReceived: ", remoteMessage.getData().get("title"));
         final String title = remoteMessage.getData().get("title");
         String messageReceived = remoteMessage.getData().get("body");
@@ -69,6 +69,11 @@ public class MessageRecieverService extends FirebaseMessagingService {
         showNotifications(title, message, phoneNumber);
     }
 
+    /**
+     * @param title
+     * @param msg
+     * @param phoneNumber
+     */
     private void showNotifications(String title, String msg, String phoneNumber) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
@@ -79,8 +84,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
-        Intent intent = new Intent(this, BroadCastReceiver.class);
-        PendingIntent accept = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
+        intent.putExtra("Button clicked", "accept");
+        intent.putExtra("notificationID", uniqueId);
+        PendingIntent accept = PendingIntent.getBroadcast(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("Button clicked", "declined");
+        PendingIntent decline = PendingIntent.getBroadcast(this, 3, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         String CHANNEL_ID = "channel_money_request";// The id of the channel.
         CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
@@ -97,7 +106,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.accept, "Decline", pendingIntent)
+                    .addAction(R.drawable.accept, "Decline", decline)
                     .addAction(R.drawable.decline, "Accept", accept)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
@@ -111,8 +120,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
-                    .addAction(R.drawable.accept, "Decline", pendingIntent)
-                    .addAction(R.drawable.decline, "Accept", accept)
+                    .addAction(R.drawable.decline, "Decline", decline)
+                    .addAction(R.drawable.accept, "Accept", accept)
                     .build();
             mNotificationManager.notify(uniqueId, notification);
 
