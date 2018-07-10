@@ -43,19 +43,19 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String code2 = activityArray.code2;
 
         String checkCode = code1 + code2;
-        switch (checkCode) {
-            case "10":
-                bnAccept.setText("Pending.....");
-                bnAccept.setEnabled(false);
-                bnReject.setVisibility(View.GONE);
-                bnRefresh.setVisibility(View.GONE);
-                break;
-            case "01":
-                bnRefresh.setVisibility(View.GONE);
-                break;
-            default:
-                break;
-        }
+//        switch (checkCode) {
+//            case "10":
+//                bnAccept.setText("Pending.....");
+//                bnAccept.setEnabled(false);
+//                bnReject.setVisibility(View.GONE);
+//                bnRefresh.setVisibility(View.GONE);
+//                break;
+//            case "01":
+//                bnRefresh.setVisibility(View.GONE);
+//                break;
+//            default:
+//                break;
+//        }
 
         tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
