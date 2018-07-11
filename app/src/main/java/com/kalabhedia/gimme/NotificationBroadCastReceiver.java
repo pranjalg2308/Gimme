@@ -18,5 +18,6 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         Toast.makeText(context, "Notification " + s + " Button clicked", Toast.LENGTH_SHORT).show();
         NotificationManagerCompat.from(context).cancel(notificationId);
         LocalBroadcastManager.getInstance(context).registerReceiver(new NotificationBroadCastReceiver(), new IntentFilter("your_action"));
+
     }
 }

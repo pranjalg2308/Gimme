@@ -69,7 +69,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
         Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
-
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent(this, NotificationBroadCastReceiver.class);

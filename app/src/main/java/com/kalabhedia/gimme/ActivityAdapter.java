@@ -1,10 +1,14 @@
 package com.kalabhedia.gimme;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +23,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.kalabhedia.gimme.R.color.colorPrimary;
+
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
     DataBaseHelper db;
     ArrayList<ActivityArray> activity;
     Context context;
+    MainActivity mainActivity;
 
-    public ActivityAdapter(Context context, ArrayList<ActivityArray> activity) {
+    public ActivityAdapter(Context context, ArrayList<ActivityArray> activity, MainActivity mainActivity) {
         super(context, 0, activity);
         this.activity = activity;
         this.context = context;
+        this.mainActivity = mainActivity;
     }
 
 
@@ -55,6 +63,8 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept.setText("Accept");
             holder.bnAccept.setVisibility(View.VISIBLE);
             holder.bnAccept.setEnabled(true);
+            holder.bnAccept.setTextColor(Color.parseColor("#7cb342"));
+            holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_accept));
 
             holder.bnReject.setText("Reject");
             holder.bnReject.setVisibility(View.VISIBLE);
@@ -75,6 +85,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept.setEnabled(false);
             holder.bnReject.setVisibility(View.GONE);
             holder.bnRefresh.setVisibility(View.GONE);
+
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {
@@ -87,6 +98,12 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh.setVisibility(View.GONE);
             notifyingdataChanged();
         });
+        holder.bnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         String code1 = activityArray.code1;
         String code2 = activityArray.code2;
@@ -94,10 +111,12 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String checkCode = code1 + code2;
         switch (checkCode) {
             case "10":
-                holder.bnAccept.setText("Pending.....");
+                holder.bnAccept.setText("Pending");
                 holder.bnAccept.setEnabled(false);
                 holder.bnReject.setVisibility(View.GONE);
                 holder.bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
+                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
                 break;
             case "01":
                 holder.bnRefresh.setVisibility(View.GONE);
@@ -144,6 +163,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
     private void notifyingdataChanged() {
         db = new DataBaseHelper(getContext());
         Cursor cr = db.getAllData();
+        int count = 0;
         ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToLast();
@@ -159,11 +179,17 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 if (name == null) {
                     name = phoneNumber;
                 }
+                if ((cr.getString(4) + cr.getString(5)).equals("01"))
+                    count++;
                 arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
-
             }
             while (cr.moveToPrevious());
         }
+        if (!(count == 0))
+            mainActivity.tabLayout.getTabAt(1).setText("Activity(" + count + ")");
+        else
+            mainActivity.tabLayout.getTabAt(1).setText("Activity");
+
         activity.clear();
         activity.addAll(arrayOfActivity);
         notifyDataSetChanged();
@@ -187,4 +213,5 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         private Button bnReject;
         private Button bnRefresh;
     }
+
 }

@@ -91,8 +91,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                 if (btnType == 0) {
 
-                    phonenumber = ccp.getFormattedFullNumber();
-                    if (ccp.isValidFullNumber()) {
+                    phonenumber = ccp.getFullNumberWithPlus();
+                    if (phonenumber.length() == 13) {
                         mPhoneBar.setVisibility(View.VISIBLE);
                         mPhoneText.setEnabled(false);
                         mSendButton.setEnabled(false);
@@ -129,6 +129,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
                 signInWithPhoneAuthCredential(phoneAuthCredential);
+                mCodeText.setText("123456");
 
             }
 

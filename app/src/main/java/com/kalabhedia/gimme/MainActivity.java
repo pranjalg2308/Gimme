@@ -163,7 +163,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
+
     }
+
 
     public void clearApplicationData() {
         File cacheDirectory = getCacheDir();

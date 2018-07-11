@@ -8,11 +8,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 public class ThreeFragment extends Fragment {
     View view;
     DataBaseHelper db;
+    int count = 0;
     private BroadcastReceiver mMyBroadcastReceiver;
 
 
@@ -46,6 +49,11 @@ public class ThreeFragment extends Fragment {
             e.printStackTrace();
         }
         updateUi();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (!(count == 0))
+            mainActivity.tabLayout.getTabAt(1).setText("Activity(" + count + ")");
+        else
+            mainActivity.tabLayout.getTabAt(1).setText("Activity");
     }
 
     @Override
@@ -65,27 +73,23 @@ public class ThreeFragment extends Fragment {
     private void updateUi() {
         db = new DataBaseHelper(getContext());
         Cursor cr = db.getAllData();
-
+        count = 0;
         ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToLast();
             do {
                 String name = ((MainActivity) getActivity()).getName(cr.getString(1));
+                String check = (cr.getString(4) + cr.getString(5));
+                if (check.equals("01"))
+                    count++;
                 arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
-
             }
             while (cr.moveToPrevious());
 
         }
-
-
-        ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity);
+        ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity, (MainActivity) getActivity());
         ListView listView = view.findViewById(R.id.lvItems);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Toast.makeText(getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
-            adapter.notifyDataSetChanged();
-        });
 
     }
 
@@ -96,5 +100,6 @@ public class ThreeFragment extends Fragment {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
+
 
 }

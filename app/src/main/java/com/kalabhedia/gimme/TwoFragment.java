@@ -92,6 +92,7 @@ public class TwoFragment extends Fragment {
                             e.printStackTrace();
                         }
                         if (contactsContainingApp.size() != 0) {
+                            sharebn.setVisibility(View.GONE);
                             ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, contactsContainingApp.toArray());
                             listOfUsers.setAdapter(arrayAdapter);
                         }
