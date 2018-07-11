@@ -2,7 +2,10 @@ package com.kalabhedia.gimme;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -64,6 +67,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     private String NO = "2";
     private String YES = "1";
     private String NULL = "0";
+    long time;
+    String timeStamp = "";
     DataBaseHelper db;
 
 
@@ -182,6 +187,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
  */
         button.setOnClickListener(view1 -> {
             button.setEnabled(false);
+            time = System.currentTimeMillis();
+            timeStamp = timeStamp + time;
             hideKeyboard(getActivity());
             int selectedId = radioGroup.getCheckedRadioButtonId();
             radioButtonClaim = view.findViewById(selectedId);
@@ -221,7 +228,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         }
                                     }
                                     if (receiverKey == null) {
-                                        Toast.makeText(getContext(), "User does not have this app", Toast.LENGTH_SHORT).show();
+                                        open(view);
+                                        button.setEnabled(true);
                                         //todo receiver not found in database
                                     } else {
                                         button.setEnabled(false);
@@ -234,7 +242,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         radioButtonClaim = view.findViewById(selectedId);
                                         String claimString = radioButtonClaim.getText().toString();
                                         Log.v("Getinout", claimString);
-                                        saveInLocalDatabase(number, reason, amountEntered);
+                                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
 
                                         OneFragment.fab.setVisibility(View.VISIBLE);
@@ -263,6 +271,36 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         return view;
     }
 
+    public void open(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setTitle("Share Gimme");
+        alertDialogBuilder.setMessage("User does not have this app.\n Do you want to share this app?");
+        alertDialogBuilder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        //TODO
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        String shareBody = "Check This Out";
+                        String shareSub = "this is the link";
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
+                        startActivity(Intent.createChooser(shareIntent, "Share Using"));
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -274,8 +312,8 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void saveInLocalDatabase(String number, String reason, String amountEntered) {
-        Boolean result = db.insertData(number, reason, amountEntered, YES, NULL);
+    private void saveInLocalDatabase(String time, String number, String reason, String amountEntered) {
+        Boolean result = db.insertData(time, number, reason, amountEntered, YES, NULL);
 
         if (result == true) {
             Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();

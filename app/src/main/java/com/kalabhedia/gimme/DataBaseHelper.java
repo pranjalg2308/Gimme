@@ -27,7 +27,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COL_2 + " TEXT," + COL_3 + " INTEGER," + COL_4 + " TEXT," + COL_5 + " INTEGER," + COL_6 + " INTEGER)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " TEXT, " + COL_2 + " TEXT," + COL_3 + " INTEGER," + COL_4 + " TEXT," + COL_5 + " INTEGER," + COL_6 + " INTEGER)");
     }
 
     @Override
@@ -35,10 +35,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
-    public boolean insertData(String name, String reason, String money, String claim_user_1, String claim_user_2) {
+    public boolean insertData(String time, String name, String reason, String money, String claim_user_1, String claim_user_2) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1, time);
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, money);
         contentValues.put(COL_4, reason);
