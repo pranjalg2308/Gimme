@@ -58,7 +58,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh = convertView.findViewById(R.id.bn_refresh);
             convertView.setTag(holder);
         } else {
-            db = new DataBaseHelper(getContext());
             holder = (ViewHolder) convertView.getTag();
             holder.bnAccept.setText("Accept");
             holder.bnAccept.setVisibility(View.VISIBLE);
@@ -148,9 +147,13 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         if (moneyInt < 0) {
             moneyInt = (-1) * moneyInt;
             holder.im.setImageResource(R.drawable.circle_minus);
+//            holder.tvOwe.setTextColor(Color.parseColor("#F57F17"));
+            holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
             statement = "to be given to " + statement;
         } else {
             holder.im.setImageResource(R.drawable.circle_plus);
+//            holder.tvOwe.setTextColor(Color.parseColor("#7cb342"));
+            holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
             statement = "to be taken from " + statement;
         }
         holder.tvMoney.setText("₹" + moneyInt);

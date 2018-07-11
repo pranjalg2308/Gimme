@@ -20,6 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_4 = "CLAIM_REASON";
     public static final String COL_5 = "CODE_CLAIM_USER_1";
     public static final String COL_6 = "CODE_CLAIM_USER_2";
+    public static final String COL_7 = "CLAIM_SENT";
 
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -27,7 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " TEXT, " + COL_2 + " TEXT," + COL_3 + " INTEGER," + COL_4 + " TEXT," + COL_5 + " INTEGER," + COL_6 + " INTEGER)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " TEXT, " + COL_2 + " TEXT," + COL_3 + " INTEGER," + COL_4 + " TEXT," + COL_5 + " INTEGER," + COL_6 + " INTEGER," + COL_7 + " INTEGER)");
     }
 
     @Override
@@ -45,6 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_4, reason);
         contentValues.put(COL_5, claim_user_1);
         contentValues.put(COL_6, claim_user_2);
+        contentValues.put(COL_7, 0);
         long result = db.insert(TABLE_NAME, null, contentValues);
         db.close();
 
@@ -56,7 +58,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cr=db.rawQuery("Select * from "+TABLE_NAME,null);
+        Cursor cr = db.rawQuery("Select * from " + TABLE_NAME, null);
         return cr;
     }
 
@@ -70,6 +72,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         else
             return false;
+    }
+
+    public boolean updateOnSent(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_6, 1);
+        int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public int getVerifiedSum(String name) {
+        int sum = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select * from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
+        Cursor cr = db.rawQuery(query, null);
+        cr.moveToFirst();
+        while (cr.isAfterLast() == false) {
+            if ((cr.getString(4) + cr.getString(5)).equals("11"))
+                sum = sum + cr.getInt(2);
+            cr.moveToNext();
+        }
+        return sum;
     }
 
 }

@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
 
 
 public class OneFragment extends Fragment {
@@ -20,6 +20,8 @@ public class OneFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_one, container, false);
+
+
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener((View v) ->
         {
