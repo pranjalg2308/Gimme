@@ -257,8 +257,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         amount.setFocusable(false);
                                         contact.setFocusable(false);
                                         ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                                        getFragmentManager().beginTransaction()
-                                                .remove(AddingNewContactFragment.this).commit();
+                                        getFragmentManager().beginTransaction().remove(AddingNewContactFragment.this).commit();
                                     }
                                 }
 

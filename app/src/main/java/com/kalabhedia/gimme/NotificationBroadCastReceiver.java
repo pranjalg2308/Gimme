@@ -22,7 +22,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
             }
         }
         if (s.equals("declined")) {
-            db.updateData(timeStamp, "2", "1");
+            db.updateData(timeStamp, "1", "2");
             if (!MessageRecieverService.isAppSentToBackground(context)) {
                 Intent gcm_rec = new Intent("your_action");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
