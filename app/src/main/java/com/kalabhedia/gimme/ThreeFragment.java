@@ -1,10 +1,15 @@
 package com.kalabhedia.gimme;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,7 @@ import java.util.ArrayList;
 public class ThreeFragment extends Fragment {
     View view;
     DataBaseHelper db;
+    private BroadcastReceiver mMyBroadcastReceiver;
 
 
     public ThreeFragment() {
@@ -26,7 +32,26 @@ public class ThreeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mMyBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getFragmentManager().beginTransaction().detach(ThreeFragment.this).attach(ThreeFragment.this).commit();
+            }
+        };
+        try {
+
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMyBroadcastReceiver, new IntentFilter("your_action"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         updateUi();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMyBroadcastReceiver);
     }
 
     @Nullable

@@ -3,7 +3,9 @@ package com.kalabhedia.gimme;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 public class NotificationBroadCastReceiver extends BroadcastReceiver {
@@ -15,5 +17,6 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         int notificationId = intent.getIntExtra("notificationID", 0);
         Toast.makeText(context, "Notification " + s + " Button clicked", Toast.LENGTH_SHORT).show();
         NotificationManagerCompat.from(context).cancel(notificationId);
+        LocalBroadcastManager.getInstance(context).registerReceiver(new NotificationBroadCastReceiver(), new IntentFilter("your_action"));
     }
 }
