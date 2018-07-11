@@ -1,5 +1,6 @@
 package com.kalabhedia.gimme;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,9 +8,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -26,61 +30,45 @@ public class MessageRecieverService extends FirebaseMessagingService {
         super();
     }
 
-    @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
+    public static boolean isAppSentToBackground(final Context context) {
 
-        Log.w("onMessageReceived: ", remoteMessage.getData().get("title"));
-        final String title = remoteMessage.getData().get("title");
-        String messageReceived = remoteMessage.getData().get("body");
-        int location = messageReceived.indexOf("for");
-        String reason = "";
-        if (location != -1) {
-            reason = messageReceived.substring(location);
-            messageReceived =messageReceived.substring(0, location);
-        }
-        String phoneNumber = "";
-        String message = "";
-        String[] checkingPhoneNumber = messageReceived.split(" ");
-        int i;
-        for (i = checkingPhoneNumber.length - 1; i > 0; i--) {
-            if (checkingPhoneNumber[i].charAt(0) == '+') {
-                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
-                break;
-            } else {
-                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+        try {
+            ActivityManager am = (ActivityManager) context
+                    .getSystemService(Context.ACTIVITY_SERVICE);
+            // The first in the list of RunningTasks is always the foreground
+            // task.
+            ActivityManager.RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
+            String foregroundTaskPackageName = foregroundTaskInfo.topActivity
+                    .getPackageName();// get the top fore ground activity
+            PackageManager pm = context.getPackageManager();
+            PackageInfo foregroundAppPackageInfo = pm.getPackageInfo(
+                    foregroundTaskPackageName, 0);
+
+            String foregroundTaskAppName = foregroundAppPackageInfo.applicationInfo
+                    .loadLabel(pm).toString();
+
+            if (!foregroundTaskAppName.equals("Gimme")) {
+                return true;
             }
+        } catch (Exception e) {
+            Log.e("isAppSentToBackground", "" + e);
         }
-
-
-        int j;
-        for (j = 0; j < i; j++) {
-            message += checkingPhoneNumber[j] + " ";
-        }
-
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString(phoneNumber, null);
-        if (name == null) {
-            message += " " + phoneNumber;
-        } else {
-            message += " " + name;
-        }
-        message=message+" "+reason;
-        showNotifications(title, message, phoneNumber);
+        return false;
     }
 
     /**
      * @param title
      * @param msg
      * @param phoneNumber
+     * @param timeStamp
      */
-    private void showNotifications(String title, String msg, String phoneNumber) {
+    private void showNotifications(String title, String msg, String phoneNumber, String timeStamp) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
-        Boolean result = db.insertData(phoneNumber, "", moneyString, "0", "1");
+        Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -126,6 +114,53 @@ public class MessageRecieverService extends FirebaseMessagingService {
             mNotificationManager.notify(uniqueId, notification);
 
         }
+    }
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        Log.w("onMessageReceived: ", remoteMessage.getData().get("title"));
+        if (!isAppSentToBackground(getApplicationContext())) {
+            Intent gcm_rec = new Intent("your_action");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(gcm_rec);
+        }
+        final String title = remoteMessage.getData().get("title");
+        String messageReceived = remoteMessage.getData().get("body");
+        int location = messageReceived.indexOf("for");
+        String reason = "";
+        if (location != -1) {
+            reason = messageReceived.substring(location);
+            messageReceived = messageReceived.substring(0, location);
+        }
+        String phoneNumber = "";
+        String message = "";
+        String[] checkingPhoneNumber = messageReceived.split(" ");
+        String timeStamp = checkingPhoneNumber[checkingPhoneNumber.length - 1];
+        int i;
+        for (i = checkingPhoneNumber.length - 2; i > 0; i--) {
+            if (checkingPhoneNumber[i].charAt(0) == '+') {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+                break;
+            } else {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+            }
+        }
+
+
+        int j;
+        for (j = 0; j < i; j++) {
+            message += checkingPhoneNumber[j] + " ";
+        }
+
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString(phoneNumber, null);
+        if (name == null) {
+            message += " " + phoneNumber;
+        } else {
+            message += " " + name;
+        }
+        message = message + " " + reason;
+        showNotifications(title, message, phoneNumber, timeStamp);
     }
 }
 

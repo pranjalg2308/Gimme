@@ -75,15 +75,17 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
 
     /**
+     * @param timeStamp
      * @param senderUserID
      * @param receiverUserID
      * @param phoneNumber
      * @param amountEntered
      * @param reason
      */
-    public static void sendNotificationToUser(String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
+    public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
         reason = reason.trim();
         HashMap<String, String> notificationData = new HashMap<>();
+        notificationData.put("TimeStamp", timeStamp);
         notificationData.put("phone_number", phoneNumber);
         notificationData.put("Amount", amountEntered);
         notificationData.put("From", senderUserID);
@@ -235,7 +237,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                                         button.setEnabled(false);
 
                                         String reason = discription.getText().toString() + "";
-                                        sendNotificationToUser(senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
+                                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
                                                 reason);
 
 
