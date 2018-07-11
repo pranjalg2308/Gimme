@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -41,6 +43,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -189,88 +193,104 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
  */
         button.setOnClickListener(view1 -> {
             button.setEnabled(false);
-            time = System.currentTimeMillis();
-            timeStamp = timeStamp + time;
-            hideKeyboard(getActivity());
-            int selectedId = radioGroup.getCheckedRadioButtonId();
-            radioButtonClaim = view.findViewById(selectedId);
-            String claimString = radioButtonClaim.getText().toString();
+            Boolean networkStatus = isOnline();
+            if (!networkStatus) {
+                button.setEnabled(true);
+            } else {
+                time = System.currentTimeMillis();
+                timeStamp = timeStamp + time;
+                hideKeyboard(getActivity());
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                radioButtonClaim = view.findViewById(selectedId);
+                String claimString = radioButtonClaim.getText().toString();
 
 
-            amountEntered = amount.getText().toString();
-            if (claimString.equals("TAKEN")) {
-                amountEntered = "-" + amountEntered;
-            }
-            if (number != null) {
-                if (!amountEntered.isEmpty()) {
-                    String[] conversionNumber = number.split(" ");
-                    number = "";
-                    for (String i : conversionNumber) {
-                        number += i;
-                    }
-                    if (!number.startsWith("+91")) {
-                        number = "+91" + number;
-                    }
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    database.getReference("Users").addListenerForSingleValueEvent(
-                            new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
-                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
-                                        String converted = "";
-                                        for (String i : conversion) {
-                                            converted += i;
+                amountEntered = amount.getText().toString();
+                if (claimString.equals("TAKEN")) {
+                    amountEntered = "-" + amountEntered;
+                }
+                if (number != null) {
+                    if (!amountEntered.isEmpty()) {
+                        String[] conversionNumber = number.split(" ");
+                        number = "";
+                        for (String i : conversionNumber) {
+                            number += i;
+                        }
+                        if (!number.startsWith("+91")) {
+                            number = "+91" + number;
+                        }
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        database.getReference("Users").addListenerForSingleValueEvent(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                            Log.w("Device numbers", data.child("device_number").getValue().toString());
+                                            String[] conversion = data.child("device_number").getValue().toString().split(" ");
+                                            String converted = "";
+                                            for (String i : conversion) {
+                                                converted += i;
+                                            }
+                                            if (converted.equals(number)) {
+                                                Log.w("result", "number present");
+                                                receiverKey = data.getKey();
+                                                Log.w("receiverKey", receiverKey);
+                                            }
                                         }
-                                        if (converted.equals(number)) {
-                                            Log.w("result", "number present");
-                                            receiverKey = data.getKey();
-                                            Log.w("receiverKey", receiverKey);
-                                        }
-                                    }
-                                    if (receiverKey == null) {
-                                        open(view);
-                                        button.setEnabled(true);
-                                        //todo receiver not found in database
-                                    } else {
-                                        button.setEnabled(false);
+                                        if (receiverKey == null) {
+                                            open(view);
+                                            button.setEnabled(true);
+                                            //todo receiver not found in database
+                                        } else {
+                                            button.setEnabled(false);
 
                                         String reason = discription.getText().toString() + "";
                                         sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
                                                 reason);
 
 
-                                        radioButtonClaim = view.findViewById(selectedId);
-                                        String claimString = radioButtonClaim.getText().toString();
-                                        Log.v("Getinout", claimString);
-                                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
+                                            radioButtonClaim = view.findViewById(selectedId);
+                                            String claimString = radioButtonClaim.getText().toString();
+                                            Log.v("Getinout", claimString);
+                                            saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
 
-                                        OneFragment.fab.setVisibility(View.VISIBLE);
-                                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-                                        amount.setFocusable(false);
-                                        contact.setFocusable(false);
-                                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                                        getFragmentManager().beginTransaction()
-                                                .remove(AddingNewContactFragment.this).commit();
+                                            OneFragment.fab.setVisibility(View.VISIBLE);
+                                            ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                                            amount.setFocusable(false);
+                                            contact.setFocusable(false);
+                                            ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                                            getFragmentManager().beginTransaction()
+                                                    .remove(AddingNewContactFragment.this).commit();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                                }
-                            });
-                    ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
+                                    }
+                                });
+                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                    } else {
+                        Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Contact Field can't be empty", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(getContext(), "Contact Field can't be empty", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+        if (netInfo == null || !netInfo.isConnected()) {
+            Toast.makeText(context, "No Internet connection!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     public void open(View view) {
