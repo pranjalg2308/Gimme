@@ -1,18 +1,20 @@
 package com.kalabhedia.gimme;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,7 +32,11 @@ import java.util.TreeSet;
 
 public class TwoFragment extends Fragment {
     View view;
-    private FloatingActionButton fabAddFriend;
+    private int READ_CONTACT_PERMISSION = 1;
+    private int WRITE_EXTERNAL_STORAGE_PERMISSION = 2;
+    private int READ_EXTERNAL_STORAGE_PERMISSION = 3;
+    private Button sharebn;
+
     public TwoFragment() {
 
     }
@@ -40,11 +46,11 @@ public class TwoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_two, container, false);
         ListView listOfUsers = view.findViewById(R.id.UserListView);
-
-        fabAddFriend = view.findViewById(R.id.fabAddFriend);
-        fabAddFriend.setOnClickListener(new View.OnClickListener() {
+        sharebn = view.findViewById(R.id.exploreShareButton);
+        sharebn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 String shareBody = "Check This Out";
@@ -54,8 +60,11 @@ public class TwoFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share Using"));
             }
         });
-
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION);
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
+        }
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         TreeSet<String> contactsContainingApp = new TreeSet<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -107,6 +116,8 @@ public class TwoFragment extends Fragment {
         if (cachedList.size() != 0) {
             ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, cachedList.toArray());
             listOfUsers.setAdapter(arrayAdapter);
+        } else {
+            sharebn.setVisibility(View.VISIBLE);
         }
         return view;
     }

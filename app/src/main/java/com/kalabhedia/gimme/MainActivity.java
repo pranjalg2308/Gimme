@@ -1,5 +1,6 @@
 package com.kalabhedia.gimme;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public ActionBar actionbar;
     private DrawerLayout mDrawerLayout;
     private int READ_CONTACT_PERMISSION = 1;
+    private int WRITE_EXTERNAL_STORAGE_PERMISSION = 2;
+    private int READ_EXTERNAL_STORAGE_PERMISSION = 3;
+
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     public TabLayout tabLayout;
     public ViewPager viewPager;
@@ -103,9 +107,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else if (currentUser.getDisplayName() != null && currentUser != null) {
             NavHeaderUserName.setText(currentUser.getDisplayName().toString());
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, READ_CONTACT_PERMISSION);
-
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION);
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
+        }
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
