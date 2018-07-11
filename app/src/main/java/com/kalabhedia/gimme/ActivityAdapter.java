@@ -171,15 +171,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
     }
 
     private String formatDate(String dateStr) {
-        try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = fmt.parse(dateStr);
-            SimpleDateFormat fmtOut = new SimpleDateFormat("MMM d");
-            return fmtOut.format(date);
-        } catch (ParseException e) {
-
-        }
-        return "";
+        long yourmilliseconds = Long.parseLong(dateStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        Date resultdate = new Date(yourmilliseconds);
+        return sdf.format(resultdate);
     }
 
     static class ViewHolder {
