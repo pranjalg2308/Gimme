@@ -25,6 +25,11 @@ import java.util.Date;
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
     DataBaseHelper db;
+    private static String id = "";
+
+    public static String getId() {
+        return id;
+    }
 
     public MessageRecieverService() {
         super();
@@ -65,18 +70,24 @@ public class MessageRecieverService extends FirebaseMessagingService {
     private void showNotifications(String title, String msg, String phoneNumber, String timeStamp) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        id += uniqueId + " ";
         String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
         Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
+
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
         intent.putExtra("Button clicked", "accept");
         intent.putExtra("notificationID", uniqueId);
-        PendingIntent accept = PendingIntent.getBroadcast(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("TimeStamp", timeStamp);
+        PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         intent.putExtra("Button clicked", "declined");
-        PendingIntent decline = PendingIntent.getBroadcast(this, 3, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 
         String CHANNEL_ID = "channel_money_request";// The id of the channel.
         CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
@@ -93,9 +104,10 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle(title)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.accept, "Decline", decline)
                     .addAction(R.drawable.decline, "Accept", accept)
+                    .addAction(R.drawable.accept, "Decline", decline)
                     .setSmallIcon(R.drawable.notif_icon)
+                    .setGroup("Gimme")
                     .setAutoCancel(true)
                     .build();
             mNotificationManager.notify(uniqueId, notification1);
@@ -107,8 +119,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.notif_icon)
                     .setAutoCancel(true)
-                    .addAction(R.drawable.decline, "Decline", decline)
                     .addAction(R.drawable.accept, "Accept", accept)
+                    .addAction(R.drawable.decline, "Decline", decline)
+                    .setGroup("Gimme")
                     .build();
             mNotificationManager.notify(uniqueId, notification);
 
