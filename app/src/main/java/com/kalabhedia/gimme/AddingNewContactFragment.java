@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -43,8 +41,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -88,6 +84,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
      */
     public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
         reason = reason.trim();
+        DataBaseHelper db = new DataBaseHelper(context);
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("TimeStamp", timeStamp);
         notificationData.put("phone_number", phoneNumber);
@@ -97,6 +94,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         notificationData.put("Type", "request");
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
                 Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
+            db.updateOnSent(timeStamp);
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
             Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
 
@@ -127,6 +125,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         db = new DataBaseHelper(getContext());
+        receiverKey = null;
         db.getWritableDatabase();
         NotificationReferernce = FirebaseDatabase.getInstance().getReference().child("Notifications");
         ((MainActivity) getActivity()).actionbar.setTitle("Add Bill");
@@ -216,62 +215,50 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                     if (!number.startsWith("+91")) {
                         number = "+91" + number;
                     }
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    database.getReference("Users").addListenerForSingleValueEvent(
-                            new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
-                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
-                                        String converted = "";
-                                        for (String i : conversion) {
-                                            converted += i;
-                                        }
-                                        if (converted.equals(number)) {
-                                            Log.w("result", "number present");
-                                            receiverKey = data.getKey();
-                                            Log.w("receiverKey", receiverKey);
-                                        }
-                                    }
-                                    if (receiverKey == null) {
-                                        open(view);
-                                        button.setEnabled(true);
-                                        //todo receiver not found in database
-                                    } else {
-                                        button.setEnabled(false);
+                    OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(getContext());
+                    Cursor cursor = onlineUserDataBase.getAllData();
+                    if (cursor != null && cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            String numberTemp = cursor.getString(0);
+                            if (numberTemp.equals(number)) {
+                                receiverKey = cursor.getString(1);
+                            }
+                        }
+                    }
+                    if (receiverKey == null) {
+                        open(view);
+                        button.setEnabled(true);
+                    } else {
+                        amount.setFocusable(false);
+                        contact.setFocusable(false);
+                        button.setEnabled(false);
 
-                                        String reason = discription.getText().toString() + "";
-                                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
-                                                reason);
+                        String reason = discription.getText().toString() + "";
+                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
+                                reason);
 
 
-                                        radioButtonClaim = view.findViewById(selectedId);
-                                        String claimString = radioButtonClaim.getText().toString();
-                                        Log.v("Getinout", claimString);
-                                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
+                        radioButtonClaim = view.findViewById(selectedId);
+                        claimString = radioButtonClaim.getText().toString();
+                        Log.v("Getinout", claimString);
+                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
 
-                                        OneFragment.fab.setVisibility(View.VISIBLE);
-                                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-                                        amount.setFocusable(false);
-                                        contact.setFocusable(false);
-                                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                                        getFragmentManager().beginTransaction().remove(AddingNewContactFragment.this).commit();
-                                    }
-                                }
+                        OneFragment.fab.setVisibility(View.VISIBLE);
+                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                                }
-                            });
+                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                        getFragmentManager().beginTransaction()
+                                .remove(AddingNewContactFragment.this).commit();
+                    }
                     ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                 } else {
+                    button.setEnabled(true);
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getContext(), "Contact Field can't be empty", Toast.LENGTH_SHORT).show();
+                button.setEnabled(true);
             }
         });
         return view;

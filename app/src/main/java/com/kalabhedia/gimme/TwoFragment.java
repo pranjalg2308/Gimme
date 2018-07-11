@@ -4,29 +4,19 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.TreeSet;
 
 
@@ -65,54 +55,21 @@ public class TwoFragment extends Fragment {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION);
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
         }
+//        if (contactsContainingApp.size() != 0) {
+//                            sharebn.setVisibility(View.GONE);
+//                            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, contactsContainingApp.toArray());
+//                            listOfUsers.setAdapter(arrayAdapter);
+//                        }
+        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(getContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        TreeSet<String> contactsContainingApp = new TreeSet<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference("Users").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            Log.w("Device numbers", data.child("device_number").getValue().toString());
-                            String[] conversion = data.child("device_number").getValue().toString().split(" ");
-                            String converted = "";
-                            for (String i : conversion) {
-                                converted += i;
-                            }
-                            if (sharedPreferences.getString(converted, null) != null) {
-                                contactsContainingApp.add(sharedPreferences.getString(converted, null));
-                            }
-                        }
-                        try {
-                            FileOutputStream fileOutputStream = getContext().openFileOutput("Saved Contacts", Context.MODE_PRIVATE);
-                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                            objectOutputStream.writeObject(contactsContainingApp);
-                            objectOutputStream.close();
-                        } catch (java.io.IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (contactsContainingApp.size() != 0) {
-                            sharebn.setVisibility(View.GONE);
-                            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, contactsContainingApp.toArray());
-                            listOfUsers.setAdapter(arrayAdapter);
-                        }
-                    }
+        TreeSet<String> cachedList = new TreeSet<>();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                        Toast.makeText(getContext(), "Unable to fetch users", Toast.LENGTH_SHORT).show();
-                    }
-                });
-        TreeSet<String> cachedList=new TreeSet<>();
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = getContext().openFileInput("Saved Contacts");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            cachedList=(TreeSet<String>) objectInputStream.readObject();
-            objectInputStream.close();
-        } catch (java.io.IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        Cursor cr = onlineUserDataBase.getAllData();
+        if (cr != null && cr.getCount() > 0) {
+            while (cr.moveToNext()) {
+                String numberTemp = cr.getString(0);
+                cachedList.add(sharedPreferences.getString(numberTemp, null));
+            }
         }
         if (cachedList.size() != 0) {
             ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, cachedList.toArray());

@@ -6,13 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -44,13 +37,17 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.onesignal.OneSignal;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -67,7 +64,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
+    Context context;
     private DataBaseHelper db;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Dataupdate();
+    }
 
     @Override
     public void onSupportActionModeStarted(@NonNull ActionMode mode) {
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = new DataBaseHelper(this);
+        context = getApplicationContext();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NavigationView navigationView = findViewById(R.id.navigation);
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
+        Dataupdate();
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -154,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
+        viewPager.setOffscreenPageLimit(3);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
@@ -312,5 +319,43 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return name;
         }
 
+    }
+
+    private void Dataupdate() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        TreeSet<String> contactsContainingApp = new TreeSet<>();
+        ArrayList<String> receiverKey = new ArrayList<>();
+        ArrayList<String> phoneNumbers = new ArrayList<>();
+        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference("Users").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Log.w("Device numbers", data.child("device_number").getValue().toString());
+                            String[] conversion = data.child("device_number").getValue().toString().split(" ");
+                            String converted = "";
+                            for (String i : conversion) {
+                                converted += i;
+                            }
+
+                            if (sharedPreferences.getString(converted, null) != null) {
+                                phoneNumbers.add(converted);
+                                contactsContainingApp.add(sharedPreferences.getString(converted, null));
+                                receiverKey.add(data.getKey());
+                            }
+                        }
+                        for (int i = 0; i < contactsContainingApp.size(); i++) {
+                            onlineUserDataBase.insertData(phoneNumbers.get(i), receiverKey.get(i), 0);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
+                        Toast.makeText(context, "Unable to fetch users", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
