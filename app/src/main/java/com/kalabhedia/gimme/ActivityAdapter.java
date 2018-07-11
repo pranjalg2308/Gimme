@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -172,7 +171,8 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
     private String formatDate(String dateStr) {
         long yourmilliseconds = Long.parseLong(dateStr);
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+//        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
         Date resultdate = new Date(yourmilliseconds);
         return sdf.format(resultdate);
     }

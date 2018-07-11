@@ -60,14 +60,15 @@ public class MessageRecieverService extends FirebaseMessagingService {
      * @param title
      * @param msg
      * @param phoneNumber
+     * @param timeStamp
      */
-    private void showNotifications(String title, String msg, String phoneNumber) {
+    private void showNotifications(String title, String msg, String phoneNumber, String timeStamp) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
-        Boolean result = db.insertData(phoneNumber, "", moneyString, "0", "1");
+        Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -134,8 +135,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String phoneNumber = "";
         String message = "";
         String[] checkingPhoneNumber = messageReceived.split(" ");
+        String timeStamp = checkingPhoneNumber[checkingPhoneNumber.length - 1];
         int i;
-        for (i = checkingPhoneNumber.length - 1; i > 0; i--) {
+        for (i = checkingPhoneNumber.length - 2; i > 0; i--) {
             if (checkingPhoneNumber[i].charAt(0) == '+') {
                 phoneNumber = checkingPhoneNumber[i] + phoneNumber;
                 break;
@@ -158,7 +160,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             message += " " + name;
         }
         message = message + " " + reason;
-        showNotifications(title, message, phoneNumber);
+        showNotifications(title, message, phoneNumber, timeStamp);
     }
 }
 
