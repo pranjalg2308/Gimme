@@ -7,17 +7,16 @@
     tools:context=".OneFragment">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/friends_recycler_view"
+    <GridView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </GridView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:src="@drawable/ic_add_fab"
