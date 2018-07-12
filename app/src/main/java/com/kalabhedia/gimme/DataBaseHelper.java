@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static android.os.Build.ID;
-
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Transaction.db";
@@ -85,6 +83,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
     }
 
+    public Cursor getUserData(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select * from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
+        Cursor cr = db.rawQuery(query, null);
+        return cr;
+    }
     public int getVerifiedSum(String name) {
         int sum = 0;
         SQLiteDatabase db = this.getWritableDatabase();
