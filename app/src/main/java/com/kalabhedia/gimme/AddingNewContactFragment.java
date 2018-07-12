@@ -143,7 +143,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
         bnAmount500.setOnClickListener(this::onClick);
         bnAmount1000.setOnClickListener(this::onClick);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString("phonenumber", null);
         senderUserID = sharedPreferences.getString("Current_user_id", null);
         Log.w("Sender id", senderUserID + " ");
