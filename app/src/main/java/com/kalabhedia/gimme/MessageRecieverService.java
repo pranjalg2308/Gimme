@@ -67,15 +67,16 @@ public class MessageRecieverService extends FirebaseMessagingService {
      * @param msg
      * @param phoneNumber
      * @param timeStamp
+     * @param reason
      */
-    private void showNotifications(String title, String msg, String phoneNumber, String timeStamp) {
+    private void showNotifications(String title, String msg, String phoneNumber, String timeStamp, String reason) {
         Intent i = new Intent(this, MainActivity.class);
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         id += uniqueId + " ";
         String moneyString = msg.split(" ")[0];
         db = new DataBaseHelper(this);
         db.getWritableDatabase();
-        Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
+        Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, "0", "1");
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -146,8 +147,13 @@ public class MessageRecieverService extends FirebaseMessagingService {
         int location = messageReceived.indexOf("for");
         String reason = "";
         if (location != -1) {
-            reason = messageReceived.substring(location);
-            messageReceived = messageReceived.substring(0, location);
+            String temp = "";
+            String[] tempArray = messageReceived.substring(location).split(" ");
+            for (int i = 1; i < tempArray.length - 1; i++) {
+                reason += tempArray[i] + " ";
+            }
+            temp = tempArray[tempArray.length - 1];
+            messageReceived = messageReceived.substring(0, location) + temp;
         }
         String phoneNumber = "";
         String message = "";
@@ -177,7 +183,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             message += " " + name;
         }
         message = message + " " + reason;
-        showNotifications(title, message, phoneNumber, timeStamp);
+        showNotifications(title, message, phoneNumber, timeStamp, reason);
     }
 }
 

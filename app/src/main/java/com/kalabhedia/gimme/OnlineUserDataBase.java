@@ -56,6 +56,11 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME, COL_1 + "=" + id, null) > 0;
     }
 
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS VerifyTable");
+    }
+
     public boolean updateData(String id, String code1, int code2) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
