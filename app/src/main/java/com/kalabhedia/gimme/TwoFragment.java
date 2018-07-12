@@ -67,9 +67,11 @@ public class TwoFragment extends Fragment {
         Cursor cr = onlineUserDataBase.getAllData();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
-            while (cr.isAfterLast() == false) {
+            while (!cr.isAfterLast()) {
                 String numberTemp = cr.getString(0);
-                cachedList.add(sharedPreferences.getString(numberTemp, null));
+                if (sharedPreferences.getString(numberTemp, null) != null) {
+                    cachedList.add(sharedPreferences.getString(numberTemp, null));
+                }
                 cr.moveToNext();
             }
         }

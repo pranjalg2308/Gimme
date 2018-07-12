@@ -48,7 +48,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private int READ_EXTERNAL_STORAGE_PERMISSION = 3;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    ArrayList<HashMap<String, String>> contactdetails;
+    public ArrayList<HashMap<String, String>> contactdetails;
     public TabLayout tabLayout;
     public ViewPager viewPager;
     private FirebaseAuth mAuth;
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
+        contactdetails = new ArrayList<>();
         contactdetails = new ArrayList<>();
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
@@ -257,36 +257,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        while (!cursor.isAfterLast()) {
-            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String[] conversion = number.split(" ");
-            String[] conversion1 = number.split("-");
-            if (conversion1.length > 1) {
-                number = "";
-                for (String i : conversion1) {
-                    number += i;
+        SharedPreferences sharedPref = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        if (sharedPref != null) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear();
+            HashMap<String, String> item;
+            while (!cursor.isAfterLast()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                item = new HashMap<>();
+                item.put("Name", name);
+                item.put("Number", number);
+                if (!number.startsWith("+91")) {
+                    number = "+91" + number;
                 }
-            } else if (conversion.length > 1) {
-                number = "";
-                for (String i : conversion1) {
-                    number += i;
+                contactdetails.add(item);
+                String[] conversion = number.split(" ");
+                String[] conversion1 = number.split("-");
+                if (conversion1.length > 1) {
+                    number = "";
+                    for (String i : conversion1) {
+                        number += i;
+                    }
+                } else if (conversion.length > 1) {
+                    number = "";
+                    for (String i : conversion) {
+                        number += i;
+                    }
                 }
+                editor.putString(number, name);
+                editor.apply();
+                cursor.moveToNext();
             }
-            Log.w("Contact :", number);
-            if (!number.startsWith("+91")) {
-                number = "+91" + number;
-            }
-            HashMap item = new HashMap();
-            item.put("Name", name);
-            item.put("Number", number);
-            contactdetails.add(item);
-            editor.putString(number, name);
-            editor.apply();
-            cursor.moveToNext();
+        } else {
+            Toast.makeText(context, "Unable to load", Toast.LENGTH_SHORT).show();
         }
+        Log.w("Number Of Contacts", contactdetails.size() + "");
     }
 
     @Override
@@ -366,7 +372,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         for (int i = 0; i < contactsContainingApp.size(); i++) {
                             onlineUserDataBase.insertData(phoneNumbers.get(i), receiverKey.get(i), 0);
                         }
-                        Map<String, ?> allEntries = sharedPreferences.getAll();
+                        Cursor cr = onlineUserDataBase.getAllData();
+                        if (cr != null && cr.getCount() > 0) {
+                            cr.moveToFirst();
+                            while (!cr.isAfterLast()) {
+                                String numberTemp = cr.getString(0);
+                                if (sharedPreferences.getString(numberTemp, null) == null) {
+                                    onlineUserDataBase.deleteUser(numberTemp);
+                                }
+                                cr.moveToNext();
+                            }
+
+                        }
+//                        Map<String, ?> allEntries = sharedPreferences.getAll();
 //                        Log.w("Contacts", allEntries.toString());
                     }
 

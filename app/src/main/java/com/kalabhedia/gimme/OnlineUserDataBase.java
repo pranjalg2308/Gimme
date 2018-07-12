@@ -50,6 +50,18 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
         return cr;
     }
 
+    public Cursor getUserData(String phoneNumber) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select * from " + TABLE_NAME + " where " + COL_1 + " = '" + phoneNumber + "'";
+        Cursor cr = db.rawQuery(query, null);
+        return cr;
+    }
+
+    public boolean deleteUser(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, COL_1 + "=" + id, null) > 0;
+    }
+
     public boolean updateData(String id, String code1, int code2) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
