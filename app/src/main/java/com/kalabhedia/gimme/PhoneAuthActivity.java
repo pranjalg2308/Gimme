@@ -3,7 +3,6 @@ package com.kalabhedia.gimme;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -97,7 +96,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         mPhoneText.setEnabled(false);
                         mSendButton.setEnabled(false);
                         Log.v("Phone Number", phonenumber);
-                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("phonenumber", phonenumber);
                         editor.apply();
@@ -175,7 +174,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             online_user_id = mAuth.getCurrentUser().getUid();
-                            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+                            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("Current_user_id", online_user_id);
                             editor.apply();
