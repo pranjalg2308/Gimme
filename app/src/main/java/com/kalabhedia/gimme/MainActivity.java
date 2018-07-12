@@ -48,6 +48,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        contactdetails = new ArrayList<>();
         contactdetails = new ArrayList<>();
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
@@ -355,6 +355,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map<String, ?> allEntries = sharedPreferences.getAll();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             Log.w("Device numbers", data.child("device_number").getValue().toString());
                             String[] conversion = data.child("device_number").getValue().toString().split(" ");
@@ -362,29 +363,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             for (String i : conversion) {
                                 converted += i;
                             }
-
+//                            onlineUserDataBase.clearDatabase();
                             if (sharedPreferences.getString(converted, null) != null) {
-                                phoneNumbers.add(converted);
                                 contactsContainingApp.add(sharedPreferences.getString(converted, null));
-                                receiverKey.add(data.getKey());
+                                onlineUserDataBase.insertData(converted, data.getKey(), 0);
                             }
                         }
-                        for (int i = 0; i < contactsContainingApp.size(); i++) {
-                            onlineUserDataBase.insertData(phoneNumbers.get(i), receiverKey.get(i), 0);
-                        }
-                        Cursor cr = onlineUserDataBase.getAllData();
-                        if (cr != null && cr.getCount() > 0) {
-                            cr.moveToFirst();
-                            while (!cr.isAfterLast()) {
-                                String numberTemp = cr.getString(0);
-                                if (sharedPreferences.getString(numberTemp, null) == null) {
-                                    onlineUserDataBase.deleteUser(numberTemp);
-                                }
-                                cr.moveToNext();
-                            }
-
-                        }
-//                        Map<String, ?> allEntries = sharedPreferences.getAll();
+//                        Cursor cr = onlineUserDataBase.getAllData();
+//                        if (cr != null && cr.getCount() > 0) {
+//                            cr.moveToFirst();
+//                            while (!cr.isAfterLast()) {
+//                                String numberTemp = cr.getString(0);
+//                                if (sharedPreferences.getString(numberTemp, null) == null) {
+//                                    onlineUserDataBase.deleteUser(numberTemp);
+//                                }
+//                                cr.moveToNext();
+//                            }
+//
+//                        }
 //                        Log.w("Contacts", allEntries.toString());
                     }
 

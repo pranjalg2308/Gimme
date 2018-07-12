@@ -65,12 +65,13 @@ public class TwoFragment extends Fragment {
         TreeSet<String> cachedList = new TreeSet<>();
 
         Cursor cr = onlineUserDataBase.getAllData();
+        int x = cr.getCount();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
             while (!cr.isAfterLast()) {
                 String numberTemp = cr.getString(0);
                 if (sharedPreferences.getString(numberTemp, null) != null) {
-                    cachedList.add(sharedPreferences.getString(numberTemp, null));
+                    cachedList.add((sharedPreferences.getString(numberTemp, null) + "(" + cr.getString(1) + ")"));
                 }
                 cr.moveToNext();
             }

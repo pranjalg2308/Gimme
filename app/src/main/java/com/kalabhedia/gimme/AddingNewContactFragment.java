@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +56,6 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     private String number;
     private RadioGroup radioGroup;
     private RadioButton radioButtonClaim;
-    private EditText reason;
     private String NO = "2";
     private String YES = "1";
     private String NULL = "0";
@@ -77,6 +75,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
      * @param reason
      */
     public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
         HashMap<String, String> notificationData = new HashMap<>();
         notificationData.put("TimeStamp", timeStamp);
         notificationData.put("phone_number", phoneNumber);
@@ -84,8 +83,12 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
         notificationData.put("From", senderUserID);
         notificationData.put("Reason", reason);
         notificationData.put("Type", "request");
-        NotificationReferernce.child(receiverUserID).push().setValue(notificationData).addOnFailureListener(e ->
-                Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> {
+        NotificationReferernce.child(receiverUserID).push().setValue(notificationData)
+                .addOnFailureListener(e -> Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show())
+                .addOnCompleteListener(task -> {
+                    if (dataBaseHelper.updateOnSent(timeStamp)) {
+                        Toast.makeText(context, "Success on sent", Toast.LENGTH_SHORT);
+                    }
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
             Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
 
@@ -129,9 +132,6 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
 
         amount = view.findViewById(R.id.amount_entry);
         radioGroup = view.findViewById(R.id.idClaim);
-
-
-        reason = view.findViewById(R.id.reason_text_view);
 
 
         bnAmount10 = view.findViewById(R.id.bn_amount_10);
@@ -182,6 +182,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
  * click listener of save button
  */
         button.setOnClickListener(view1 -> {
+            String reason = discription.getText().toString() + "";
             button.setEnabled(false);
             timeStamp = "";
             time = System.currentTimeMillis();
@@ -242,9 +243,12 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                     } else {
                         button.setEnabled(false);
 
-                        String reason = discription.getText().toString() + "";
                         reason = reason.trim();
-                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
+                        sendNotificationToUser(timeStamp,
+                                senderUserID,
+                                receiverKey,
+                                phoneNumber,
+                                (-1 * Integer.parseInt(amountEntered)) + "",
                                 reason);
 
 
@@ -269,9 +273,11 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                     ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
+                    button.setEnabled(true);
                 }
             } else {
                 Toast.makeText(getContext(), "Contact Field can't be empty", Toast.LENGTH_SHORT).show();
+                button.setEnabled(true);
             }
 
         });
