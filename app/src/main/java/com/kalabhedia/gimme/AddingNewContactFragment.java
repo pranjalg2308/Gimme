@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -60,7 +61,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     private String NO = "2";
     private String YES = "1";
     private String NULL = "0";
-    long time;
+    private long time;
     String timeStamp = "";
     DataBaseHelper db;
 
@@ -114,7 +115,9 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        context = getContext();
         contactdetail = ((MainActivity) getActivity()).contactdetails;
+        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
         db = new DataBaseHelper(getContext());
         db.getWritableDatabase();
         NotificationReferernce = FirebaseDatabase.getInstance().getReference().child("Notifications");
@@ -147,7 +150,6 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
         String phoneNumber = sharedPreferences.getString("phonenumber", null);
         senderUserID = sharedPreferences.getString("Current_user_id", null);
         Log.w("Sender id", senderUserID + " ");
-        context = getContext();
         Button clearText = view.findViewById(R.id.bn_clear_txt);
 
         AutoCompleteTextView contact = view.findViewById(R.id.contacts);
@@ -181,6 +183,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
  */
         button.setOnClickListener(view1 -> {
             button.setEnabled(false);
+            timeStamp = "";
             time = System.currentTimeMillis();
             timeStamp = timeStamp + time;
             hideKeyboard(getActivity());
@@ -203,58 +206,66 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                     if (!number.startsWith("+91")) {
                         number = "+91" + number;
                     }
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    database.getReference("Users").addListenerForSingleValueEvent(
-                            new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
-                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
-                                        String converted = "";
-                                        for (String i : conversion) {
-                                            converted += i;
-                                        }
-                                        if (converted.equals(number)) {
-                                            Log.w("result", "number present");
-                                            receiverKey = data.getKey();
-                                            Log.w("receiverKey", receiverKey);
-                                        }
-                                    }
-                                    if (receiverKey == null) {
-                                        open(view);
-                                        button.setEnabled(true);
-                                        //todo receiver not found in database
-                                    } else {
-                                        button.setEnabled(false);
 
-                                        String reason = discription.getText().toString() + "";
-                                        reason = reason.trim();
-                                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
-                                                reason);
+//                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                    database.getReference("Users").addListenerForSingleValueEvent(
+//                            new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
+//                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
+//                                        String converted = "";
+//                                        for (String i : conversion) {
+//                                            converted += i;
+//                                        }
+//                                        if (converted.equals(number)) {
+//                                            Log.w("result", "number present");
+//                                            receiverKey = data.getKey();
+//                                            Log.w("receiverKey", receiverKey);
+//                                        }
+//                                    }
+                    Cursor cr = onlineUserDataBase.getAllData();
+                    cr.moveToFirst();
+                    if (cr != null && cr.getCount() > 0) {
+                        cr.moveToLast();
+                        do {
+                            if (cr.getString(0).equals(number))
+                                receiverKey = cr.getString(1);
+                        }
+                        while (cr.moveToPrevious());
+                    }
+                    if (receiverKey == null) {
+                        open(view);
+                        button.setEnabled(true);
+                        //todo receiver not found in database
+                    } else {
+                        button.setEnabled(false);
+
+                        String reason = discription.getText().toString() + "";
+                        reason = reason.trim();
+                        sendNotificationToUser(timeStamp, senderUserID, receiverKey, phoneNumber, (-1 * Integer.parseInt(amountEntered)) + "",
+                                reason);
 
 
-                                        radioButtonClaim = view.findViewById(selectedId);
-                                        String claimString = radioButtonClaim.getText().toString();
-                                        Log.v("Getinout", claimString);
-                                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
+                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
 
-                                        OneFragment.fab.setVisibility(View.VISIBLE);
-                                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-                                        amount.setFocusable(false);
-                                        contact.setFocusable(false);
-                                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                                        getFragmentManager().beginTransaction()
-                                                .remove(AddingNewContactFragment.this).commit();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                                }
-                            });
+                        OneFragment.fab.setVisibility(View.VISIBLE);
+                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                        amount.setFocusable(false);
+                        contact.setFocusable(false);
+                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                        getFragmentManager().beginTransaction()
+                                .remove(AddingNewContactFragment.this).commit();
+                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
+//                                }
+//                            });
                     ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
