@@ -61,7 +61,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     private String NO = "2";
     private String YES = "1";
     private String NULL = "0";
-    long time;
+    private long time;
     String timeStamp = "";
     DataBaseHelper db;
 
@@ -183,6 +183,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
  */
         button.setOnClickListener(view1 -> {
             button.setEnabled(false);
+            timeStamp = "";
             time = System.currentTimeMillis();
             timeStamp = timeStamp + time;
             hideKeyboard(getActivity());
@@ -205,6 +206,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                     if (!number.startsWith("+91")) {
                         number = "+91" + number;
                     }
+
 //                    FirebaseDatabase database = FirebaseDatabase.getInstance();
 //                    database.getReference("Users").addListenerForSingleValueEvent(
 //                            new ValueEventListener() {
