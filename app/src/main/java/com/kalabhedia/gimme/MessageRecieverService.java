@@ -12,6 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -76,7 +77,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
         db.getWritableDatabase();
         Boolean result = db.insertData(timeStamp, phoneNumber, "", moneyString, "0", "1");
 
-
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
@@ -124,6 +124,11 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     .setGroup("Gimme")
                     .build();
             mNotificationManager.notify(uniqueId, notification);
+
+            if (!MessageRecieverService.isAppSentToBackground(getApplicationContext())) {
+                NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+            }
+
 
         }
     }
