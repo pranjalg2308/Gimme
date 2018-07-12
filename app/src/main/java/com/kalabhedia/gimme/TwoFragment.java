@@ -66,9 +66,11 @@ public class TwoFragment extends Fragment {
 
         Cursor cr = onlineUserDataBase.getAllData();
         if (cr != null && cr.getCount() > 0) {
-            while (cr.moveToNext()) {
+            cr.moveToFirst();
+            while (cr.isAfterLast() == false) {
                 String numberTemp = cr.getString(0);
                 cachedList.add(sharedPreferences.getString(numberTemp, null));
+                cr.moveToNext();
             }
         }
         if (cachedList.size() != 0) {
@@ -78,5 +80,13 @@ public class TwoFragment extends Fragment {
             sharebn.setVisibility(View.VISIBLE);
         }
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
     }
 }

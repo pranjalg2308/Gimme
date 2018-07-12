@@ -47,6 +47,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private int READ_EXTERNAL_STORAGE_PERMISSION = 3;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
+    ArrayList<HashMap<String, String>> contactdetails;
     public TabLayout tabLayout;
     public ViewPager viewPager;
     private FirebaseAuth mAuth;
@@ -70,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
+        contactdetails = new ArrayList<>();
+        if (checkExternalPermission())
+            getSupportLoaderManager().initLoader(1, null, this);
         Dataupdate();
     }
 
@@ -82,8 +88,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
         context = getApplicationContext();
+        Dataupdate();
+        if (checkExternalPermission())
+            getSupportLoaderManager().initLoader(1, null, this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -160,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.AddFragment(new com.kalabhedia.gimme.OneFragment(), "Friends");
@@ -266,6 +276,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
             Log.w("Contact :", number);
+            if (!number.startsWith("+91")) {
+                number = "+91" + number;
+            }
+            HashMap item = new HashMap();
+            item.put("Name", name);
+            item.put("Number", number);
+            contactdetails.add(item);
             editor.putString(number, name);
             editor.apply();
             cursor.moveToNext();
@@ -349,6 +366,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         for (int i = 0; i < contactsContainingApp.size(); i++) {
                             onlineUserDataBase.insertData(phoneNumbers.get(i), receiverKey.get(i), 0);
                         }
+                        Map<String, ?> allEntries = sharedPreferences.getAll();
+//                        Log.w("Contacts", allEntries.toString());
                     }
 
                     @Override

@@ -9,15 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,12 +34,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddingNewContactFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+public class AddingNewContactFragment extends Fragment implements View.OnClickListener {
     private static DatabaseReference NotificationReferernce;
     private static Context context;
     ArrayList<String> contactName;
@@ -132,7 +126,7 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         contactName = new ArrayList<>();
         contactNumber = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_adding_new_contact, container, false);
-        contactdetail = new ArrayList<>();
+        contactdetail = ((MainActivity) getActivity()).contactdetails;
         EditText discription = view.findViewById(R.id.idReason);
 
         amount = view.findViewById(R.id.amount_entry);
@@ -168,7 +162,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                 contact.setText("");
                 contact.setFocusableInTouchMode(true);
             });
-            getActivity().getSupportLoaderManager().initLoader(1, null, this);
 //            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_activated_1, contactName);
             SimpleAdapter adapter = new SimpleAdapter(getContext(),
                     contactdetail,
@@ -316,75 +309,6 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
         }
     }
 
-    /**
-     * @param id
-     * @param args
-     * @return
-     */
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        Uri CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        Loader<Cursor> cursorLoader = new CursorLoader(getActivity(), CONTENT_URI, null, null, null, null);
-        return cursorLoader;
-    }
-
-    /**
-     * @param loader
-     * @param cursor
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        cursor.moveToFirst();
-        SharedPreferences sharedPref = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        if (sharedPref != null) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            HashMap<String, String> item;
-            while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                contactName.add(name);
-                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                contactNumber.add(number);
-                item = new HashMap<>();
-                item.put("Name", name);
-                item.put("Number", number);
-                contactdetail.add(item);
-                if (!number.startsWith("+91")) {
-                    number = "+91" + number;
-                }
-                String[] conversion = number.split(" ");
-                String[] conversion1 = number.split("-");
-                if (conversion1.length > 1) {
-                    number = "";
-                    for (String i : conversion1) {
-                        number += i;
-                    }
-                } else if (conversion.length > 1) {
-                    number = "";
-                    for (String i : conversion) {
-                        number += i;
-                    }
-                }
-                editor.putString(number, name);
-                editor.apply();
-                cursor.moveToNext();
-            }
-        } else {
-            Toast.makeText(getContext(), "Unable to load", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * @param loader
-     */
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
-    }
-
-    /**
-     *
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -433,5 +357,19 @@ public class AddingNewContactFragment extends Fragment implements LoaderManager.
                 break;
         }
         amount.setSelection(amount.getText().length());
+    }
+
+    void getContactList() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        Map<String, ?> allEntries = sharedPreferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+            HashMap<String, String> item = new HashMap();
+            String name = entry.getValue().toString();
+            String number = entry.getKey();
+            item.put("Name", name);
+            item.put("Number", number);
+            contactdetail.add(item);
+        }
     }
 }
