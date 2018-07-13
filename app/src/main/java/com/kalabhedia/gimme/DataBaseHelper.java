@@ -75,7 +75,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public boolean updateOnSent(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_6, 1);
+        contentValues.put(COL_7, 1);
         int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
         if (result > 0)
             return true;

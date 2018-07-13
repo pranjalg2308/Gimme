@@ -6,12 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".OneFragment">
 
+    <include layout="@layout/content_main" />
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </GridView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
