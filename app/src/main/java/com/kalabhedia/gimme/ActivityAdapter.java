@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.kalabhedia.gimme.R.color.colorPrimary;
+import static com.kalabhedia.gimme.R.color.foreground_material_light;
 
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
@@ -130,7 +131,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnAccept.setVisibility(View.GONE);
                 holder.bnReject.setEnabled(false);
                 holder.bnReject.setText("Rejected");
-                holder.bnRefresh.setVisibility(View.GONE);
             default:
                 break;
         }
