@@ -25,12 +25,8 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,9 +70,11 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
      * @param amountEntered
      * @param reason
      */
-    public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason) {
+    public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason, String code) {
+        NotificationReferernce = FirebaseDatabase.getInstance().getReference().child("Notifications");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
         HashMap<String, String> notificationData = new HashMap<>();
+        notificationData.put("Code", code);
         notificationData.put("TimeStamp", timeStamp);
         notificationData.put("phone_number", phoneNumber);
         notificationData.put("Amount", amountEntered);
@@ -86,26 +84,12 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData)
                 .addOnFailureListener(e -> Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
-                    if (dataBaseHelper.updateOnSent(timeStamp)) {
-                        Toast.makeText(context, "Success on sent", Toast.LENGTH_SHORT);
+                    if (code.equals("01")) {
+                        if (dataBaseHelper.updateOnSent(timeStamp)) {
+                            Toast.makeText(context, "Success on sent", Toast.LENGTH_SHORT);
+                        }
                     }
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-            Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
-
-            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                        appleSnapshot.getRef().removeValue();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("Notification", "onCancelled", databaseError.toException());
-                }
-            });
-        });
+                });
 
     }
 
@@ -249,7 +233,8 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                                 receiverKey,
                                 phoneNumber,
                                 (-1 * Integer.parseInt(amountEntered)) + "",
-                                reason);
+                                reason,
+                                "01");
 
 
                         saveInLocalDatabase(timeStamp, number, reason, amountEntered);

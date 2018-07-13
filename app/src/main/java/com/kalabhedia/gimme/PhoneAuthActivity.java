@@ -110,14 +110,13 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         Toast.makeText(PhoneAuthActivity.this, "Number format not valid", Toast.LENGTH_SHORT).show();
                 } else {
                     String verificationCode = mCodeText.getText().toString();
-                    if (!verificationCode.equals(""))
-                    {
+                    if (!verificationCode.equals("")) {
                         mSendButton.setEnabled(false);
                         mCodeBar.setVisibility(View.VISIBLE);
                         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
                         signInWithPhoneAuthCredential(credential);
-                    }else
-                        Toast.makeText(PhoneAuthActivity.this,"Enter OTP",Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(PhoneAuthActivity.this, "Enter OTP", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -197,7 +196,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                     });
 
                             Toast.makeText(PhoneAuthActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-
+                            savingUserKey();
 
                         } else {
 
@@ -212,5 +211,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void savingUserKey() {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("currentUserId", mAuth.getUid());
+        editor.apply();
     }
 }
