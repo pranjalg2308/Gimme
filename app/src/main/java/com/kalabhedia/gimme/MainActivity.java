@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contactdetails = new ArrayList<>();
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
-        Dataupdate();
+//        Dataupdate();
     }
 
     @Override

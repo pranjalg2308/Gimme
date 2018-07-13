@@ -76,11 +76,13 @@ public class ThreeFragment extends Fragment {
         if (cr != null && cr.getCount() > 0) {
             cr.moveToLast();
             do {
+                String number = cr.getString(1);
+
                 String name = ((MainActivity) getActivity()).getName(cr.getString(1));
                 String check = (cr.getString(4) + cr.getString(5));
                 if (check.equals("01"))
                     count++;
-                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
+                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), number));
             }
             while (cr.moveToPrevious());
 

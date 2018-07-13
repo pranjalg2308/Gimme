@@ -1,13 +1,11 @@
 package com.kalabhedia.gimme;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +20,6 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static com.kalabhedia.gimme.R.color.colorPrimary;
-import static com.kalabhedia.gimme.R.color.foreground_material_light;
 
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
@@ -76,6 +71,8 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
 
         db = new DataBaseHelper(getContext());
+        SharedPreferences sharedPref = getContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        String senderKey = sharedPref.getString("currentUserId", null);
 
         holder.bnAccept.setOnClickListener(view -> {
             Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
@@ -85,17 +82,20 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept.setEnabled(false);
             holder.bnReject.setVisibility(View.GONE);
             holder.bnRefresh.setVisibility(View.GONE);
-
+            String receiverKey = getReceiverKey(activityArray.number);
+            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {
             Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-            Boolean check = db.updateData(activityArray.time, "1", "2");
+            Boolean check = db.updateData(activityArray.time, "2", "1");
             Log.v("Update SQL", check.toString());
             holder.bnAccept.setVisibility(View.GONE);
             holder.bnReject.setEnabled(false);
             holder.bnReject.setText("Rejected");
             holder.bnRefresh.setVisibility(View.GONE);
+            String receiverKey = getReceiverKey(activityArray.number);
+            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
             notifyingdataChanged();
         });
         holder.bnRefresh.setOnClickListener(new View.OnClickListener() {
@@ -105,9 +105,22 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             }
         });
 
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString("phonenumber", null);
+        String[] conversion = phoneNumber.split(" ");
+        phoneNumber = "";
+        for (String i : conversion) {
+            phoneNumber += i;
+        }
+        String finalPhoneNumber = phoneNumber;
+        holder.bnRefresh.setOnClickListener(view -> {
+            String receiverKey = getReceiverKey(activityArray.number);
+            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");
+        });
+
+
         String code1 = activityArray.code1;
         String code2 = activityArray.code2;
-
         String checkCode = code1 + code2;
         switch (checkCode) {
             case "10":
@@ -131,6 +144,13 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnAccept.setVisibility(View.GONE);
                 holder.bnReject.setEnabled(false);
                 holder.bnReject.setText("Rejected");
+                break;
+            case "21":
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                holder.bnRefresh.setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
@@ -184,7 +204,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 }
                 if ((cr.getString(4) + cr.getString(5)).equals("01"))
                     count++;
-                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5)));
+                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), phoneNumber));
             }
             while (cr.moveToPrevious());
         }
@@ -217,4 +237,19 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         private Button bnRefresh;
     }
 
+    public String getReceiverKey(String user) {
+        OnlineUserDataBase dbUser = new OnlineUserDataBase(getContext());
+        Cursor cr = dbUser.getAllData();
+        cr.moveToFirst();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String numberTemp = cr.getString(0);
+                if (numberTemp.equals(user))
+                    return cr.getString(1);
+                cr.moveToNext();
+            }
+        }
+        return null;
+    }
 }
