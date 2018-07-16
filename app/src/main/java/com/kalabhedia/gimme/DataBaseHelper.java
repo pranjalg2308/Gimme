@@ -36,7 +36,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public boolean insertData(String time, String name, String reason, String money, String claim_user_1, String claim_user_2) {
         SQLiteDatabase db = this.getWritableDatabase();
-
+        int exist = 0;
+        long result = 0;
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, time);
         contentValues.put(COL_2, name);
@@ -45,7 +46,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5, claim_user_1);
         contentValues.put(COL_6, claim_user_2);
         contentValues.put(COL_7, 0);
-        long result = db.insert(TABLE_NAME, null, contentValues);
+        Cursor cr = getAllData();
+        cr.moveToFirst();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String numberTemp = cr.getString(0);
+                if ((numberTemp.equals(time))) {
+                    exist = 1;
+                    break;
+                }
+                cr.moveToNext();
+            }
+            if (exist == 0)
+                result = db.insert(TABLE_NAME, null, contentValues);
+            else
+                updateData(time, claim_user_1, claim_user_2);
+        } else
+            result = db.insert(TABLE_NAME, null, contentValues);
         db.close();
 
         if (result == -1)

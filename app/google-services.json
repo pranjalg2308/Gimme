@@ -23,8 +23,12 @@
           }
         },
         {
-          "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "652166260537-4ofji5pjkifuirdnd6m67uksmb2cambp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kalabhedia.gimme",
+            "certificate_hash": "34c9ab1cc1f2df26f3db68c251939cb084b52c7f"
+          }
         },
         {
           "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
