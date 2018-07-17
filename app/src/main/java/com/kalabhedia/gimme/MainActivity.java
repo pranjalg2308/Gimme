@@ -35,6 +35,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ImageView NavHeaderImageView;
     Context context;
     private DataBaseHelper db;
+    private AdView mAdView;
 
     @Override
     protected void onResume() {
@@ -88,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, "ca-app-pub-3085607779570484/2826426787");
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1ED63523084F0BB6943F6C4C977B9C37").build();
+        mAdView.loadAd(adRequest);
+
+
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
         context = getApplicationContext();
@@ -141,12 +154,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
                             String shareBody = "Check This Out";
-                            String shareSub = "this is the link";
+                            String shareSub = "https://play.google.com/store/apps/details?id=com.kalabhedia.gimme";
                             shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
                             shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
                             startActivity(Intent.createChooser(shareIntent, "Share Using"));
                         } else if (menuItem.getItemId() == R.id.nav_rate) {
-                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
+
+
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+
+                            //Copy App URL from Google Play Store.
+                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.kalabhedia.gimme"));
+
+                            startActivity(intent);
+//                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
                             mAuth = FirebaseAuth.getInstance();
                             mAuth.signOut();

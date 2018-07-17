@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
+            android:tint="#2f2f2f"
             android:src="@drawable/ic_person" />
 
         <EditText

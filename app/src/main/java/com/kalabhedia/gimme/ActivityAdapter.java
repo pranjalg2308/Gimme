@@ -98,12 +98,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
             notifyingdataChanged();
         });
-        holder.bnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
         String phoneNumber = sharedPreferences.getString("phonenumber", null);
@@ -114,6 +109,14 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         }
         String finalPhoneNumber = phoneNumber;
         holder.bnRefresh.setOnClickListener(view -> {
+            Boolean check = db.updateData(activityArray.time, "1", "0");
+            holder.bnAccept.setVisibility(View.VISIBLE);
+            holder.bnAccept.setText("Pending");
+            holder.bnAccept.setEnabled(false);
+            holder.bnReject.setVisibility(View.GONE);
+            holder.bnRefresh.setVisibility(View.GONE);
+            holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
+            holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
             String receiverKey = getReceiverKey(activityArray.number);
             AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");
         });

@@ -41,10 +41,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         int money = Integer.parseInt(cardArray.verifiedSum);
         if (money > 0) {
             holder.count.setText(money + "");
+            holder.count.setBackgroundResource(R.drawable.circle_plus);
         } else {
             holder.count.setText((-1 * money) + "");
+            holder.count.setBackgroundResource(R.drawable.circle_minus);
+
         }
-        holder.thumbnail.setImageResource(cardArray.thumbnail);
+        holder.count.setBackgroundResource(R.drawable.circle_minus);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +82,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             super(view);
             title = (TextView) view.findViewById(R.id.card_title);
             count = (TextView) view.findViewById(R.id.count);
-            thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
         }
     }
