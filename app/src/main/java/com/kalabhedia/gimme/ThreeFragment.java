@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ThreeFragment extends Fragment {
     DataBaseHelper db;
     int count = 0;
     private BroadcastReceiver mMyBroadcastReceiver;
-
+    private Button bnNoActivity;
 
     public ThreeFragment() {
         // Required empty public constructor
@@ -64,6 +65,7 @@ public class ThreeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_three, container, false);
+        bnNoActivity = view.findViewById(R.id.noActivity);
         return view;
 
     }
@@ -87,6 +89,10 @@ public class ThreeFragment extends Fragment {
             while (cr.moveToPrevious());
 
         }
+        if (arrayOfActivity.size() == 0)
+            bnNoActivity.setVisibility(View.VISIBLE);
+        else
+            bnNoActivity.setVisibility(View.GONE);
         ActivityAdapter adapter = new ActivityAdapter(getContext(), arrayOfActivity, (MainActivity) getActivity());
         ListView listView = view.findViewById(R.id.lvItems);
         listView.setAdapter(adapter);

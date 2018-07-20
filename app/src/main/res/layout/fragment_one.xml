@@ -8,13 +8,26 @@
 
     <include layout="@layout/content_main" />
 
+    <Button
+        android:id="@+id/allSettled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/round_login_background"
+        android:clickable="false"
+        android:text="all settled up"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
         android:src="@drawable/ic_add_fab"
         app:elevation="12dp"

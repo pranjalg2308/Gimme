@@ -47,6 +47,8 @@
         <activity android:name=".newUserActivity" />
 
         <receiver android:name=".NotificationBroadCastReceiver" />
+
+        <activity android:name=".ShowSpecificUser"></activity>
     </application>
 
 </manifest>

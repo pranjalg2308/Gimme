@@ -170,12 +170,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         if (moneyInt < 0) {
             moneyInt = (-1) * moneyInt;
             holder.im.setImageResource(R.drawable.circle_minus);
-//            holder.tvOwe.setTextColor(Color.parseColor("#F57F17"));
             holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
             statement = "to be given to " + statement;
         } else {
             holder.im.setImageResource(R.drawable.circle_plus);
-//            holder.tvOwe.setTextColor(Color.parseColor("#7cb342"));
             holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
             statement = "to be taken from " + statement;
         }

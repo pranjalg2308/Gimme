@@ -17,7 +17,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class OneFragment extends Fragment {
     private List<CardArray> cardArrayList;
     private Context context;
     private RecyclerView recyclerView;
+    private Button allSettled;
 
 
     @Nullable
@@ -38,6 +41,7 @@ public class OneFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         context = getContext();
         fab = view.findViewById(R.id.fab);
+        allSettled = (Button) view.findViewById(R.id.allSettled);
         fab.setOnClickListener((View v) ->
         {
             ((MainActivity) getActivity()).viewPager.setVisibility(View.GONE);
@@ -53,7 +57,6 @@ public class OneFragment extends Fragment {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(cardAdapter);
-
         prepareCard();
         return view;
     }
@@ -73,12 +76,15 @@ public class OneFragment extends Fragment {
                     String userName = cr.getString(0);
                     if (sharedPreferences.getString(userName, null) != null)
                         userName = sharedPreferences.getString(userName, null);
-                    //TODO
                     cardArrayList.add(new CardArray(userName, (verifiedSum) + ""));
                 }
                 cr.moveToNext();
             }
         }
+        if (cardArrayList.size() == 0) {
+            allSettled.setVisibility(View.VISIBLE);
+        } else
+            allSettled.setVisibility(View.GONE);
         cardAdapter.notifyDataSetChanged();
 
     }
