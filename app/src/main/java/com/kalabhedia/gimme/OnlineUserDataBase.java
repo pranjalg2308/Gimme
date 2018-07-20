@@ -49,8 +49,10 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
                 }
                 cr.moveToNext();
             }
-            if (exist == 0)
+            if (exist == 0) {
+                db.delete(TABLE_NAME, COL_1 + "=" + phoneNumber, null);
                 result = db.insert(TABLE_NAME, null, contentValues);
+            }
             else
                 result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{phoneNumber});
         }
@@ -61,20 +63,6 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
             return true;
         else
             return false;
-//        long result = db.insert(TABLE_NAME, null, contentValues);
-//
-//        int id = (int) db.insertWithOnConflict(TABLE_NAME, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
-//        if (id == -1) {
-//            db.update("your_table", contentValues, "_id=?", new String[] {"1"});  // number 1 is the _id here, update to variable for your code
-//        }
-//
-//        db.close();
-//
-//
-//        if (id == -1)
-//            return false;
-//        else
-//            return true;
     }
 
 
@@ -96,11 +84,11 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
     }
 
 
-    public boolean updateData(String id, String code1, int code2) {
+    public boolean updateData(String id, String key, int sum) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_2, code1);
-        contentValues.put(COL_3, code2);
+        contentValues.put(COL_2, key);
+        contentValues.put(COL_3, sum);
         int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
         if (result > 0)
             return true;

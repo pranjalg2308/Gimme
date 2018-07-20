@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 
@@ -62,7 +63,7 @@ public class TwoFragment extends Fragment {
 //                        }
         OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(getContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        TreeSet<String> cachedList = new TreeSet<>();
+        ArrayList<FriendsArray> cachedList = new ArrayList<FriendsArray>();
 
         Cursor cr = onlineUserDataBase.getAllData();
         int x = cr.getCount();
@@ -71,14 +72,14 @@ public class TwoFragment extends Fragment {
             while (!cr.isAfterLast()) {
                 String numberTemp = cr.getString(0);
                 if (sharedPreferences.getString(numberTemp, null) != null) {
-                    cachedList.add((sharedPreferences.getString(numberTemp, null) + "(" + cr.getString(1) + ")"));
+                    cachedList.add(new FriendsArray((sharedPreferences.getString(numberTemp, null) + "(" + cr.getString(1) + ")"), numberTemp));
                 }
                 cr.moveToNext();
             }
         }
         if (cachedList.size() != 0) {
-            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, cachedList.toArray());
-            listOfUsers.setAdapter(arrayAdapter);
+            FriendsListViewAdaper friendsListViewAdaper = new FriendsListViewAdaper(getContext(), R.layout.friends_list_view, cachedList);
+            listOfUsers.setAdapter(friendsListViewAdaper);
         } else {
             sharebn.setVisibility(View.VISIBLE);
         }
