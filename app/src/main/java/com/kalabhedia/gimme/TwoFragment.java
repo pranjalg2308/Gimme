@@ -13,12 +13,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 
 public class TwoFragment extends Fragment {
@@ -41,7 +39,6 @@ public class TwoFragment extends Fragment {
         sharebn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 String shareBody = "Check This Out";

@@ -31,7 +31,7 @@ public class SendPendingNotificationService extends JobService {
         String onlineUserId = sharedPreferences.getString("Current_user_id", null);
         database.getReference("Notifications").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<HashMap<String, String>> pendingNotification = new ArrayList<>();
                 if (dataSnapshot.getChildren() != null) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -44,19 +44,20 @@ public class SendPendingNotificationService extends JobService {
                                 item.put("phone_number", data1.child("phone_number").getValue().toString());
                                 item.put("Amount", data1.child("Amount").getValue().toString());
                                 item.put("Reason", data1.child("Reason").getValue().toString());
-//                                pendingNotification.add(item);
+                                pendingNotification.add(item);
                                 MessageRecieverService.DeletionFromRealtimeDatabase(data.getKey().toString(), onlineUserId);
                             }
                         }
                     }
-//                    if (pendingNotification.size() > 0) {
-//                        for (HashMap<String, String> item : pendingNotification) {
-//                            AddingNewContactFragment.sendNotificationToUser(item.get("timestamp"),
-//                                    onlineUserId, item.get("receiver_key"),
-//                                    item.get("phone_number"), item.get("Amount"),
-//                                    item.get("Reason"), item.get("Code"));
-//                        }
-//                    }
+                    if (pendingNotification.size() > 0) {
+                        for (HashMap<String, String> item : pendingNotification) {
+                            AddingNewContactFragment.sendNotificationToUser(item.get("timestamp"),
+                                    onlineUserId, item.get("receiver_key"),
+                                    item.get("phone_number"), item.get("Amount"),
+                                    item.get("Reason"), item.get("Code"));
+                        }
+                    }
+                    pendingNotification.clear();
                 }
                 jobFinished(jobParameters, false);
             }

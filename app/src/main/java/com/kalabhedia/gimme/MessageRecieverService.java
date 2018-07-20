@@ -21,7 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -42,30 +41,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
         super();
     }
 
-//    public static boolean isAppSentToBackground(Context context) {
-//        boolean isInBackground = true;
-//        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-//            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-//            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
-//                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-//                    for (String activeProcess : processInfo.pkgList) {
-//                        if (activeProcess.equals(context.getPackageName())) {
-//                            isInBackground = false;
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-//            ComponentName componentInfo = taskInfo.get(0).topActivity;
-//            if (componentInfo.getPackageName().equals(context.getPackageName())) {
-//                isInBackground = false;
-//            }
-//        }
-//
-//        return isInBackground;
-//    }
 
     public static boolean isAppSentToBackground(final Context context) {
 
@@ -93,15 +68,19 @@ public class MessageRecieverService extends FirebaseMessagingService {
         return false;
     }
 
+
     static void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+//        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
 
-        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                    appleSnapshot.getRef().removeValue();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    for (DataSnapshot appleSnapshot : data.getChildren()) {
+                        if (appleSnapshot.child("From").getValue().toString().equals(senderUserID))
+                            appleSnapshot.getRef().removeValue();
+                    }
                     Log.w("Notification: ", "Data deleted");
                 }
             }
@@ -134,6 +113,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
 
         msg = "₹" + msg.substring(1);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
@@ -150,7 +130,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (!isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
+        if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 int importance = NotificationManager.IMPORTANCE_HIGH;
                 NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
@@ -182,7 +162,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                         .build();
                 mNotificationManager.notify(uniqueId, notification);
 
-                if (!isAppSentToBackground(getApplicationContext())) {
+                if (isAppSentToBackground(getApplicationContext())) {
                     NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
                 }
 
@@ -205,7 +185,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String code = messageSplit[2];
         String senderKey = messageSplit[0];
         String receiverKey = messageSplit[1];
-        DeletionFromRealtimeDatabase(senderKey, receiverKey);
         messageReceived = "";
         for (int i = 3; i < messageSplit.length - 1; i++) {
             messageReceived += messageSplit[i] + " ";
@@ -257,6 +236,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
         }
+        DeletionFromRealtimeDatabase(senderKey, receiverKey);
     }
 }
 
