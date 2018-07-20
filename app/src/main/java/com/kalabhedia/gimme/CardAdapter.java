@@ -45,7 +45,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             holder.count.setBackgroundResource(R.drawable.circle_minus);
 
         }
-        holder.count.setBackgroundResource(R.drawable.circle_minus);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
