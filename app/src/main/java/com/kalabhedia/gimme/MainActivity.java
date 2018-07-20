@@ -381,7 +381,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             return name;
         }
-
     }
 
     private void Dataupdate() {
