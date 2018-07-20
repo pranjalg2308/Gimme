@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,29 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             holder.count.setText("₹ " + (-1 * money) + "");
             holder.count.setBackgroundResource(R.drawable.circle_minus);
         }
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("phoneNumber", cardArray.name);
+                bundle.putString("amount", cardArray.verifiedSum);
+                Intent intent = new Intent(mContext, ShowSpecificUser.class);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
+            }
+        });
+        holder.count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("phoneNumber", cardArray.name);
+                bundle.putString("amount", cardArray.verifiedSum);
+                Intent intent = new Intent(mContext, ShowSpecificUser.class);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -55,14 +79,28 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         return CardList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, count;
-        public ImageView thumbnail, overflow;
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        private TextView title, count;
+        private ImageView thumbnail, overflow;
+        private CardView cardView;
+        private AdapterView.OnItemClickListener clickListener;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.card_title);
             count = (TextView) view.findViewById(R.id.count);
+            cardView = view.findViewById(R.id.card_view);
+//            itemView.setOnClickListener(this);
+//            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            return false;
         }
     }
 }
