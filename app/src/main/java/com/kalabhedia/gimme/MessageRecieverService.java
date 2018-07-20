@@ -93,6 +93,26 @@ public class MessageRecieverService extends FirebaseMessagingService {
         return false;
     }
 
+    static void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+
+        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                    appleSnapshot.getRef().removeValue();
+                    Log.w("Notification: ", "Data deleted");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Notification", "onCancelled", databaseError.toException());
+            }
+        });
+    }
+
     /**
      * @param title
      * @param msg
@@ -129,7 +149,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (!isAppSentToBackground(getApplicationContext())) {
+        if (!isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 int importance = NotificationManager.IMPORTANCE_HIGH;
                 NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
@@ -231,30 +251,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
                 message += " " + name;
             }
             message = message + " " + reason;
+            message = "₹" + message.substring(1);
             showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
         } else {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
         }
-    }
-
-    void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
-
-        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                    appleSnapshot.getRef().removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Notification", "onCancelled", databaseError.toException());
-            }
-        });
     }
 }
 

@@ -192,24 +192,6 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                         number = "+91" + number;
                     }
 
-//                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                    database.getReference("Users").addListenerForSingleValueEvent(
-//                            new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-//                                        Log.w("Device numbers", data.child("device_number").getValue().toString());
-//                                        String[] conversion = data.child("device_number").getValue().toString().split(" ");
-//                                        String converted = "";
-//                                        for (String i : conversion) {
-//                                            converted += i;
-//                                        }
-//                                        if (converted.equals(number)) {
-//                                            Log.w("result", "number present");
-//                                            receiverKey = data.getKey();
-//                                            Log.w("receiverKey", receiverKey);
-//                                        }
-//                                    }
                     Cursor cr = onlineUserDataBase.getAllData();
                     cr.moveToFirst();
                     if (cr != null && cr.getCount() > 0) {
@@ -223,8 +205,8 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                     if (receiverKey == null) {
                         open(view);
                         button.setEnabled(true);
-                        //todo receiver not found in database
                     } else {
+//                        if (!senderUserID.equals(receiverKey)) {
                         button.setEnabled(false);
 
                         reason = reason.trim();
@@ -247,15 +229,12 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                         ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
                         getFragmentManager().beginTransaction()
                                 .remove(AddingNewContactFragment.this).commit();
+
+                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+//                        } else {
+//                            alertmessage();
+//                        }
                     }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//                                    Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-//                                }
-//                            });
-                    ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
                     button.setEnabled(true);
@@ -267,6 +246,18 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
 
         });
         return view;
+    }
+
+    private void alertmessage() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setTitle("Request Error");
+        alertDialogBuilder.setMessage("You cannot make request to same phone");
+        alertDialogBuilder.setPositiveButton("OK",
+                (arg0, arg1) -> {
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
 

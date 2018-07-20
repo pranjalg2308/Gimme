@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class    newUserActivity extends AppCompatActivity {
+public class newUserActivity extends AppCompatActivity {
 
     EditText mUsername;
     Button mSubmit;

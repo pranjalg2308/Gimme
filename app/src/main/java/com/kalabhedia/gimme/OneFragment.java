@@ -1,9 +1,9 @@
 package com.kalabhedia.gimme;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,8 +17,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +62,7 @@ public class OneFragment extends Fragment {
         OnlineUserDataBase db;
         db = new OnlineUserDataBase(context);
         DataBaseHelper dbSum = new DataBaseHelper(context);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         Cursor cr = db.getAllData();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
@@ -72,6 +71,8 @@ public class OneFragment extends Fragment {
                 int verifiedSum = dbSum.getVerifiedSum(numberTemp);
                 if (!(verifiedSum == 0)) {
                     String userName = cr.getString(0);
+                    if (sharedPreferences.getString(userName, null) != null)
+                        userName = sharedPreferences.getString(userName, null);
                     //TODO
                     if (verifiedSum > 0)
                         cardArrayList.add(new CardArray(userName, (-1 * verifiedSum) + "", R.drawable.circle_minus));
@@ -125,4 +126,11 @@ public class OneFragment extends Fragment {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+    }
 }
