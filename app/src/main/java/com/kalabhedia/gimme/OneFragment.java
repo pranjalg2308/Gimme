@@ -74,10 +74,7 @@ public class OneFragment extends Fragment {
                     if (sharedPreferences.getString(userName, null) != null)
                         userName = sharedPreferences.getString(userName, null);
                     //TODO
-                    if (verifiedSum > 0)
-                        cardArrayList.add(new CardArray(userName, (-1 * verifiedSum) + "", R.drawable.circle_minus));
-                    else
-                        cardArrayList.add(new CardArray(userName, (verifiedSum) + "", R.drawable.circle_plus));
+                    cardArrayList.add(new CardArray(userName, (verifiedSum) + ""));
                 }
                 cr.moveToNext();
             }

@@ -133,6 +133,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         db.getWritableDatabase();
         Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
 
+        msg = "₹" + msg.substring(1);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                 i, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
@@ -251,7 +252,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
                 message += " " + name;
             }
             message = message + " " + reason;
-            message = "₹" + message.substring(1);
             showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
         } else {
             db = new DataBaseHelper(this);
