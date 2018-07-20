@@ -51,6 +51,8 @@ public class OnlineUserDataBase extends SQLiteOpenHelper {
             }
             if (exist == 0)
                 result = db.insert(TABLE_NAME, null, contentValues);
+            else
+                result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{phoneNumber});
         }
         else
             result = db.insert(TABLE_NAME, null, contentValues);

@@ -1,29 +1,21 @@
 {
   "project_info": {
-    "project_number": "652166260537",
-    "firebase_url": "https://gimme-43150.firebaseio.com",
-    "project_id": "gimme-43150",
-    "storage_bucket": "gimme-43150.appspot.com"
+    "project_number": "222771279794",
+    "firebase_url": "https://gimme-3d977.firebaseio.com",
+    "project_id": "gimme-3d977",
+    "storage_bucket": "gimme-3d977.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:652166260537:android:bdb435291d6328e9",
+        "mobilesdk_app_id": "1:222771279794:android:bdb435291d6328e9",
         "android_client_info": {
           "package_name": "com.kalabhedia.gimme"
         }
       },
       "oauth_client": [
         {
-          "client_id": "652166260537-3gs4n68i89qbdl55gjma0gbtonm7rogp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kalabhedia.gimme",
-            "certificate_hash": "0c7c725a45287829b033bb4f82f00cf2cf804919"
-          }
-        },
-        {
-          "client_id": "652166260537-4ofji5pjkifuirdnd6m67uksmb2cambp.apps.googleusercontent.com",
+          "client_id": "222771279794-70fkjm563u9hik1p2ugtu4lmi6hs4nv2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kalabhedia.gimme",
@@ -31,13 +23,13 @@
           }
         },
         {
-          "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
+          "client_id": "222771279794-cv34c9ftkpd43tm3m7icqjqpdermdkdi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB2EVIobxN76UyAguu4nieYD22__80vNwA"
+          "current_key": "AIzaSyBwJccsv30MXrhy8yzeReQZClxn_4nvDJ0"
         }
       ],
       "services": {
@@ -48,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "652166260537-ts5b59mlm1tl8j31pa6kjl63hsqsibcq.apps.googleusercontent.com",
+              "client_id": "222771279794-cv34c9ftkpd43tm3m7icqjqpdermdkdi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

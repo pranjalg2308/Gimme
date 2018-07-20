@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
@@ -40,10 +38,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         holder.title.setText(cardArray.name);
         int money = Integer.parseInt(cardArray.verifiedSum);
         if (money > 0) {
-            holder.count.setText(money + "");
+            holder.count.setText("₹ " + money + "");
             holder.count.setBackgroundResource(R.drawable.circle_plus);
         } else {
-            holder.count.setText((-1 * money) + "");
+            holder.count.setText("₹ " + (-1 * money) + "");
             holder.count.setBackgroundResource(R.drawable.circle_minus);
 
         }

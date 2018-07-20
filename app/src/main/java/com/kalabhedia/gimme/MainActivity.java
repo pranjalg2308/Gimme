@@ -1,6 +1,9 @@
 package com.kalabhedia.gimme;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,10 +38,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,7 +51,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -73,15 +71,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ImageView NavHeaderImageView;
     Context context;
     private DataBaseHelper db;
-    private AdView mAdView;
+    public static boolean appIsInForeground;
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         contactdetails = new ArrayList<>();
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
-//        Dataupdate();
+        Dataupdate();
     }
 
     @Override
@@ -90,21 +88,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        appIsInForeground = false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        MobileAds.initialize(this, "ca-app-pub-3085607779570484/2826426787");
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1ED63523084F0BB6943F6C4C977B9C37").build();
-        mAdView.loadAd(adRequest);
-
+        scheduleJob();
+        appIsInForeground = true;
 
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
         context = getApplicationContext();
-        Dataupdate();
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
 
@@ -120,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NavigationView navigationView = findViewById(R.id.navigation);
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
-        Dataupdate();
-
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -202,6 +198,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         tabLayout.setupWithViewPager(viewPager);
 
 
+    }
+
+    private void scheduleJob() {
+        ComponentName componentName = new ComponentName(this, SendPendingNotificationService.class);
+        JobInfo jobInfo = new JobInfo.Builder(123, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 100)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int result = scheduler.schedule(jobInfo);
+        if (result == JobScheduler.RESULT_SUCCESS) {
+            Log.w("JOB SCHEDULER:", "scheduledJob ");
+        } else {
+            Log.w("JOB SCHEDULER:", "Failure ");
+        }
     }
 
 
@@ -376,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Map<String, ?> allEntries = sharedPreferences.getAll();
+//                        Map<String, ?> allEntries = sharedPreferences.getAll();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             Log.w("Device numbers", data.child("device_number").getValue().toString());
                             String[] conversion = data.child("device_number").getValue().toString().split(" ");
@@ -412,4 +425,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     }
                 });
     }
+
+
 }
