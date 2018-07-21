@@ -51,21 +51,12 @@ public class SpecificUserAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept = convertView.findViewById(R.id.bn_accept);
             holder.bnReject = convertView.findViewById(R.id.bn_reject);
             holder.bnRefresh = convertView.findViewById(R.id.bn_refresh);
+            holder.bnAccept.setVisibility(View.GONE);
+            holder.bnRefresh.setVisibility(View.GONE);
+            holder.bnReject.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {
             holder = (SpecificUserAdapter.ViewHolder) convertView.getTag();
-            holder.bnAccept.setText("Accept");
-            holder.bnAccept.setVisibility(View.VISIBLE);
-            holder.bnAccept.setEnabled(true);
-            holder.bnAccept.setTextColor(Color.parseColor("#7cb342"));
-            holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_accept));
-
-            holder.bnReject.setText("Reject");
-            holder.bnReject.setVisibility(View.VISIBLE);
-            holder.bnReject.setEnabled(true);
-
-            holder.bnRefresh.setVisibility(View.VISIBLE);
-            holder.bnRefresh.setEnabled(true);
         }
 
 
@@ -73,89 +64,6 @@ public class SpecificUserAdapter extends ArrayAdapter<ActivityArray> {
         SharedPreferences sharedPref = getContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
         String senderKey = sharedPref.getString("currentUserId", null);
 
-        holder.bnAccept.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-            Boolean check = db.updateData(activityArray.time, "1", "1");
-            Log.v("Update SQL", check.toString());
-            holder.bnAccept.setText("Accepted");
-            holder.bnAccept.setEnabled(false);
-            holder.bnReject.setVisibility(View.GONE);
-            holder.bnRefresh.setVisibility(View.GONE);
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
-            notifyingdataChanged();
-        });
-        holder.bnReject.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-            Boolean check = db.updateData(activityArray.time, "2", "1");
-            Log.v("Update SQL", check.toString());
-            holder.bnAccept.setVisibility(View.GONE);
-            holder.bnReject.setEnabled(false);
-            holder.bnReject.setText("Rejected");
-            holder.bnRefresh.setVisibility(View.GONE);
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
-            notifyingdataChanged();
-        });
-
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        String phoneNumber = sharedPreferences.getString("phonenumber", null);
-        String[] conversion = phoneNumber.split(" ");
-        phoneNumber = "";
-        for (String i : conversion) {
-            phoneNumber += i;
-        }
-        String finalPhoneNumber = phoneNumber;
-        holder.bnRefresh.setOnClickListener(view -> {
-            Boolean check = db.updateData(activityArray.time, "1", "0");
-            holder.bnAccept.setVisibility(View.VISIBLE);
-            holder.bnAccept.setText("Pending");
-            holder.bnAccept.setEnabled(false);
-            holder.bnReject.setVisibility(View.GONE);
-            holder.bnRefresh.setVisibility(View.GONE);
-            holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
-            holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");
-        });
-
-
-        String code1 = activityArray.code1;
-        String code2 = activityArray.code2;
-        String checkCode = code1 + code2;
-        switch (checkCode) {
-            case "10":
-                holder.bnAccept.setText("Pending");
-                holder.bnAccept.setEnabled(false);
-                holder.bnReject.setVisibility(View.GONE);
-                holder.bnRefresh.setVisibility(View.GONE);
-                holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
-                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
-                break;
-            case "01":
-                holder.bnRefresh.setVisibility(View.GONE);
-                break;
-            case "11":
-                holder.bnAccept.setText("Accepted");
-                holder.bnAccept.setEnabled(false);
-                holder.bnReject.setVisibility(View.GONE);
-                holder.bnRefresh.setVisibility(View.GONE);
-                break;
-            case "12":
-                holder.bnAccept.setVisibility(View.GONE);
-                holder.bnReject.setEnabled(false);
-                holder.bnReject.setText("Rejected");
-                break;
-            case "21":
-                holder.bnAccept.setVisibility(View.GONE);
-                holder.bnReject.setEnabled(false);
-                holder.bnReject.setText("Rejected");
-                holder.bnRefresh.setVisibility(View.GONE);
-                break;
-            default:
-                break;
-        }
 
         holder.tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
@@ -183,37 +91,6 @@ public class SpecificUserAdapter extends ArrayAdapter<ActivityArray> {
         return convertView;
     }
 
-    private void notifyingdataChanged() {
-        db = new DataBaseHelper(getContext());
-        Cursor cr = db.getAllData();
-        int count = 0;
-        ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
-        if (cr != null && cr.getCount() > 0) {
-            cr.moveToLast();
-            do {
-                String phoneNumber = cr.getString(1);
-                String[] conversionNumber = phoneNumber.split(" ");
-                phoneNumber = "";
-                for (String i : conversionNumber) {
-                    phoneNumber += i;
-                }
-                SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-                String name = sharedPreferences.getString(phoneNumber, null);
-                if (name == null) {
-                    name = phoneNumber;
-                }
-                if ((cr.getString(4) + cr.getString(5)).equals("01"))
-                    count++;
-                arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), phoneNumber));
-            }
-            while (cr.moveToPrevious());
-        }
-
-
-        activity.clear();
-        activity.addAll(arrayOfActivity);
-        notifyDataSetChanged();
-    }
 
     private String formatDate(String dateStr) {
         long yourmilliseconds = Long.parseLong(dateStr);

@@ -1,10 +1,12 @@
 package com.kalabhedia.gimme;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -171,21 +173,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             startActivity(intent);
 //                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                         } else if (menuItem.getItemId() == R.id.nav_logout) {
-                            mAuth = FirebaseAuth.getInstance();
-                            mAuth.signOut();
-                            if (!isNetworkAvailable()) {
-                                try {
-                                    setMobileDataEnabled(getApplicationContext(), true);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                            navigationView.setCheckedItem(R.id.nav_home);
+                            navigationView.getMenu().performIdentifierAction(R.id.nav_home, 0);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                            alertDialogBuilder.setTitle("Logout");
+                            alertDialogBuilder.setMessage("Once Logged Out, all your data will be deleted.\nDo you want to logout?");
+                            alertDialogBuilder.setPositiveButton("Yes",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface arg0, int arg1) {
+                                            mAuth = FirebaseAuth.getInstance();
+                                            mAuth.signOut();
+                                            if (!isNetworkAvailable()) {
+                                                try {
+                                                    setMobileDataEnabled(getApplicationContext(), true);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
+                                            reference.setValue(null);
+                                            clearApplicationData();
+                                            sh.edit().clear().commit();
+                                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
+                                            finish();
+                                        }
+                                    });
+
+                            alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
-                            }
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
-                            reference.setValue(null);
-                            clearApplicationData();
-                            sh.edit().clear().commit();
-                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
-                            finish();
+                            });
+
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
                         }
                         return true;
                     }

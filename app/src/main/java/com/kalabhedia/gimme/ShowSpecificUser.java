@@ -21,12 +21,20 @@ public class ShowSpecificUser extends AppCompatActivity {
         setContentView(R.layout.activity_show_specific_user);
         Bundle bundle = getIntent().getExtras();
         phoneNumber = bundle.getString("phoneNumber");
+        amount = bundle.getString("amount");
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString(phoneNumber, null);
+        String toolbarTitle = "";
         if (name == null)
-            setTitle(phoneNumber);
+            toolbarTitle = phoneNumber;
         else
-            setTitle(name);
+            toolbarTitle = name;
+        if (Integer.parseInt(amount) < 0)
+            toolbarTitle = "You owe " + toolbarTitle + " ₹" + (-1 * Integer.parseInt(amount));
+        else
+            toolbarTitle = toolbarTitle + " owes you" + " ₹" + amount;
+
+        setTitle(toolbarTitle);
         updateUI();
     }
 
@@ -38,7 +46,7 @@ public class ShowSpecificUser extends AppCompatActivity {
             cr.moveToLast();
             do {
                 String number = cr.getString(1);
-                if (cr.getString(1).equals(number))
+                if (cr.getString(1).equals(number) && ((cr.getString(4) + cr.getString(5)).equals("11")))
                     arrayOfActivity.add(new ActivityArray(cr.getString(0), phoneNumber, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), number));
             }
             while (cr.moveToPrevious());
