@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -14,11 +16,13 @@ import java.util.List;
 public class ShowSpecificUser extends AppCompatActivity {
     private String phoneNumber;
     private String amount;
+    private Button bnSettle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_specific_user);
+        bnSettle = findViewById(R.id.settle_up_button);
         Bundle bundle = getIntent().getExtras();
         phoneNumber = bundle.getString("phoneNumber");
         amount = bundle.getString("amount");
@@ -36,6 +40,21 @@ public class ShowSpecificUser extends AppCompatActivity {
 
         setTitle(toolbarTitle);
         updateUI();
+        String receiverId = getReceiverKey(phoneNumber);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        String senderKey = sharedPref.getString("currentUserId", null);
+        bnSettle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataBaseHelper db = new DataBaseHelper(getBaseContext());
+                long time = System.currentTimeMillis();
+                String timeStamp = "" + time;
+                Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
+//                AddingNewContactFragment.sendNotificationToUser(timeStamp,senderKey,receiverId,"0","0","","03");
+                bnSettle.setText("Settle Pending");
+                bnSettle.setClickable(false);
+            }
+        });
     }
 
     private void updateUI() {
@@ -46,6 +65,8 @@ public class ShowSpecificUser extends AppCompatActivity {
             cr.moveToLast();
             do {
                 String number = cr.getString(1);
+                if ((cr.getString(4) + cr.getString(5)).equals("30"))
+                    bnSettle.setText("Settle Pending");
                 if (cr.getString(1).equals(number) && ((cr.getString(4) + cr.getString(5)).equals("11")))
                     arrayOfActivity.add(new ActivityArray(cr.getString(0), phoneNumber, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), number));
             }
@@ -54,5 +75,21 @@ public class ShowSpecificUser extends AppCompatActivity {
             ListView listView = findViewById(R.id.lvItemsSpecificUser);
             listView.setAdapter(adapter);
         }
+    }
+
+    public String getReceiverKey(String user) {
+        OnlineUserDataBase dbUser = new OnlineUserDataBase(getApplicationContext());
+        Cursor cr = dbUser.getAllData();
+        cr.moveToFirst();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String numberTemp = cr.getString(0);
+                if (numberTemp.equals(user))
+                    return cr.getString(1);
+                cr.moveToNext();
+            }
+        }
+        return null;
     }
 }

@@ -69,33 +69,52 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh.setEnabled(true);
         }
 
-
+        String code1 = activityArray.code1;
+        String code2 = activityArray.code2;
         db = new DataBaseHelper(getContext());
         SharedPreferences sharedPref = getContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
         String senderKey = sharedPref.getString("currentUserId", null);
 
         holder.bnAccept.setOnClickListener(view -> {
             Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-            Boolean check = db.updateData(activityArray.time, "1", "1");
-            Log.v("Update SQL", check.toString());
-            holder.bnAccept.setText("Accepted");
+            String receiverKey = getReceiverKey(activityArray.number);
+            if (code2.equals("3")) {
+                Boolean check = db.updateData(activityArray.time, "3", "3");
+                Log.v("Update SQL", check.toString());
+                holder.bnAccept.setText("Settled");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "33");
+
+            } else {
+                Boolean check = db.updateData(activityArray.time, "1", "1");
+                Log.v("Update SQL", check.toString());
+                holder.bnAccept.setText("Accepted");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
+
+            }
             holder.bnAccept.setEnabled(false);
             holder.bnReject.setVisibility(View.GONE);
             holder.bnRefresh.setVisibility(View.GONE);
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
+
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {
             Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
-            Boolean check = db.updateData(activityArray.time, "2", "1");
-            Log.v("Update SQL", check.toString());
+            String receiverKey = getReceiverKey(activityArray.number);
+            if (code2.equals("3")) {
+                Boolean check = db.updateData(activityArray.time, "2", "3");
+                Log.v("Update SQL", check.toString());
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "32");
+
+            } else {
+                Boolean check = db.updateData(activityArray.time, "2", "1");
+                Log.v("Update SQL", check.toString());
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
+
+            }
             holder.bnAccept.setVisibility(View.GONE);
             holder.bnReject.setEnabled(false);
             holder.bnReject.setText("Rejected");
             holder.bnRefresh.setVisibility(View.GONE);
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
             notifyingdataChanged();
         });
 
@@ -109,7 +128,16 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         }
         String finalPhoneNumber = phoneNumber;
         holder.bnRefresh.setOnClickListener(view -> {
-            Boolean check = db.updateData(activityArray.time, "1", "0");
+            String receiverKey = getReceiverKey(activityArray.number);
+            if (code2.equals("3")) {
+                Boolean check = db.updateData(activityArray.time, "3", "0");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "03");
+
+            } else {
+                Boolean check = db.updateData(activityArray.time, "1", "0");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");
+
+            }
             holder.bnAccept.setVisibility(View.VISIBLE);
             holder.bnAccept.setText("Pending");
             holder.bnAccept.setEnabled(false);
@@ -117,13 +145,9 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh.setVisibility(View.GONE);
             holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
             holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
-            String receiverKey = getReceiverKey(activityArray.number);
-            AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");
         });
 
 
-        String code1 = activityArray.code1;
-        String code2 = activityArray.code2;
         String checkCode = code1 + code2;
         switch (checkCode) {
             case "10":
@@ -134,11 +158,27 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
                 holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
                 break;
+            case "30":
+                holder.bnAccept.setText("Pending");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setTextColor(Color.parseColor("#FFFFD800"));
+                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
+                break;
             case "01":
+                holder.bnRefresh.setVisibility(View.GONE);
+            case "03":
                 holder.bnRefresh.setVisibility(View.GONE);
                 break;
             case "11":
                 holder.bnAccept.setText("Accepted");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
+                holder.bnRefresh.setVisibility(View.GONE);
+                break;
+            case "33":
+                holder.bnAccept.setText("Settled");
                 holder.bnAccept.setEnabled(false);
                 holder.bnReject.setVisibility(View.GONE);
                 holder.bnRefresh.setVisibility(View.GONE);
@@ -148,7 +188,18 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnReject.setEnabled(false);
                 holder.bnReject.setText("Rejected");
                 break;
+            case "13":
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                break;
             case "21":
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                holder.bnRefresh.setVisibility(View.GONE);
+                break;
+            case "31":
                 holder.bnAccept.setVisibility(View.GONE);
                 holder.bnReject.setEnabled(false);
                 holder.bnReject.setText("Rejected");
@@ -166,20 +217,39 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             reasonStatement = " ";
         } else
             reasonStatement = "For " + reasonStatement;
-        int moneyInt = Integer.parseInt(moneyString);
-        if (moneyInt < 0) {
-            moneyInt = (-1) * moneyInt;
-            holder.im.setImageResource(R.drawable.circle_minus);
-            holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
-            statement = "to be given to " + statement;
+        int moneyInt = 0;
+        if (!moneyString.equals(""))
+            moneyInt = Integer.parseInt(moneyString);
+        if (code1.equals("3") || code2.equals("3")) {
+//            if (moneyInt < 0) {
+//                moneyInt = (-1) * moneyInt;
+//                holder.im.setImageResource(R.drawable.circle_minus);
+//                holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
+//                statement = "to be given to " + statement;
+//            } else {
+//                holder.im.setImageResource(R.drawable.circle_plus);
+//                holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
+//                statement = "to be taken from " + statement;
+//            }
+            holder.tvMoney.setText("");
+            holder.tvReason.setText("");
+            holder.tvOwe.setText(statement + " asks for settle up");
         } else {
-            holder.im.setImageResource(R.drawable.circle_plus);
-            holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
-            statement = "to be taken from " + statement;
+            if (moneyInt < 0) {
+                moneyInt = (-1) * moneyInt;
+                holder.im.setImageResource(R.drawable.circle_minus);
+                holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
+                statement = "to be given to " + statement;
+            } else {
+                holder.im.setImageResource(R.drawable.circle_plus);
+                holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
+                statement = "to be taken from " + statement;
+            }
+            holder.tvMoney.setText("₹" + moneyInt);
+            holder.tvOwe.setText(statement + "");
+            holder.tvReason.setText(reasonStatement);
         }
-        holder.tvMoney.setText("₹" + moneyInt);
-        holder.tvOwe.setText(statement + "");
-        holder.tvReason.setText(reasonStatement);
+
 
         return convertView;
     }

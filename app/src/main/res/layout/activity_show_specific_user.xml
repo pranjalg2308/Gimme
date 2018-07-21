@@ -7,6 +7,23 @@
     android:orientation="vertical"
     tools:context=".ShowSpecificUser">
 
+    <Button
+        android:id="@+id/settle_up_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="64dp"
+        android:layout_marginVertical="16dp"
+        android:background="@drawable/round_login_background"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="Settle up"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/tab_layout"
+        android:background="@drawable/toolbardrop_dropshadow" />
 
     <ListView
         android:id="@+id/lvItemsSpecificUser"
