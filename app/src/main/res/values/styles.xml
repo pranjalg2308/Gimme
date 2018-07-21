@@ -21,9 +21,9 @@
     </style>
 
     <style name="SpecificUser" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/oppositeColor</item>
-        <item name="colorPrimaryDark">@color/magnitude4</item>
-        <item name="colorAccent">@color/yellow</item>
+        <item name="colorPrimary">#2D3640</item>
+        <item name="colorPrimaryDark">#394450</item>
+        <item name="colorAccent">#394450</item>
     </style>
 
 </resources>
