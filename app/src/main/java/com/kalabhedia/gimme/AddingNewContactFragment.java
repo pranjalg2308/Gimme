@@ -206,7 +206,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                         open(view);
                         button.setEnabled(true);
                     } else {
-//                        if (!senderUserID.equals(receiverKey)) {
+                        if (!senderUserID.equals(receiverKey)) {
                         button.setEnabled(false);
 
                         reason = reason.trim();
@@ -231,9 +231,9 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                                 .remove(AddingNewContactFragment.this).commit();
 
                         ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-//                        } else {
-//                            alertmessage();
-//                        }
+                        } else {
+                            alertmessage();
+                        }
                     }
                 } else {
                     Toast.makeText(getContext(), "Amount field can't be empty", Toast.LENGTH_SHORT).show();
@@ -429,5 +429,11 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                 break;
         }
         amount.setSelection(amount.getText().length());
+    }
+
+    @Override
+    public void onDestroyView() {
+        db.close();
+        super.onDestroyView();
     }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -26,10 +27,11 @@ public class SendPendingNotificationService extends JobService {
     }
 
     private void lookingForPendingNotification(JobParameters jobParameters) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Notifications");
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
         String onlineUserId = sharedPreferences.getString("Current_user_id", null);
-        database.getReference("Notifications").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.keepSynced(true);
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<HashMap<String, String>> pendingNotification = new ArrayList<>();
@@ -44,19 +46,19 @@ public class SendPendingNotificationService extends JobService {
                                 item.put("phone_number", data1.child("phone_number").getValue().toString());
                                 item.put("Amount", data1.child("Amount").getValue().toString());
                                 item.put("Reason", data1.child("Reason").getValue().toString());
-                                pendingNotification.add(item);
-                                MessageRecieverService.DeletionFromRealtimeDatabase(data.getKey().toString(), onlineUserId);
+//                                pendingNotification.add(item);
+                                DeletionFromRealtimeDatabase(data.getKey().toString(), onlineUserId);
                             }
                         }
                     }
-                    if (pendingNotification.size() > 0) {
-                        for (HashMap<String, String> item : pendingNotification) {
-                            AddingNewContactFragment.sendNotificationToUser(item.get("timestamp"),
-                                    onlineUserId, item.get("receiver_key"),
-                                    item.get("phone_number"), item.get("Amount"),
-                                    item.get("Reason"), item.get("Code"));
-                        }
-                    }
+//                    if (pendingNotification.size() > 0) {
+//                        for (HashMap<String, String> item : pendingNotification) {
+//                            AddingNewContactFragment.sendNotificationToUser(item.get("timestamp"),
+//                                    onlineUserId, item.get("receiver_key"),
+//                                    item.get("phone_number"), item.get("Amount"),
+//                                    item.get("Reason"), item.get("Code"));
+//                        }
+//                    }
                     pendingNotification.clear();
                 }
                 jobFinished(jobParameters, false);
@@ -72,6 +74,29 @@ public class SendPendingNotificationService extends JobService {
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         return true;
+    }
+
+    void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
+//        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    for (DataSnapshot appleSnapshot : data.getChildren()) {
+                        if (appleSnapshot.child("From").getValue().toString().equals(senderUserID))
+                            appleSnapshot.getRef().removeValue();
+                    }
+                    Log.w("Notification: ", "Data deleted");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Notification", "onCancelled", databaseError.toException());
+            }
+        });
     }
 
 }
