@@ -106,69 +106,128 @@ public class MessageRecieverService extends FirebaseMessagingService {
      */
     private void showNotifications(String title, String msg, String phoneNumber, String timeStamp,
                                    String reason, String receiverKey, String senderKey, String code) {
-        Intent i = new Intent(this, MainActivity.class);
-        int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        id += uniqueId + " ";
-        String moneyString = msg.split(" ")[0];
-        db = new DataBaseHelper(this);
-        db.getWritableDatabase();
-        Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
-
-        msg = "₹" + msg.substring(1);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
-                i, PendingIntent.FLAG_UPDATE_CURRENT);
-        Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
-        intent.putExtra("Button clicked", "accept");
-        intent.putExtra("notificationID", uniqueId);
-        intent.putExtra("TimeStamp", timeStamp);
-        intent.putExtra("receiverKey", receiverKey);
-        intent.putExtra("senderkey", senderKey);
-        PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        intent.putExtra("Button clicked", "declined");
-        PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        String CHANNEL_ID = "channel_money_request";// The id of the channel.
-        CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
-                NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-                mNotificationManager.createNotificationChannel(mChannel);
-                Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
-                        .setContentText(msg)
-                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                        .setContentTitle(title)
-                        .setContentIntent(pendingIntent)
-                        .addAction(R.drawable.decline, "Accept", accept)
-                        .addAction(R.drawable.accept, "Decline", decline)
-                        .setSmallIcon(R.drawable.notif_icon)
-                        .setGroup("Gimme")
-                        .setAutoCancel(true)
-                        .build();
-                mNotificationManager.notify(uniqueId, notification1);
+        if (code.equals("03")) {
+            String message;
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+            String name = sharedPreferences.getString(phoneNumber, null);
+            String CHANNEL_ID = "Settle up";
+            if (name == null) {
+                message = phoneNumber + " Claims for Settle up";
             } else {
-                Notification notification = new Notification.Builder(this)
-                        .setContentText(msg)
-                        .setContentTitle(title)
-                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                        .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.notif_icon)
-                        .setAutoCancel(true)
-                        .addAction(R.drawable.accept, "Accept", accept)
-                        .addAction(R.drawable.decline, "Decline", decline)
-                        .setGroup("Gimme")
-                        .build();
-                mNotificationManager.notify(uniqueId, notification);
+                message = name + " Claims for Settle up";
+            }
+            int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+            Intent i = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
+                    i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                if (isAppSentToBackground(getApplicationContext())) {
-                    NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
+                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                    mNotificationManager.createNotificationChannel(mChannel);
+                    Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
+                            .setContentText(msg)
+                            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                            .setContentTitle(title)
+                            .setContentIntent(pendingIntent)
+                            .addAction(R.drawable.decline, "Accept", pendingIntent)
+                            .addAction(R.drawable.accept, "Decline", pendingIntent)
+                            .setSmallIcon(R.drawable.notif_icon)
+                            .setGroup("Gimme")
+                            .setAutoCancel(true)
+                            .build();
+                    mNotificationManager.notify(uniqueId, notification1);
+                } else {
+                    Notification notification = new Notification.Builder(this)
+                            .setContentText(msg)
+                            .setContentTitle(title)
+                            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(R.drawable.notif_icon)
+                            .setAutoCancel(true)
+                            .addAction(R.drawable.accept, "Accept", pendingIntent)
+                            .addAction(R.drawable.decline, "Decline", pendingIntent)
+                            .setGroup("Gimme")
+                            .build();
+                    mNotificationManager.notify(uniqueId, notification);
+
+                    if (isAppSentToBackground(getApplicationContext())) {
+                        NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+                    }
+
+
                 }
+            }
+
+        } else {
+            Intent i = new Intent(this, MainActivity.class);
+            int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+            id += uniqueId + " ";
+            String moneyString = msg.split(" ")[0];
+            db = new DataBaseHelper(this);
+            db.getWritableDatabase();
+            Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
+
+            msg = "₹" + msg.substring(1);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
+                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
+            intent.putExtra("Button clicked", "accept");
+            intent.putExtra("notificationID", uniqueId);
+            intent.putExtra("TimeStamp", timeStamp);
+            intent.putExtra("receiverKey", receiverKey);
+            intent.putExtra("senderkey", senderKey);
+            PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent.putExtra("Button clicked", "declined");
+            PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            String CHANNEL_ID = "channel_money_request";// The id of the channel.
+            CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
+                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                    mNotificationManager.createNotificationChannel(mChannel);
+                    Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
+                            .setContentText(msg)
+                            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                            .setContentTitle(title)
+                            .setContentIntent(pendingIntent)
+                            .addAction(R.drawable.decline, "Accept", accept)
+                            .addAction(R.drawable.accept, "Decline", decline)
+                            .setSmallIcon(R.drawable.notif_icon)
+                            .setGroup("Gimme")
+                            .setAutoCancel(true)
+                            .build();
+                    mNotificationManager.notify(uniqueId, notification1);
+                } else {
+                    Notification notification = new Notification.Builder(this)
+                            .setContentText(msg)
+                            .setContentTitle(title)
+                            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(R.drawable.notif_icon)
+                            .setAutoCancel(true)
+                            .addAction(R.drawable.accept, "Accept", accept)
+                            .addAction(R.drawable.decline, "Decline", decline)
+                            .setGroup("Gimme")
+                            .build();
+                    mNotificationManager.notify(uniqueId, notification);
+
+                    if (isAppSentToBackground(getApplicationContext())) {
+                        NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+                    }
 
 
+                }
             }
         }
     }
@@ -209,7 +268,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String[] checkingPhoneNumber = messageReceived.split(" ");
         String timeStamp = checkingPhoneNumber[checkingPhoneNumber.length - 1];
         int i;
-        if (code.equals("01")) {
+        if (code.equals("01") || code.equals("03")) {
             for (i = checkingPhoneNumber.length - 2; i > 0; i--) {
                 if (checkingPhoneNumber[i].charAt(0) == '+') {
                     phoneNumber = checkingPhoneNumber[i] + phoneNumber;
