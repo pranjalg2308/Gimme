@@ -321,6 +321,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 cr.moveToNext();
             }
         }
+        db.close();
         return null;
     }
 }

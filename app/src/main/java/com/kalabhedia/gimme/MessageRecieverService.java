@@ -69,9 +69,10 @@ public class MessageRecieverService extends FirebaseMessagingService {
     }
 
 
-    static void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
+    void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
 //        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
+        ref.keepSynced(true);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,6 +84,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     }
                     Log.w("Notification: ", "Data deleted");
                 }
+
             }
 
             @Override
