@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class OneFragment extends Fragment {
                     String userName = cr.getString(0);
                     if (sharedPreferences.getString(userName, null) != null)
                         userName = sharedPreferences.getString(userName, null);
-                    cardArrayList.add(new CardArray(userName, (verifiedSum) + ""));
+                    cardArrayList.add(new CardArray(userName, (verifiedSum) + "", cr.getString(0)));
                 }
                 cr.moveToNext();
             }

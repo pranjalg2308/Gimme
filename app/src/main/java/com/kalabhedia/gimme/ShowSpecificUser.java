@@ -1,17 +1,15 @@
 package com.kalabhedia.gimme;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShowSpecificUser extends AppCompatActivity {
     private String phoneNumber;
@@ -50,7 +48,7 @@ public class ShowSpecificUser extends AppCompatActivity {
                 long time = System.currentTimeMillis();
                 String timeStamp = "" + time;
                 Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
-//                AddingNewContactFragment.sendNotificationToUser(timeStamp,senderKey,receiverId,"0","0","","03");
+                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, "0", "0", "", "03");
                 bnSettle.setText("Settle Pending");
                 bnSettle.setClickable(false);
             }
