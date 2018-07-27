@@ -44,28 +44,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             holder.count.setText("₹ " + (-1 * money) + "");
             holder.count.setBackgroundResource(R.drawable.circle_minus);
         }
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("phoneNumber", cardArray.name);
-                bundle.putString("amount", cardArray.verifiedSum);
-                Intent intent = new Intent(mContext, ShowSpecificUser.class);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-            }
-        });
-        holder.count.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("phoneNumber", cardArray.phoneNumber);
-                bundle.putString("amount", cardArray.verifiedSum);
-                Intent intent = new Intent(mContext, ShowSpecificUser.class);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-            }
-        });
     }
 
 
@@ -74,7 +52,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         return CardList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView title, count;
         private ImageView thumbnail, overflow;
         private CardView cardView;
@@ -85,16 +63,20 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             title = (TextView) view.findViewById(R.id.card_title);
             count = (TextView) view.findViewById(R.id.count);
             cardView = view.findViewById(R.id.card_view);
+            view.setOnClickListener(this::onClick);
+
         }
 
         @Override
         public void onClick(View view) {
+            Bundle bundle = new Bundle();
+            bundle.putString("phoneNumber", cardArray.phoneNumber);
+            bundle.putString("amount", cardArray.verifiedSum);
+            Intent intent = new Intent(mContext, ShowSpecificUser.class);
+            intent.putExtras(bundle);
+            mContext.startActivity(intent);
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            return false;
-        }
     }
 }
 

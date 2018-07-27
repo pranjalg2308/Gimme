@@ -107,19 +107,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor cr = db.rawQuery(query, null);
         return cr;
     }
+
     public int getVerifiedSum(String name) {
+        Cursor cr = getUserData(name);
         int sum = 0;
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "select * from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
-        Cursor cr = db.rawQuery(query, null);
-        cr.moveToFirst();
-        while (cr.isAfterLast() == false) {
-            if ((cr.getString(4) + cr.getString(5)).equals("11"))
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                if ((cr.getString(4) + cr.getString(5)).equals("11"))
                 sum = sum + cr.getInt(2);
-            cr.moveToNext();
+                cr.moveToNext();
+            }
         }
         return sum;
     }
+
 
 }
 

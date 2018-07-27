@@ -94,7 +94,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept.setEnabled(false);
             holder.bnReject.setVisibility(View.GONE);
             holder.bnRefresh.setVisibility(View.GONE);
-
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {

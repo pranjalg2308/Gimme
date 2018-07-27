@@ -207,30 +207,30 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                         button.setEnabled(true);
                     } else {
                         if (!senderUserID.equals(receiverKey)) {
-                        button.setEnabled(false);
+                            button.setEnabled(false);
 
-                        reason = reason.trim();
-                        sendNotificationToUser(timeStamp,
-                                senderUserID,
-                                receiverKey,
-                                phoneNumber,
-                                (-1 * Integer.parseInt(amountEntered)) + "",
-                                reason,
-                                "01");
-
-
-                        saveInLocalDatabase(timeStamp, number, reason, amountEntered);
+                            reason = reason.trim();
+                            sendNotificationToUser(timeStamp,
+                                    senderUserID,
+                                    receiverKey,
+                                    phoneNumber,
+                                    (-1 * Integer.parseInt(amountEntered)) + "",
+                                    reason,
+                                    "01");
 
 
-                        OneFragment.fab.setVisibility(View.VISIBLE);
-                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-                        amount.setFocusable(false);
-                        contact.setFocusable(false);
-                        ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                        getFragmentManager().beginTransaction()
-                                .remove(AddingNewContactFragment.this).commit();
+                            saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
-                        ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+
+                            OneFragment.fab.setVisibility(View.VISIBLE);
+                            ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                            amount.setFocusable(false);
+                            contact.setFocusable(false);
+                            ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                            getFragmentManager().beginTransaction()
+                                    .remove(AddingNewContactFragment.this).commit();
+
+                            ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                         } else {
                             alertmessage();
                         }
