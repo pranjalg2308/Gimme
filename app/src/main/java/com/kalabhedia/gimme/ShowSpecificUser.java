@@ -37,7 +37,7 @@ public class ShowSpecificUser extends AppCompatActivity {
             toolbarTitle = toolbarTitle + " owes you" + " ₹" + amount;
 
         setTitle(toolbarTitle);
-        updateUI();
+        updateUI(phoneNumber);
         String receiverId = getReceiverKey(phoneNumber);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
         String senderKey = sharedPref.getString("currentUserId", null);
@@ -55,16 +55,18 @@ public class ShowSpecificUser extends AppCompatActivity {
         });
     }
 
-    private void updateUI() {
+    private void updateUI(String phoneNumber) {
         DataBaseHelper db = new DataBaseHelper(getApplicationContext());
-        Cursor cr = db.getAllData();
+        Cursor cr = db.getUserData(phoneNumber);
         ArrayList<ActivityArray> arrayOfActivity = new ArrayList<>();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToLast();
             do {
                 String number = cr.getString(1);
-                if ((cr.getString(4) + cr.getString(5)).equals("30"))
+                if ((cr.getString(4) + cr.getString(5)).equals("30")) {
                     bnSettle.setText("Settle Pending");
+                    bnSettle.setEnabled(false);
+                }
                 if (cr.getString(1).equals(number) && ((cr.getString(4) + cr.getString(5)).equals("11")))
                     arrayOfActivity.add(new ActivityArray(cr.getString(0), phoneNumber, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), number));
             }

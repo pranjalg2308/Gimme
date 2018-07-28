@@ -45,6 +45,7 @@ public class OneFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("phoneNumber", item.phoneNumber);
                 bundle.putString("amount", item.verifiedSum);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

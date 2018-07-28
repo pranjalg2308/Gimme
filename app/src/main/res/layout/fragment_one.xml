@@ -11,9 +11,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:drawSelectorOnTop="true"
-        android:focusable="true"
         android:gravity="center"
         android:numColumns="auto_fit"
         android:verticalSpacing="5dp" />
