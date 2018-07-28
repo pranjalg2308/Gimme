@@ -63,7 +63,7 @@ public class ShowSpecificUser extends AppCompatActivity {
             cr.moveToLast();
             do {
                 String number = cr.getString(1);
-                if ((cr.getString(4) + cr.getString(5)).equals("30")) {
+                if ((cr.getString(4) + cr.getString(5)).equals("30") || (cr.getString(4) + cr.getString(5)).equals("03")) {
                     bnSettle.setText("Settle Pending");
                     bnSettle.setEnabled(false);
                 }

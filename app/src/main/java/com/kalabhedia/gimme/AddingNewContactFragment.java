@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -221,7 +223,6 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
 
                             saveInLocalDatabase(timeStamp, number, reason, amountEntered);
 
-
                             OneFragment.fab.setVisibility(View.VISIBLE);
                             ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
                             amount.setFocusable(false);
@@ -292,14 +293,19 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     }
 
     public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
+            imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        }
         //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
         //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void saveInLocalDatabase(String time, String number, String reason, String amountEntered) {
@@ -396,6 +402,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     /**
      * @param view
      */
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onClick(View view) {
         int moneyInt;

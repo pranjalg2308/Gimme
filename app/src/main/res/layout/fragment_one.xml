@@ -16,7 +16,7 @@
         android:drawSelectorOnTop="true"
         android:gravity="center"
         android:numColumns="auto_fit"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="20dp" />
 
     <Button
         android:id="@+id/allSettled"

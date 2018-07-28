@@ -2,6 +2,7 @@ package com.kalabhedia.gimme;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -72,8 +73,15 @@ public class OneFragment extends Fragment {
                 int verifiedSum;
                 verifiedSum = dbSum.getVerifiedSum(numberTemp);
                 if (!(verifiedSum == 0)) {
-                    String userName = cr.getString(0);
-                    cardContent.add(new CardArray(userName, (verifiedSum) + "", cr.getString(0)));
+                    String number = cr.getString(0);
+                    SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+                    String name = sharedPreferences.getString(number, null);
+                    String toolbarTitle = "";
+                    if (name == null)
+                        toolbarTitle = number;
+                    else
+                        toolbarTitle = name;
+                    cardContent.add(new CardArray(toolbarTitle, (verifiedSum) + "", cr.getString(0)));
                 }
                 cr.moveToNext();
             }
