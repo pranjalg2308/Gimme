@@ -81,6 +81,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
         notificationData.put("From", senderUserID);
         notificationData.put("Reason", reason);
         notificationData.put("Type", "request");
+        NotificationReferernce.keepSynced(true);
         NotificationReferernce.child(receiverUserID).push().setValue(notificationData)
                 .addOnFailureListener(e -> Toast.makeText(context, "Error in sending data ", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {

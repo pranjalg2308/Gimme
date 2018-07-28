@@ -220,7 +220,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         if (!moneyString.equals(""))
             moneyInt = Integer.parseInt(moneyString);
         if (code1.equals("3") || code2.equals("3")) {
-            holder.im.setImageResource(R.drawable.circle_settle);
+//            holder.im.setImageResource(R.drawable.circle_settle);
             holder.tvMoney.setText("");
             holder.tvReason.setText("");
             holder.tvOwe.setText(statement + " asks for settle up");

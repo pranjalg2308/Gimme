@@ -23,7 +23,19 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@android:color/white">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:animationResolution="100"
+                android:foregroundGravity="right"
+                android:maxHeight="10dp"
+                android:maxWidth="10dp"
+                android:visibility="gone" />
+        </android.support.v7.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/content_frame"

@@ -69,7 +69,8 @@ public class TwoFragment extends Fragment {
             while (!cr.isAfterLast()) {
                 String numberTemp = cr.getString(0);
                 if (sharedPreferences.getString(numberTemp, null) != null) {
-                    cachedList.add(new FriendsArray((sharedPreferences.getString(numberTemp, null) + "(" + cr.getString(1) + ")"), numberTemp));
+                    cachedList.add(new FriendsArray((sharedPreferences.getString(numberTemp, null)), numberTemp));
+//                    + "(" + cr.getString(1) + ")"
                 }
                 cr.moveToNext();
             }
