@@ -1,46 +1,54 @@
 package com.kalabhedia.gimme;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class OneFragment extends Fragment {
     View view;
     public static FloatingActionButton fab;
-    private CardAdapter cardAdapter;
-    private List<CardArray> cardArrayList;
     private Context context;
-    private RecyclerView recyclerView;
     private Button allSettled;
+    private GridView gridView;
+    private GridViewAdapter gridAdapter;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_one, container, false);
-        recyclerView = view.findViewById(R.id.recycler_view);
         context = getContext();
-        fab = view.findViewById(R.id.fab);
         allSettled = (Button) view.findViewById(R.id.allSettled);
+
+        gridView = view.findViewById(R.id.gridView);
+        gridAdapter = new GridViewAdapter(context, R.layout.friends_card, getData());
+        gridView.setAdapter(gridAdapter);
+        fab = view.findViewById(R.id.fab);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                CardArray item = (CardArray) parent.getItemAtPosition(position);
+                Intent intent = new Intent(context, ShowSpecificUser.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("phoneNumber", item.phoneNumber);
+                bundle.putString("amount", item.verifiedSum);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         fab.setOnClickListener((View v) ->
         {
             ((MainActivity) getActivity()).viewPager.setVisibility(View.GONE);
@@ -48,85 +56,36 @@ public class OneFragment extends Fragment {
             ((MainActivity) getActivity()).swapFragment(new com.kalabhedia.gimme.AddingNewContactFragment(), null, null);
         });
 
-        cardArrayList = new ArrayList<>();
-        cardAdapter = new CardAdapter(context, cardArrayList);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(cardAdapter);
-        prepareCard();
         return view;
     }
 
-    private void prepareCard() {
-        OnlineUserDataBase db;
-        db = new OnlineUserDataBase(context);
+    private ArrayList<CardArray> getData() {
+        final ArrayList<CardArray> cardContent = new ArrayList<>();
+        OnlineUserDataBase db = new OnlineUserDataBase(context);
+
         DataBaseHelper dbSum = new DataBaseHelper(context);
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         Cursor cr = db.getAllData();
         if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
             while (!cr.isAfterLast()) {
                 String numberTemp = cr.getString(0);
-                int verifiedSum = dbSum.getVerifiedSum(numberTemp);
+                int verifiedSum;
+                verifiedSum = dbSum.getVerifiedSum(numberTemp);
                 if (!(verifiedSum == 0)) {
                     String userName = cr.getString(0);
-                    if (sharedPreferences.getString(userName, null) != null)
-                        userName = sharedPreferences.getString(userName, null);
-                    cardArrayList.add(new CardArray(userName, (verifiedSum) + "", cr.getString(0)));
+                    cardContent.add(new CardArray(userName, (verifiedSum) + "", cr.getString(0)));
                 }
                 cr.moveToNext();
             }
         }
-        if (cardArrayList.size() == 0) {
+        if (cardContent.size() == 0)
             allSettled.setVisibility(View.VISIBLE);
-        } else
+        else
             allSettled.setVisibility(View.GONE);
-        cardAdapter.notifyDataSetChanged();
-
+        return cardContent;
     }
 
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
 
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

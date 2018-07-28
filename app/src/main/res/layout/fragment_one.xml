@@ -6,7 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".OneFragment">
 
-    <include layout="@layout/content_main" />
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:drawSelectorOnTop="true"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="5dp" />
 
     <Button
         android:id="@+id/allSettled"

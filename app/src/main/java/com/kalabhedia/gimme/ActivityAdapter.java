@@ -94,7 +94,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnAccept.setEnabled(false);
             holder.bnReject.setVisibility(View.GONE);
             holder.bnRefresh.setVisibility(View.GONE);
-
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {
@@ -221,16 +220,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         if (!moneyString.equals(""))
             moneyInt = Integer.parseInt(moneyString);
         if (code1.equals("3") || code2.equals("3")) {
-//            if (moneyInt < 0) {
-//                moneyInt = (-1) * moneyInt;
-//                holder.im.setImageResource(R.drawable.circle_minus);
-//                holder.tvMoney.setTextColor(Color.parseColor("#F57F17"));
-//                statement = "to be given to " + statement;
-//            } else {
-//                holder.im.setImageResource(R.drawable.circle_plus);
-//                holder.tvMoney.setTextColor(Color.parseColor("#7cb342"));
-//                statement = "to be taken from " + statement;
-//            }
+            holder.im.setImageResource(R.drawable.circle_settle);
             holder.tvMoney.setText("");
             holder.tvReason.setText("");
             holder.tvOwe.setText(statement + " asks for settle up");

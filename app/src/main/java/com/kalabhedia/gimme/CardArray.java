@@ -11,7 +11,6 @@ public class CardArray {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.verifiedSum = money;
-        this.thumbnail = thumbnail;
     }
 
 }
