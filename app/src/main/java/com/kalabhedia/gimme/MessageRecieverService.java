@@ -12,7 +12,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -70,18 +69,16 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
 
     void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
 //        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
         ref.keepSynced(true);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    for (DataSnapshot appleSnapshot : data.getChildren()) {
+                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
                         if (appleSnapshot.child("From").getValue().toString().equals(senderUserID))
                             appleSnapshot.getRef().removeValue();
-                    }
                     Log.w("Notification: ", "Data deleted");
                 }
 
@@ -110,7 +107,10 @@ public class MessageRecieverService extends FirebaseMessagingService {
             String message;
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
             String name = sharedPreferences.getString(phoneNumber, null);
-            String CHANNEL_ID = "Settle up";
+            db.getWritableDatabase();
+            String moneyString = msg.split(" ")[0];
+            Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
+//            String CHANNEL_ID = "Settle up";
             if (name == null) {
                 message = phoneNumber + " Claims for Settle up";
             } else {
@@ -118,24 +118,37 @@ public class MessageRecieverService extends FirebaseMessagingService {
             }
             int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
             Intent i = new Intent(this, MainActivity.class);
+
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                     i, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
+            intent.putExtra("Button clicked", "accept");
+            intent.putExtra("notificationID", uniqueId);
+            intent.putExtra("TimeStamp", timeStamp);
+            intent.putExtra("receiverKey", receiverKey);
+            intent.putExtra("senderkey", senderKey);
+            intent.putExtra("code", code);
+            PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent.putExtra("Button clicked", "declined");
+            PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            String CHANNEL_ID = "channel_money_request";// The id of the channel.
+            CharSequence channelName = "Settle up";
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
+            if (!MainActivity.appIsInForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     int importance = NotificationManager.IMPORTANCE_HIGH;
                     NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
-                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, channelName, importance);
                     mNotificationManager.createNotificationChannel(mChannel);
                     Notification notification1 = new Notification.Builder(this, CHANNEL_ID)
-                            .setContentText(msg)
+                            .setContentText(message)
                             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                             .setContentTitle(title)
                             .setContentIntent(pendingIntent)
-                            .addAction(R.drawable.decline, "Accept", pendingIntent)
-                            .addAction(R.drawable.accept, "Decline", pendingIntent)
+                            .addAction(R.drawable.decline, "Accept", accept)
+                            .addAction(R.drawable.accept, "Decline", decline)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setGroup("Gimme")
                             .setAutoCancel(true)
@@ -143,20 +156,21 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     mNotificationManager.notify(uniqueId, notification1);
                 } else {
                     Notification notification = new Notification.Builder(this)
-                            .setContentText(msg)
+                            .setContentText(message)
                             .setContentTitle(title)
                             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                             .setContentIntent(pendingIntent)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setAutoCancel(true)
-                            .addAction(R.drawable.accept, "Accept", pendingIntent)
-                            .addAction(R.drawable.decline, "Decline", pendingIntent)
+                            .addAction(R.drawable.accept, "Accept", accept)
+                            .addAction(R.drawable.decline, "Decline", decline)
                             .setGroup("Gimme")
                             .build();
                     mNotificationManager.notify(uniqueId, notification);
 
-                    if (isAppSentToBackground(getApplicationContext())) {
-                        NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+                    if (MainActivity.appIsInForeground) {
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancelAll();
                     }
 
 
@@ -182,6 +196,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             intent.putExtra("TimeStamp", timeStamp);
             intent.putExtra("receiverKey", receiverKey);
             intent.putExtra("senderkey", senderKey);
+            intent.putExtra("code", code);
             PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             intent.putExtra("Button clicked", "declined");
             PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -190,7 +205,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (isAppSentToBackground(getApplicationContext()) && !MainActivity.appIsInForeground) {
+            if (!MainActivity.appIsInForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     int importance = NotificationManager.IMPORTANCE_HIGH;
                     NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.accept, "Previous", pendingIntent).build();
@@ -222,8 +237,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .build();
                     mNotificationManager.notify(uniqueId, notification);
 
-                    if (isAppSentToBackground(getApplicationContext())) {
-                        NotificationManagerCompat.from(getApplicationContext()).cancel(uniqueId);
+                    if (MainActivity.appIsInForeground) {
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancelAll();
                     }
 
 
@@ -246,6 +262,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String code = messageSplit[2];
         String senderKey = messageSplit[0];
         String receiverKey = messageSplit[1];
+        DeletionFromRealtimeDatabase(senderKey, receiverKey);
         messageReceived = "";
         for (int i = 3; i < messageSplit.length - 1; i++) {
             messageReceived += messageSplit[i] + " ";
@@ -297,7 +314,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
         }
-        DeletionFromRealtimeDatabase(senderKey, receiverKey);
+
     }
 }
 

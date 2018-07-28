@@ -48,9 +48,9 @@ public class ShowSpecificUser extends AppCompatActivity {
                 long time = System.currentTimeMillis();
                 String timeStamp = "" + time;
                 Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
-                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, "0", "0", "", "03");
+                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phoneNumber, "0", "", "03");
                 bnSettle.setText("Settle Pending");
-                bnSettle.setClickable(false);
+//                bnSettle.setClickable(false);
             }
         });
     }

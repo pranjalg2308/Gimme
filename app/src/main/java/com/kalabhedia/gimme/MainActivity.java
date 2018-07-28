@@ -37,6 +37,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Context context;
     private DataBaseHelper db;
     public static boolean appIsInForeground;
+    ProgressBar progressBar;
 
     @Override
     protected void onStart() {
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (checkExternalPermission())
             getSupportLoaderManager().initLoader(1, null, this);
         Dataupdate();
+        appIsInForeground = true;
     }
 
     @Override
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         scheduleJob();
         appIsInForeground = true;
+        progressBar = findViewById(R.id.progressBar);
 
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
@@ -147,71 +151,68 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-                        if (menuItem.getItemId() == R.id.nav_share) {
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            String shareBody = "Check This Out";
-                            String shareSub = "https://play.google.com/store/apps/details?id=com.kalabhedia.gimme";
-                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
-                            startActivity(Intent.createChooser(shareIntent, "Share Using"));
-                        } else if (menuItem.getItemId() == R.id.nav_rate) {
+                menuItem -> {
+                    // set item as selected to persist highlight
+                    menuItem.setChecked(true);
+                    // close drawer when item is tapped
+                    mDrawerLayout.closeDrawers();
+                    if (menuItem.getItemId() == R.id.nav_share) {
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        String shareBody = "Check This Out";
+                        String shareSub = "https://play.google.com/store/apps/details?id=com.kalabhedia.gimme";
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
+                        startActivity(Intent.createChooser(shareIntent, "Share Using"));
+                    } else if (menuItem.getItemId() == R.id.nav_rate) {
 
 
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
 
-                            //Copy App URL from Google Play Store.
-                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.kalabhedia.gimme"));
+                        //Copy App URL from Google Play Store.
+                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.kalabhedia.gimme"));
 
-                            startActivity(intent);
+                        startActivity(intent);
 //                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
-                        } else if (menuItem.getItemId() == R.id.nav_logout) {
-                            navigationView.setCheckedItem(R.id.nav_home);
-                            navigationView.getMenu().performIdentifierAction(R.id.nav_home, 0);
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                            alertDialogBuilder.setTitle("Logout");
-                            alertDialogBuilder.setMessage("Once Logged Out, all your data will be deleted.\nDo you want to logout?");
-                            alertDialogBuilder.setPositiveButton("Yes",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface arg0, int arg1) {
-                                            mAuth = FirebaseAuth.getInstance();
-                                            mAuth.signOut();
-                                            if (!isNetworkAvailable()) {
-                                                try {
-                                                    setMobileDataEnabled(getApplicationContext(), true);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
+                    } else if (menuItem.getItemId() == R.id.nav_logout) {
+                        navigationView.setCheckedItem(R.id.nav_home);
+                        navigationView.getMenu().performIdentifierAction(R.id.nav_home, 0);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                        alertDialogBuilder.setTitle("Logout");
+                        alertDialogBuilder.setMessage("Once Logged Out, all your data will be deleted.\nDo you want to logout?");
+                        alertDialogBuilder.setPositiveButton("Yes",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        mAuth = FirebaseAuth.getInstance();
+                                        mAuth.signOut();
+                                        if (!isNetworkAvailable()) {
+                                            try {
+                                                setMobileDataEnabled(getApplicationContext(), true);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
-                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
-                                            reference.setValue(null);
-                                            clearApplicationData();
-                                            sh.edit().clear().commit();
-                                            startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
-                                            finish();
                                         }
-                                    });
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
+                                        reference.setValue(null);
+                                        clearApplicationData();
+                                        sh.edit().clear().commit();
+                                        startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
+                                        finish();
+                                    }
+                                });
 
-                            alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
 
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-                        }
-                        return true;
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
                     }
+                    return true;
                 });
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout_id);
