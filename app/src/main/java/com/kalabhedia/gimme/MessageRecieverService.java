@@ -103,10 +103,13 @@ public class MessageRecieverService extends FirebaseMessagingService {
      */
     private void showNotifications(String title, String msg, String phoneNumber, String timeStamp,
                                    String reason, String receiverKey, String senderKey, String code) {
+        int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        id += uniqueId + " ";
         if (code.equals("03")) {
             String message;
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
             String name = sharedPreferences.getString(phoneNumber, null);
+            db = new DataBaseHelper(this);
             db.getWritableDatabase();
             String moneyString = msg.split(" ")[0];
             Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
@@ -116,7 +119,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
             } else {
                 message = name + " Claims for Settle up";
             }
-            int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
             Intent i = new Intent(this, MainActivity.class);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
@@ -179,8 +181,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         } else {
             Intent i = new Intent(this, MainActivity.class);
-            int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-            id += uniqueId + " ";
             String moneyString = msg.split(" ")[0];
             db = new DataBaseHelper(this);
             db.getWritableDatabase();

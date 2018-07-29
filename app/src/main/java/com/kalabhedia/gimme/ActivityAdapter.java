@@ -68,6 +68,14 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh.setVisibility(View.VISIBLE);
             holder.bnRefresh.setEnabled(true);
         }
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString("phonenumber", null);
+        String[] conversion = phoneNumber.split(" ");
+        phoneNumber = "";
+        for (String i : conversion) {
+            phoneNumber += i;
+        }
+        String finalPhoneNumber = phoneNumber;
 
         String code1 = activityArray.code1;
         String code2 = activityArray.code2;
@@ -82,13 +90,13 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 Boolean check = db.updateData(activityArray.time, "3", "3");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Settled");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "33");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "33");
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "1", "1");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Accepted");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "11");
 
             }
             holder.bnAccept.setEnabled(false);
@@ -102,12 +110,12 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             if (code2.equals("3")) {
                 Boolean check = db.updateData(activityArray.time, "2", "3");
                 Log.v("Update SQL", check.toString());
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "32");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "32");
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "2", "1");
                 Log.v("Update SQL", check.toString());
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "12");
 
             }
             holder.bnAccept.setVisibility(View.GONE);
@@ -118,14 +126,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         });
 
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        String phoneNumber = sharedPreferences.getString("phonenumber", null);
-        String[] conversion = phoneNumber.split(" ");
-        phoneNumber = "";
-        for (String i : conversion) {
-            phoneNumber += i;
-        }
-        String finalPhoneNumber = phoneNumber;
         holder.bnRefresh.setOnClickListener(view -> {
             String receiverKey = getReceiverKey(activityArray.number);
             if (code2.equals("3")) {

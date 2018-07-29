@@ -19,7 +19,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         String code = intent.getStringExtra("code");
         int notificationId = intent.getIntExtra("notificationID", 0);
         NotificationManagerCompat.from(context).cancel(notificationId);
-        if (code.equals("11") || code.equals("21")) {
+        if (code.equals("11") || code.equals("21") || code.equals("01")) {
             if (s.equals("accept")) {
                 db.updateData(timeStamp, "1", "1");
                 AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", "11");

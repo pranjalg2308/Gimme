@@ -41,16 +41,18 @@ public class ShowSpecificUser extends AppCompatActivity {
         String receiverId = getReceiverKey(phoneNumber);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
         String senderKey = sharedPref.getString("currentUserId", null);
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String phNumber = preferences.getString("phonenumber", null);
         bnSettle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DataBaseHelper db = new DataBaseHelper(getBaseContext());
                 long time = System.currentTimeMillis();
                 String timeStamp = "" + time;
-                Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
-                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phoneNumber, "0", "", "03");
+                Boolean result = db.insertData(timeStamp, phNumber, "", "0", "3", "0");
+                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phNumber, "0", "", "03");
                 bnSettle.setText("Settle Pending");
-//                bnSettle.setClickable(false);
+                bnSettle.setClickable(false);
             }
         });
     }
