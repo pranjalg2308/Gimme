@@ -38,8 +38,8 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
             }
         } else {
             if (s.equals("accept")) {
-                db.updateData(timeStamp, "3", "3");
-                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", "33");
+                db.updateData(timeStamp, "1", "3");
+                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", "31");
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
