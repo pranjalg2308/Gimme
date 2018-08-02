@@ -71,6 +71,14 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.bnRefresh.setVisibility(View.VISIBLE);
             holder.bnRefresh.setEnabled(true);
         }
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String phoneNumber = sharedPreferences.getString("phonenumber", null);
+        String[] conversion = phoneNumber.split(" ");
+        phoneNumber = "";
+        for (String i : conversion) {
+            phoneNumber += i;
+        }
+        String finalPhoneNumber = phoneNumber;
 
         String code1 = activityArray.code1;
         String code2 = activityArray.code2;
@@ -121,14 +129,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         });
 
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        String phoneNumber = sharedPreferences.getString("phonenumber", null);
-        String[] conversion = phoneNumber.split(" ");
-        phoneNumber = "";
-        for (String i : conversion) {
-            phoneNumber += i;
-        }
-        String finalPhoneNumber = phoneNumber;
         holder.bnRefresh.setOnClickListener(view -> {
             String receiverKey = getReceiverKey(activityArray.number);
             if (code2.equals("3")) {
