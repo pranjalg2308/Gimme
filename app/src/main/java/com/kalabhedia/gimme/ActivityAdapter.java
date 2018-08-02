@@ -90,13 +90,13 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 Boolean check = db.updateData(activityArray.time, "3", "3");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Settled");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "33");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "33");
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "1", "1");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Accepted");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "11");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "11");
 
             }
             holder.bnAccept.setEnabled(false);
@@ -110,12 +110,12 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             if (code2.equals("3")) {
                 Boolean check = db.updateData(activityArray.time, "2", "3");
                 Log.v("Update SQL", check.toString());
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "32");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "32");
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "2", "1");
                 Log.v("Update SQL", check.toString());
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "12");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, "0", "0", " ", "12");
 
             }
             holder.bnAccept.setVisibility(View.GONE);
