@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,7 +83,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String senderKey = sharedPref.getString("currentUserId", null);
 
         holder.bnAccept.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
             String receiverKey = getReceiverKey(activityArray.number);
             if (code2.equals("3")) {
                 Boolean check = db.updateData(activityArray.time, "3", "3");
@@ -105,7 +103,6 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             notifyingdataChanged();
         });
         holder.bnReject.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
             String receiverKey = getReceiverKey(activityArray.number);
             if (code2.equals("3")) {
                 Boolean check = db.updateData(activityArray.time, "2", "3");
