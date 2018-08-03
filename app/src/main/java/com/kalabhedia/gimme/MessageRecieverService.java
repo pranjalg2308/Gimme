@@ -77,8 +77,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                        if (appleSnapshot.child("From").getValue().toString().equals(senderUserID))
-                            appleSnapshot.getRef().removeValue();
+                    if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
+                        appleSnapshot.getRef().removeValue();
                     Log.w("Notification: ", "Data deleted");
                 }
 
@@ -241,8 +241,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
                         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancelAll();
                     }
-
-
                 }
             }
         }
@@ -313,6 +311,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
         } else {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
+            if (code.equals("31")) {
+                db.deleteUserData(phoneNumber);
+            }
         }
 
     }

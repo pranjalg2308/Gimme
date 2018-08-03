@@ -90,17 +90,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
     }
 
-    public boolean updateOnSent(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_7, 1);
-        int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
-        if (result > 0)
-            return true;
-        else
-            return false;
-    }
+//    public boolean updateOnSent(String id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COL_7, 1);
+//        int result = db.update(TABLE_NAME, contentValues, COL_1 + "=?", new String[]{id});
+//        if (result > 0)
+//            return true;
+//        else
+//            return false;
+//    }
 
+    public void deleteUserData(String name) {
+
+    }
     public Cursor getUserData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "select * from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
