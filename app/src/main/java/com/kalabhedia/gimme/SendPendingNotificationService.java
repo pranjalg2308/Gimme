@@ -85,7 +85,7 @@ public class SendPendingNotificationService extends JobService {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     for (DataSnapshot appleSnapshot : data.getChildren()) {
-                        if (appleSnapshot.child("From").getValue().toString().equals(senderUserID))
+                        if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
                             appleSnapshot.getRef().removeValue();
                     }
                     Log.w("Notification: ", "Data deleted");
