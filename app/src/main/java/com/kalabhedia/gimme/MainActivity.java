@@ -432,19 +432,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 onlineUserDataBase.insertData(converted, data.getKey(), 0);
                             }
                         }
-//                        Cursor cr = onlineUserDataBase.getAllData();
-//                        if (cr != null && cr.getCount() > 0) {
-//                            cr.moveToFirst();
-//                            while (!cr.isAfterLast()) {
-//                                String numberTemp = cr.getString(0);
-//                                if (sharedPreferences.getString(numberTemp, null) == null) {
-//                                    onlineUserDataBase.deleteUser(numberTemp);
-//                                }
-//                                cr.moveToNext();
-//                            }
-//
-//                        }
-//                        Log.w("Contacts", allEntries.toString());
                     }
 
                     @Override

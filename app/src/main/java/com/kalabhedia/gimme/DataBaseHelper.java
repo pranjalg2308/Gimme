@@ -102,7 +102,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //    }
 
     public void deleteUserData(String name) {
-
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
+        db.rawQuery(query, null);
     }
     public Cursor getUserData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
