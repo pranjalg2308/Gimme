@@ -16,6 +16,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         String timeStamp = intent.getStringExtra("TimeStamp");
         String receiverKey = intent.getStringExtra("receiverKey");
         String senderKey = intent.getStringExtra("senderkey");
+        String phoneNumber = intent.getStringExtra("phonenumber");
         String code = intent.getStringExtra("code");
         int notificationId = intent.getIntExtra("notificationID", 0);
         NotificationManagerCompat.from(context).cancel(notificationId);
@@ -40,6 +41,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
             if (s.equals("accept")) {
                 db.updateData(timeStamp, "1", "3");
                 AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", "31");
+                db.deleteUserData(phoneNumber);
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);

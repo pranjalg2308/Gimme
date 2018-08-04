@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
     private ImageView NavHeaderImageView;
-    Context context;
+    static Context context;
     private DataBaseHelper db;
     public static boolean appIsInForeground;
     ProgressBar progressBar;
@@ -98,10 +98,54 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         appIsInForeground = false;
     }
 
+    public static void Dataupdate() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
+        TreeSet<String> contactsContainingApp = new TreeSet<>();
+        ArrayList<String> receiverKey = new ArrayList<>();
+        ArrayList<String> phoneNumbers = new ArrayList<>();
+        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference("Users").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Map<String, ?> allEntries = sharedPreferences.getAll();
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Log.w("Device numbers", data.child("device_number").getValue().toString());
+                            String[] conversion = data.child("device_number").getValue().toString().split(" ");
+                            String converted = "";
+                            for (String i : conversion) {
+                                converted += i;
+                            }
+//                            onlineUserDataBase.clearDatabase();
+                            if (sharedPreferences.getString(converted, null) != null) {
+                                contactsContainingApp.add(sharedPreferences.getString(converted, null));
+                                onlineUserDataBase.insertData(converted, data.getKey(), 0);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
+                        Toast.makeText(context, "Unable to fetch users", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         appIsInForeground = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        contactdetails = new ArrayList<>();
+        if (checkExternalPermission())
+            getSupportLoaderManager().initLoader(1, null, this);
+        appIsInForeground = true;
     }
 
     @Override
@@ -130,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NavigationView navigationView = findViewById(R.id.navigation);
         View headerView = navigationView.getHeaderView(0);
         NavHeaderUserName = (TextView) headerView.findViewById(R.id.nav_header_name);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        String userKey = sharedPref.getString("currentUserId", null);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -193,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                                 e.printStackTrace();
                                             }
                                         }
+                                        deleteUserFromDatabase(userKey);
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
                                         reference.setValue(null);
                                         clearApplicationData();
@@ -407,39 +454,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    private void Dataupdate() {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
-        TreeSet<String> contactsContainingApp = new TreeSet<>();
-        ArrayList<String> receiverKey = new ArrayList<>();
-        ArrayList<String> phoneNumbers = new ArrayList<>();
-        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference("Users").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        Map<String, ?> allEntries = sharedPreferences.getAll();
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            Log.w("Device numbers", data.child("device_number").getValue().toString());
-                            String[] conversion = data.child("device_number").getValue().toString().split(" ");
-                            String converted = "";
-                            for (String i : conversion) {
-                                converted += i;
-                            }
-//                            onlineUserDataBase.clearDatabase();
-                            if (sharedPreferences.getString(converted, null) != null) {
-                                contactsContainingApp.add(sharedPreferences.getString(converted, null));
-                                onlineUserDataBase.insertData(converted, data.getKey(), 0);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.w("MyApp", "getUser:onCancelled", databaseError.toException());
-                        Toast.makeText(context, "Unable to fetch users", Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void deleteUserFromDatabase(String userKey) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userKey);
+        ref.keepSynced(true);
+        ref.setValue(null);
     }
 
 
