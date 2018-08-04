@@ -105,6 +105,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                                    String reason, String receiverKey, String senderKey, String code) {
         int uniqueId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         id += uniqueId + " ";
+        OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(getApplicationContext());
+        onlineUserDataBase.insertData(phoneNumber, receiverKey, 0);
         if (code.equals("03")) {
             String message;
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
@@ -113,14 +115,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db.getWritableDatabase();
             String moneyString = msg.split(" ")[0];
             Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
-//            String CHANNEL_ID = "Settle up";
             if (name == null) {
                 message = phoneNumber + " Claims for Settle up";
             } else {
                 message = name + " Claims for Settle up";
             }
             Intent i = new Intent(this, MainActivity.class);
-
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                     i, PendingIntent.FLAG_UPDATE_CURRENT);
             Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
@@ -130,12 +130,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
             intent.putExtra("receiverKey", receiverKey);
             intent.putExtra("senderkey", senderKey);
             intent.putExtra("code", code);
+            intent.putExtra("phonenumber", phoneNumber);
             PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             intent.putExtra("Button clicked", "declined");
             PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             String CHANNEL_ID = "channel_money_request";// The id of the channel.
             CharSequence channelName = "Settle up";
-
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (!MainActivity.appIsInForeground) {
@@ -185,7 +185,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db = new DataBaseHelper(this);
             db.getWritableDatabase();
             Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
-
             msg = "₹" + msg.substring(1);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
