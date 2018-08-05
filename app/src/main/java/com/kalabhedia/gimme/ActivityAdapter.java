@@ -208,6 +208,11 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         holder.tvTime.setText(formatDate(activityArray.time));
         String moneyString = activityArray.money;
         String statement = activityArray.name;
+        SharedPreferences Pref = getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String myNumber = Pref.getString("phonenumber", null);
+        if (statement.equals(myNumber)) {
+            statement = "You";
+        }
         String reasonStatement = activityArray.reason;
         if (reasonStatement.trim().isEmpty()) {
             reasonStatement = " ";
