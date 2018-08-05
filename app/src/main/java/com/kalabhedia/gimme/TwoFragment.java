@@ -58,6 +58,7 @@ public class TwoFragment extends Fragment {
 //                            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, contactsContainingApp.toArray());
 //                            listOfUsers.setAdapter(arrayAdapter);
 //                        }
+        MainActivity.Dataupdate();
         OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(getContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         ArrayList<FriendsArray> cachedList = new ArrayList<FriendsArray>();
