@@ -104,8 +104,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ArrayList<String> receiverKey = new ArrayList<>();
         ArrayList<String> phoneNumbers = new ArrayList<>();
         OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference("Users").addListenerForSingleValueEvent(
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users");
+        database.keepSynced(true);
+        database.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -240,8 +241,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                             }
                                         }
                                         deleteUserFromDatabase(userKey);
-                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
-                                        reference.setValue(null);
                                         clearApplicationData();
                                         sh.edit().clear().commit();
                                         startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
