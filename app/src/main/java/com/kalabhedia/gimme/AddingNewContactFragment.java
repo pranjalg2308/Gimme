@@ -259,7 +259,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     public void open(View view) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setTitle("Share Gimme");
-        alertDialogBuilder.setMessage("User does not have this app.\n Do you want to share this app?");
+        alertDialogBuilder.setMessage("User does not have this app.\nDo you want to share this app?");
         alertDialogBuilder.setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
                     @Override

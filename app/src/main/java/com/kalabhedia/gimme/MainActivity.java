@@ -257,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         alertDialog.show();
+                    } else if (menuItem.getItemId() == R.id.nav_about) {
+                        startActivity(new Intent(MainActivity.this, About.class));
                     }
                     return true;
                 });

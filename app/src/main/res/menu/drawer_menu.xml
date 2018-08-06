@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/grp_option"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
             android:title="Home" />
         <item
             android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
             android:title="Share App" />
         <item
             android:id="@+id/nav_rate"
+            android:icon="@drawable/ic_rate"
             android:title="Rate Us" />
         <item
             android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_out"
             android:title="Log Out" />
-
+    </group>
+    <group
+        android:id="@+id/grp_about"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_about"
+            android:title="About"></item>
     </group>
 </menu>
