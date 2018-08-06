@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                                 e.printStackTrace();
                                             }
                                         }
-                                        deleteUserFromDatabase(userKey);
                                         clearApplicationData();
                                         sh.edit().clear().commit();
                                         startActivity(new Intent(MainActivity.this, PhoneAuthActivity.class));
@@ -453,12 +452,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             return name;
         }
-    }
-
-    private void deleteUserFromDatabase(String userKey) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userKey);
-        ref.keepSynced(true);
-        ref.setValue(null);
     }
 
 
