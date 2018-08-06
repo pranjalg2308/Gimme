@@ -54,6 +54,7 @@ public class About extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void sendMail() {
+
         String mailto = "mailto:pranjalg2308@gmail.com" +
                 "?cc=" + "shukladivyanshu967@gmail.com" +
                 "&subject=" + Uri.encode("Gimme") +
@@ -68,13 +69,8 @@ public class About extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void openWebPage(String url) {
-        try {
-            Uri webpage = Uri.parse(url);
-            Intent myIntent = new Intent(Intent.ACTION_VIEW, webpage);
-            startActivity(myIntent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "No application can handle this request. Please install a web browser or check your URL.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
+        Toast.makeText(About.this, "Wait a while....", Toast.LENGTH_SHORT).show();
+        Intent implicit = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(implicit);
     }
 }
