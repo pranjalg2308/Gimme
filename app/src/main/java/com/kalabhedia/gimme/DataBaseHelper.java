@@ -103,8 +103,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public void deleteUserData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "delete from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
-        db.rawQuery(query, null);
+        Cursor cr = getUserData(name);
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                if (cr.getString(1).equals(name))
+                    db.delete(TABLE_NAME, COL_1 + "=" + cr.getString(0), null);
+
+                cr.moveToNext();
+            }
+        }
     }
     public Cursor getUserData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
