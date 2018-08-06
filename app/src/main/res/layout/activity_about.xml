@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
     android:orientation="vertical"
     tools:context=".About">
 
@@ -12,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:cardBackgroundColor="#FF424242"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -42,7 +40,6 @@
                     android:paddingRight="16dp"
                     android:text="@string/app_name"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                    android:textColor="#e1e1e1"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -51,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:background="@drawable/background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
@@ -60,7 +58,6 @@
                     android:id="@+id/icon_info"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:tint="#e1e1e1"
                     app:srcCompat="@drawable/ic_about"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
@@ -77,17 +74,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/version"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="#e1e1e1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                     <TextView
                         android:id="@+id/app_version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1.0.0"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="#e1e1e1"
-                        tools:ignore="HardcodedText" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -100,14 +94,16 @@
                 android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:background="@drawable/background"
                 android:paddingLeft="16dp"
+                android:focusable="true"
+                android:minHeight="@dimen/md_listitem_height"
                 android:paddingRight="16dp">
 
                 <ImageView
                     android:id="@+id/icon_github"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:tint="#e1e1e1"
                     app:srcCompat="@drawable/ic_github_circle_white_24dp"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
@@ -119,8 +115,7 @@
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:text="Fork On Github"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="#e1e1e1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
 
@@ -134,7 +129,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
-        app:cardBackgroundColor="#FF424242"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -152,24 +146,24 @@
                 android:paddingRight="16dp"
                 android:paddingTop="24dp"
                 android:text="Developers"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="#e1e1e1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <LinearLayout
                 android:id="@+id/pranjal_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingVertical="8dp">
+                android:background="@drawable/background"
+                android:clickable="true"
+                android:minHeight="@dimen/md_listitem_height"
+                android:paddingRight="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:tint="#e1e1e1"
+                    android:tint="#000"
                     app:srcCompat="@drawable/ic_person"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
@@ -186,8 +180,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pranjal"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="#e1e1e1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
                 </LinearLayout>
 
 
@@ -201,20 +194,21 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
+                android:background="@drawable/background"
+                android:focusable="true"
                 android:paddingRight="16dp"
-                android:paddingVertical="8dp">
+                android:minHeight="@dimen/md_listitem_height">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:tint="#e1e1e1"
+                    android:tint="#000"
                     app:srcCompat="@drawable/ic_person"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="32dp"
                     android:orientation="vertical"
                     android:paddingBottom="8dp"
@@ -224,8 +218,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/divyanshu"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="#e1e1e1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
                 </LinearLayout>
 
 
@@ -238,16 +231,16 @@
                 android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:background="@drawable/background"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingVertical="8dp">
+                android:focusable="true"
+                android:minHeight="@dimen/md_listitem_height">
 
                 <ImageView
                     android:id="@+id/icon_email"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:tint="#e1e1e1"
-
                     app:srcCompat="@drawable/ic_email"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
@@ -259,8 +252,7 @@
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:text="@string/write_an_email"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="#e1e1e1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
 
