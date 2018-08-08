@@ -286,15 +286,15 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String[] checkingPhoneNumber = messageReceived.split(" ");
         String timeStamp = checkingPhoneNumber[checkingPhoneNumber.length - 1];
         int i;
-        if (code.equals("01") || code.equals("03")) {
-            for (i = checkingPhoneNumber.length - 2; i > 0; i--) {
-                if (checkingPhoneNumber[i].charAt(0) == '+') {
-                    phoneNumber = checkingPhoneNumber[i] + phoneNumber;
-                    break;
-                } else {
-                    phoneNumber = checkingPhoneNumber[i] + phoneNumber;
-                }
+        for (i = checkingPhoneNumber.length - 2; i > 0; i--) {
+            if (checkingPhoneNumber[i].charAt(0) == '+') {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
+                break;
+            } else {
+                phoneNumber = checkingPhoneNumber[i] + phoneNumber;
             }
+        }
+        if (code.equals("01") || code.equals("03")) {
 
 
             int j;

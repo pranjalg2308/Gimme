@@ -23,7 +23,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         if (code.equals("11") || code.equals("21") || code.equals("01")) {
             if (s.equals("accept")) {
                 db.updateData(timeStamp, "1", "1");
-                sendInBackground(timeStamp, senderKey, receiverKey);
+                sendInBackground(timeStamp, senderKey, receiverKey, "11");
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
@@ -31,7 +31,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
             }
             if (s.equals("declined")) {
                 db.updateData(timeStamp, "2", "1");
-                sendInBackground(timeStamp, senderKey, receiverKey);
+                sendInBackground(timeStamp, senderKey, receiverKey, "12");
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
@@ -40,7 +40,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
         } else {
             if (s.equals("accept")) {
                 db.updateData(timeStamp, "1", "3");
-                sendInBackground(timeStamp, senderKey, receiverKey);
+                sendInBackground(timeStamp, senderKey, receiverKey, "31");
                 db.deleteUserData(phoneNumber);
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
@@ -49,7 +49,7 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
             }
             if (s.equals("declined")) {
                 db.updateData(timeStamp, "3", "2");
-                sendInBackground(timeStamp, senderKey, receiverKey);
+                sendInBackground(timeStamp, senderKey, receiverKey, "23");
                 if (!MessageRecieverService.isAppSentToBackground(context)) {
                     Intent gcm_rec = new Intent("your_action");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(gcm_rec);
@@ -59,10 +59,10 @@ public class NotificationBroadCastReceiver extends BroadcastReceiver {
 
     }
 
-    public void sendInBackground(String timeStamp, String senderKey, String receiverKey) {
+    public void sendInBackground(String timeStamp, String senderKey, String receiverKey, String code) {
         new Thread(new Runnable() {
             public void run() {
-                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", "11");
+                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverKey, "0", "0", " ", code);
             }
         }).start();
     }

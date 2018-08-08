@@ -196,9 +196,9 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnRefresh.setVisibility(View.GONE);
                 break;
             case "31":
-                holder.bnAccept.setVisibility(View.GONE);
-                holder.bnReject.setEnabled(false);
-                holder.bnReject.setText("Rejected");
+                holder.bnAccept.setText("Settled");
+                holder.bnAccept.setEnabled(false);
+                holder.bnReject.setVisibility(View.GONE);
                 holder.bnRefresh.setVisibility(View.GONE);
                 break;
             default:
