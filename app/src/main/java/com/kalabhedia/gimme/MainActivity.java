@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private DataBaseHelper db;
     public static boolean appIsInForeground;
     ProgressBar progressBar;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onStart() {
