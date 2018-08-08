@@ -69,10 +69,10 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
 
     void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
+        FirebaseDatabase.getInstance().goOnline();
+        FirebaseDatabase.getInstance().getReference().keepSynced(true);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
-//        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
         ref.keepSynced(true);
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -170,12 +170,11 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .build();
                     mNotificationManager.notify(uniqueId, notification);
 
-                    if (MainActivity.appIsInForeground) {
-                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancelAll();
-                    }
 
-
+                }
+                if (MainActivity.appIsInForeground) {
+                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancelAll();
                 }
             }
 
@@ -185,7 +184,10 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db = new DataBaseHelper(this);
             db.getWritableDatabase();
             Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
-            msg = "₹" + msg.substring(1);
+            if (moneyString.startsWith("-"))
+                msg = "₹" + msg.substring(1);
+            else
+                msg = "₹" + msg;
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                     i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -219,6 +221,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .addAction(R.drawable.accept, "Decline", decline)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setGroup("Gimme")
+                            .setOngoing(true)
                             .setAutoCancel(true)
                             .build();
                     mNotificationManager.notify(uniqueId, notification1);
@@ -230,16 +233,17 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .setContentIntent(pendingIntent)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setAutoCancel(true)
+                            .setOngoing(true)
                             .addAction(R.drawable.accept, "Accept", accept)
                             .addAction(R.drawable.decline, "Decline", decline)
                             .setGroup("Gimme")
                             .build();
                     mNotificationManager.notify(uniqueId, notification);
 
-                    if (MainActivity.appIsInForeground) {
-                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancelAll();
-                    }
+                }
+                if (MainActivity.appIsInForeground) {
+                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancelAll();
                 }
             }
         }

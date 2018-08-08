@@ -60,6 +60,7 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     private long time;
     String timeStamp = "";
     DataBaseHelper db;
+    private static final String TAG = "NewContactFragment";
 
 
     Button bnAmount10, bnAmount50, bnAmount100, bnAmount500, bnAmount1000;
@@ -73,6 +74,9 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
      * @param reason
      */
     public static void sendNotificationToUser(String timeStamp, String senderUserID, String receiverUserID, String phoneNumber, String amountEntered, String reason, String code) {
+        Log.w(TAG, "sendNotificationToUser: notification sent");
+        FirebaseDatabase.getInstance().goOnline();
+        FirebaseDatabase.getInstance().getReference().keepSynced(true);
         NotificationReferernce = FirebaseDatabase.getInstance().getReference().child("Notifications");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
         HashMap<String, String> notificationData = new HashMap<>();
