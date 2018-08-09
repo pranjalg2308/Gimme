@@ -85,10 +85,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         holder.bnAccept.setOnClickListener(view -> {
             String receiverKey = getReceiverKey(activityArray.number);
             if (code2.equals("3")) {
-                Boolean check = db.updateData(activityArray.time, "3", "3");
+                Boolean check = db.updateData(activityArray.time, "3", "1");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Settled");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "33");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "13");
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "1", "1");
@@ -166,15 +166,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnRefresh.setVisibility(View.GONE);
             case "03":
                 holder.bnRefresh.setVisibility(View.GONE);
+                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
                 break;
             case "11":
                 holder.bnAccept.setText("Accepted");
-                holder.bnAccept.setEnabled(false);
-                holder.bnReject.setVisibility(View.GONE);
-                holder.bnRefresh.setVisibility(View.GONE);
-                break;
-            case "33":
-                holder.bnAccept.setText("Settled");
                 holder.bnAccept.setEnabled(false);
                 holder.bnReject.setVisibility(View.GONE);
                 holder.bnRefresh.setVisibility(View.GONE);
@@ -201,6 +196,17 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnReject.setVisibility(View.GONE);
                 holder.bnRefresh.setVisibility(View.GONE);
                 break;
+            case "23":
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                holder.bnRefresh.setVisibility(View.GONE);
+                break;
+            case "32":
+                holder.bnAccept.setVisibility(View.GONE);
+                holder.bnReject.setEnabled(false);
+                holder.bnReject.setText("Rejected");
+                break;
             default:
                 break;
         }
@@ -222,10 +228,15 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         if (!moneyString.equals(""))
             moneyInt = Integer.parseInt(moneyString);
         if (code1.equals("3") || code2.equals("3")) {
-//            holder.im.setImageResource(R.drawable.circle_settle);
             holder.tvMoney.setText("");
             holder.tvReason.setText("");
-            holder.tvOwe.setText(statement + " asks for settle up");
+            if (code1.equals("3"))
+                holder.tvOwe.setText(statement + " asks for settle up" + checkCode);
+            else
+                holder.tvOwe.setText(statement + " asks for settle up" + checkCode);
+
+            holder.im.setImageResource(R.drawable.circle_settle);
+
         } else {
             if (moneyInt < 0) {
                 moneyInt = (-1) * moneyInt;

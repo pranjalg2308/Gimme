@@ -314,7 +314,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
         } else {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
-            if (code.equals("31")) {
+            if (code.equals("31") || code.equals("13")) {
                 db.deleteUserData(phoneNumber);
             }
         }
