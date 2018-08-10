@@ -87,7 +87,7 @@ public class ThreeFragment extends Fragment {
                 if (check.equals("31") || check.equals("13")) {
                     db = new DataBaseHelper(getContext());
                     db.getWritableDatabase();
-                    db.deleteUserData(name);
+                    db.deleteUserData(number);
                 }
                 arrayOfActivity.add(new ActivityArray(cr.getString(0), name, cr.getString(2), cr.getString(3), cr.getString(4), cr.getString(5), number));
             }
