@@ -189,6 +189,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
             else
                 msg = "₹" + msg;
 
+            SharedPreferences Pref = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+            String myNumber = Pref.getString("phonenumber", null);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE,
                     i, PendingIntent.FLAG_UPDATE_CURRENT);
             Intent intent = new Intent(this, NotificationBroadCastReceiver.class);
@@ -198,6 +200,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             intent.putExtra("receiverKey", receiverKey);
             intent.putExtra("senderkey", senderKey);
             intent.putExtra("code", code);
+            intent.putExtra("my_number", myNumber);
             PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             intent.putExtra("Button clicked", "declined");
             PendingIntent decline = PendingIntent.getBroadcast(this, uniqueId + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);

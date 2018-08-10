@@ -88,7 +88,8 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 Boolean check = db.updateData(activityArray.time, "3", "1");
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Settled");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "13");
+                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "31");
+                db.deleteUserData(activityArray.number);
 
             } else {
                 Boolean check = db.updateData(activityArray.time, "1", "1");
