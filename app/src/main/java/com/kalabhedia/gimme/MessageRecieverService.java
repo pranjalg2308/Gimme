@@ -69,7 +69,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
     }
 
 
-    void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID) {
+    void DeletionFromRealtimeDatabase(String receiverUserID, String senderUserID, String notificationid) {
         FirebaseDatabase.getInstance().goOnline();
         FirebaseDatabase.getInstance().getReference().keepSynced(true);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
@@ -78,7 +78,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                    if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
+                    if (appleSnapshot.getKey().equals(notificationid))
                         appleSnapshot.getRef().removeValue();
                     Log.w("Notification: ", "Data deleted");
                 }
@@ -88,7 +88,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                            if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
+                            if (appleSnapshot.getKey().equals(notificationid))
                                 appleSnapshot.getRef().removeValue();
                             Log.w("Notification: ", "Data deleted");
                         }
@@ -282,11 +282,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
         final String title = remoteMessage.getData().get("title");
         String messageReceived = remoteMessage.getData().get("body");
         String[] messageSplit = messageReceived.split(" ");
-        String code = messageSplit[2];
-        String senderKey = messageSplit[0];
-        String receiverKey = messageSplit[1];
+        String notificationid = messageSplit[0];
+        String code = messageSplit[3];
+        String senderKey = messageSplit[1];
+        String receiverKey = messageSplit[2];
         messageReceived = "";
-        for (int i = 3; i < messageSplit.length - 1; i++) {
+        for (int i = 4; i < messageSplit.length - 1; i++) {
             messageReceived += messageSplit[i] + " ";
         }
         messageReceived += messageSplit[messageSplit.length - 1];
@@ -340,7 +341,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             }
         }
 
-        DeletionFromRealtimeDatabase(senderKey, receiverKey);
+        DeletionFromRealtimeDatabase(senderKey, receiverKey, notificationid);
 
     }
 }
