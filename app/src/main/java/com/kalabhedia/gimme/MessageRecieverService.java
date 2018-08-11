@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -81,8 +82,25 @@ public class MessageRecieverService extends FirebaseMessagingService {
                         appleSnapshot.getRef().removeValue();
                     Log.w("Notification: ", "Data deleted");
                 }
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
+                reference.keepSynced(true);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                            if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
+                                appleSnapshot.getRef().removeValue();
+                            Log.w("Notification: ", "Data deleted");
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
