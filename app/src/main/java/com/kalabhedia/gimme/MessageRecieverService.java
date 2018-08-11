@@ -127,6 +127,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
         onlineUserDataBase.insertData(phoneNumber, receiverKey, 0);
         if (code.equals("03")) {
             String message;
+            SharedPreferences Pref = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+            String myNumber = Pref.getString("phonenumber", null);
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
             String name = sharedPreferences.getString(phoneNumber, null);
             db = new DataBaseHelper(this);
@@ -147,6 +149,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             intent.putExtra("TimeStamp", timeStamp);
             intent.putExtra("receiverKey", receiverKey);
             intent.putExtra("senderkey", senderKey);
+            intent.putExtra("my_number", myNumber);
             intent.putExtra("code", code);
             intent.putExtra("phonenumber", phoneNumber);
             PendingIntent accept = PendingIntent.getBroadcast(this, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -242,7 +245,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .addAction(R.drawable.accept, "Decline", decline)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setGroup("Gimme")
-                            .setOngoing(true)
                             .setAutoCancel(true)
                             .build();
                     mNotificationManager.notify(uniqueId, notification1);
@@ -254,7 +256,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
                             .setContentIntent(pendingIntent)
                             .setSmallIcon(R.drawable.notif_icon)
                             .setAutoCancel(true)
-                            .setOngoing(true)
                             .addAction(R.drawable.accept, "Accept", accept)
                             .addAction(R.drawable.decline, "Decline", decline)
                             .setGroup("Gimme")
@@ -284,7 +285,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
         String code = messageSplit[2];
         String senderKey = messageSplit[0];
         String receiverKey = messageSplit[1];
-        DeletionFromRealtimeDatabase(senderKey, receiverKey);
         messageReceived = "";
         for (int i = 3; i < messageSplit.length - 1; i++) {
             messageReceived += messageSplit[i] + " ";
@@ -339,6 +339,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
                 db.deleteUserData(phoneNumber);
             }
         }
+
+        DeletionFromRealtimeDatabase(senderKey, receiverKey);
 
     }
 }

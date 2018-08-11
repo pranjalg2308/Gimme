@@ -232,9 +232,9 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.tvMoney.setText("");
             holder.tvReason.setText("");
             if (code1.equals("3"))
-                holder.tvOwe.setText(statement + " asks for settle up" + checkCode);
+                holder.tvOwe.setText(statement + " asks for settle up");
             else
-                holder.tvOwe.setText(statement + " asks for settle up" + checkCode);
+                holder.tvOwe.setText(statement + " asks for settle up");
 
             holder.im.setImageResource(R.drawable.circle_settle);
 
