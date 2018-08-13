@@ -164,6 +164,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
                 break;
             case "01":
+                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_accept));
                 holder.bnRefresh.setVisibility(View.GONE);
             case "03":
                 holder.bnRefresh.setVisibility(View.GONE);
