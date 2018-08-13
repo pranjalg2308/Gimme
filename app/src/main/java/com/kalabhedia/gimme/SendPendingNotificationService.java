@@ -37,8 +37,8 @@ public class SendPendingNotificationService extends JobService {
                 ArrayList<HashMap<String, String>> pendingNotification = new ArrayList<>();
                 if (dataSnapshot.getChildren() != null) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        HashMap<String, String> item = new HashMap<>();
                         for (DataSnapshot data1 : data.getChildren()) {
+                            HashMap<String, String> item = new HashMap<>();
                             if (data1.child("From").getValue().toString().equals(onlineUserId)) {
                                 item.put("receiver_key", data.getKey().toString());
                                 item.put("timestamp", data1.child("TimeStamp").getValue().toString());
