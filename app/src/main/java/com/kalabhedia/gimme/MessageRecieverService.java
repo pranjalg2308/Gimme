@@ -1,6 +1,7 @@
 package com.kalabhedia.gimme;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -343,6 +344,14 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
         DeletionFromRealtimeDatabase(senderKey, receiverKey, notificationid);
 
+    }
+
+    public void onDestroy() {
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(this.ALARM_SERVICE);
+        Intent i = new Intent(this, MessageRecieverService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10, pendingIntent);
+        super.onDestroy();
     }
 }
 
