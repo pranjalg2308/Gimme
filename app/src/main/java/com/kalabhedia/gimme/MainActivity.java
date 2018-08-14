@@ -1,7 +1,9 @@
 package com.kalabhedia.gimme;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -97,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onDestroy() {
         super.onDestroy();
         appIsInForeground = false;
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        Intent i = new Intent(this, MessageRecieverService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10, pendingIntent);
     }
 
     public static void Dataupdate() {
