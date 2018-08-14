@@ -15,10 +15,15 @@
             android:id="@+id/nav_rate"
             android:icon="@drawable/ic_rate"
             android:title="Rate Us" />
+
+    </group>
+    <group
+        android:id="@+id/grp_history"
+        android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_out"
-            android:title="Log Out" />
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_history"
+            android:title="History" />
     </group>
     <group
         android:id="@+id/grp_about"
@@ -26,6 +31,10 @@
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_about"
-            android:title="About"></item>
+            android:title="About" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_out"
+            android:title="Log Out" />
     </group>
 </menu>

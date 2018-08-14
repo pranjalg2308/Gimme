@@ -107,8 +107,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
             while (!cr.isAfterLast()) {
-                if (cr.getString(1).equals(name))
+                if (cr.getString(1).equals(name)) {
+
                     db.delete(TABLE_NAME, COL_1 + "=" + cr.getString(0), null);
+                }
                 cr.moveToNext();
             }
         }

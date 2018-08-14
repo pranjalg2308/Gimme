@@ -23,6 +23,7 @@ import java.util.Date;
 public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
     DataBaseHelper db;
+    HistoryDataBaseHelper dbHistory;
     ArrayList<ActivityArray> activity;
     Context context;
     MainActivity mainActivity;
@@ -79,6 +80,8 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
         String code1 = activityArray.code1;
         String code2 = activityArray.code2;
         db = new DataBaseHelper(getContext());
+        dbHistory = new HistoryDataBaseHelper(getContext());
+        db.getWritableDatabase();
         SharedPreferences sharedPref = getContext().getSharedPreferences("UserId", Context.MODE_PRIVATE);
         String senderKey = sharedPref.getString("currentUserId", null);
 
@@ -89,6 +92,7 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
                 Log.v("Update SQL", check.toString());
                 holder.bnAccept.setText("Settled");
                 AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, "0", " ", "31");
+                dbHistory.insertData(activityArray.time, activityArray.number, (db.getVerifiedSum(activityArray.number)) + "");
                 db.deleteUserData(activityArray.number);
 
             } else {

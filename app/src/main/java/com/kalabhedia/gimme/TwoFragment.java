@@ -41,8 +41,8 @@ public class TwoFragment extends Fragment {
             public void onClick(View view) {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                String shareBody = "Check This Out";
-                String shareSub = "this is the link";
+                String shareBody = "Check Out This App";
+                String shareSub = "https://play.google.com/store/apps/details?id=com.kalabhedia.gimme";
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
                 startActivity(Intent.createChooser(shareIntent, "Share Using"));

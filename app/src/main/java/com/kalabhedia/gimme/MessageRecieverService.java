@@ -32,7 +32,8 @@ import java.util.Date;
 
 public class MessageRecieverService extends FirebaseMessagingService {
     private static final int REQUEST_CODE = 1;
-    DataBaseHelper db;
+    private DataBaseHelper db;
+    private HistoryDataBaseHelper dbHistory;
     private static String id = "";
 
     public static String getId() {
@@ -174,6 +175,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
             String name = sharedPreferences.getString(phoneNumber, null);
             db = new DataBaseHelper(this);
             db.getWritableDatabase();
+            dbHistory = new HistoryDataBaseHelper(this);
+            dbHistory.getWritableDatabase();
             String moneyString = msg.split(" ")[0];
             Boolean result = db.insertData(timeStamp, phoneNumber, reason, moneyString, code.charAt(0) + "", code.charAt(1) + "");
             if (name == null) {
@@ -378,6 +381,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
             if (code.equals("31") || code.equals("13")) {
+                dbHistory.insertData(timeStamp, phoneNumber, (db.getVerifiedSum(phoneNumber)) + "");
                 db.deleteUserData(phoneNumber);
             }
         }
