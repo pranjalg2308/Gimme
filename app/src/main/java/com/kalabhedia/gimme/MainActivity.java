@@ -224,13 +224,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub);
                         startActivity(Intent.createChooser(shareIntent, "Share Using"));
                     } else if (menuItem.getItemId() == R.id.nav_rate) {
-
-
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-
                         //Copy App URL from Google Play Store.
                         intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.kalabhedia.gimme"));
-
                         startActivity(intent);
 //                            Toast.makeText(MainActivity.this, "Feature to be added", Toast.LENGTH_SHORT).show();
                     } else if (menuItem.getItemId() == R.id.nav_logout) {
@@ -270,6 +266,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         alertDialog.show();
                     } else if (menuItem.getItemId() == R.id.nav_about) {
                         startActivity(new Intent(MainActivity.this, About.class));
+                    } else if (menuItem.getItemId() == R.id.nav_history) {
+                        startActivity(new Intent(MainActivity.this, History.class));
                     }
                     return true;
                 });

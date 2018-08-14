@@ -65,7 +65,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".TransactionHistoryActivity"></activity>
+        <activity
+            android:name=".History"
+            android:theme="@style/SpecificUser">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>
