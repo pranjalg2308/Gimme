@@ -113,6 +113,25 @@ public class MessageRecieverService extends FirebaseMessagingService {
                                 appleSnapshot.getRef().removeValue();
                             Log.w("Notification: ", "Data deleted");
                         }
+
+
+                        DatabaseReference dataReference = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
+                        dataReference.keepSynced(true);
+                        dataReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                                    if (appleSnapshot.getKey().equals(notificationid))
+                                        appleSnapshot.getRef().removeValue();
+                                    Log.w("Notification: ", "Data deleted");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -120,6 +139,7 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
                     }
                 });
+
             }
 
 
