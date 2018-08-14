@@ -100,6 +100,25 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
                     }
                 });
+
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
+                databaseReference.keepSynced(true);
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                            if (appleSnapshot.getKey().equals(notificationid))
+                                appleSnapshot.getRef().removeValue();
+                            Log.w("Notification: ", "Data deleted");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
 
@@ -347,11 +366,11 @@ public class MessageRecieverService extends FirebaseMessagingService {
     }
 
     public void onDestroy() {
-        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(this.ALARM_SERVICE);
+        super.onDestroy();
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
         Intent i = new Intent(this, MessageRecieverService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10, pendingIntent);
-        super.onDestroy();
     }
 }
 
