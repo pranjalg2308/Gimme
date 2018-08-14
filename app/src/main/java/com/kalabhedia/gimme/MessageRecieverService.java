@@ -1,7 +1,6 @@
 package com.kalabhedia.gimme;
 
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,11 +17,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -365,12 +366,26 @@ public class MessageRecieverService extends FirebaseMessagingService {
 
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-        Intent i = new Intent(this, MessageRecieverService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10, pendingIntent);
+//    public void onDestroy() {
+//        super.onDestroy();
+//        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+//        Intent i = new Intent(this, MessageRecieverService.class);
+//        PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
+//        alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10, pendingIntent);
+//    }
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        SharedPreferences Pref = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        String phonenumber = Pref.getString("phonenumber", null);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+        String devicetoken = FirebaseInstanceId.getInstance().getToken();
+        String online_user_id = mAuth.getCurrentUser().getUid();
+        databaseReference.child(online_user_id).child("device_number").setValue(phonenumber);
+
+        databaseReference.child(online_user_id).child("device_token").setValue(devicetoken);
     }
 }
 
