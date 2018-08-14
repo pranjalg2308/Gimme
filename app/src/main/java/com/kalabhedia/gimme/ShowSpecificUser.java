@@ -46,9 +46,9 @@ public class ShowSpecificUser extends AppCompatActivity {
         bnSettle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataBaseHelper db = new DataBaseHelper(getBaseContext());
                 long time = System.currentTimeMillis();
                 String timeStamp = "" + time;
+                DataBaseHelper db = new DataBaseHelper(getBaseContext());
                 Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
                 AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phNumber, "0", "", "03");
                 bnSettle.setText("Settle Pending");

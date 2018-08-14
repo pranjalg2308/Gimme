@@ -126,10 +126,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
 
         holder.bnRefresh.setOnClickListener(view -> {
             String receiverKey = getReceiverKey(activityArray.number);
-            if (code2.equals("3")) {
-                Boolean check = db.updateData(activityArray.time, "3", "0");
-                AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "03");
-
+            if (code2.equals("3") || code1.equals("3")) {
+                String timeRefresh = activityArray.time;
+                Boolean result = db.insertData(timeRefresh, activityArray.name, "", "0", "3", "0");
+                AddingNewContactFragment.sendNotificationToUser(timeRefresh, senderKey, receiverKey, finalPhoneNumber, "0", "", "03");
             } else {
                 Boolean check = db.updateData(activityArray.time, "1", "0");
                 AddingNewContactFragment.sendNotificationToUser(activityArray.time, senderKey, receiverKey, finalPhoneNumber, activityArray.money, activityArray.reason, "01");

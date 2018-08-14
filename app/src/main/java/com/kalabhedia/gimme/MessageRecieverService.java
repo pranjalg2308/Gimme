@@ -402,10 +402,12 @@ public class MessageRecieverService extends FirebaseMessagingService {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         String devicetoken = FirebaseInstanceId.getInstance().getToken();
-        String online_user_id = mAuth.getCurrentUser().getUid();
-        databaseReference.child(online_user_id).child("device_number").setValue(phonenumber);
+        if (devicetoken != null) {
+            String online_user_id = mAuth.getCurrentUser().getUid();
+            databaseReference.child(online_user_id).child("device_number").setValue(phonenumber);
 
-        databaseReference.child(online_user_id).child("device_token").setValue(devicetoken);
+            databaseReference.child(online_user_id).child("device_token").setValue(devicetoken);
+        }
     }
 }
 
