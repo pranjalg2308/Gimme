@@ -159,11 +159,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         scheduleJob();
         appIsInForeground = true;
-        progressBar = findViewById(R.id.progressBar);
 //        MobileAds.initialize(this, String.valueOf(R.string.banner_ad_unit_id));
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        ImageView transactionHistory = findViewById(R.id.history);
+        transactionHistory.setOnClickListener(view -> {
+            Intent intent = new Intent(context, TransactionHistoryActivity.class);
+            startActivity(intent);
+        });
 
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
