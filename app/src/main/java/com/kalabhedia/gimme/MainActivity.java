@@ -41,7 +41,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -160,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         scheduleJob();
         appIsInForeground = true;
 //        MobileAds.initialize(this, String.valueOf(R.string.banner_ad_unit_id));
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
