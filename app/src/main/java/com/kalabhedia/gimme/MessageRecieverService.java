@@ -375,7 +375,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
                 message += " " + name;
             }
             message = message + " " + reason;
-            showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
+            if (!db.exists(timeStamp)) {
+                showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
+            }
         } else {
             db = new DataBaseHelper(this);
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");

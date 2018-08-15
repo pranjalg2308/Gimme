@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
         context = getApplicationContext();
