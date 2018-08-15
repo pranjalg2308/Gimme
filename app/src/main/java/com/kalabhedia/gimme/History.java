@@ -1,5 +1,7 @@
 package com.kalabhedia.gimme;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -61,19 +63,37 @@ public class History extends AppCompatActivity {
                 } else {
                     HistoryDataBaseHelper dbHistory;
                     dbHistory = new HistoryDataBaseHelper(this);
-                    dbHistory.getWritableDatabase();
-                    adapter.notifyDataSetChanged();
-                    dbHistory.deleteAllData();
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(History.this);
+                    alertDialogBuilder.setTitle("Delete History");
+                    alertDialogBuilder.setMessage("All your history will be deleted");
+                    alertDialogBuilder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+
+                                    dbHistory.getWritableDatabase();
+                                    adapter.notifyDataSetChanged();
+                                    dbHistory.deleteAllData();
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
+                                }
+                            }
+                    );
+                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialogBuilder.show();
+
                 }
                 break;
             default:
                 finish();
                 break;
         }
-
         return true;
     }
 }

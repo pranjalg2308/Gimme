@@ -181,8 +181,8 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
             if (claimString.equals("TAKEN")) {
                 amountEntered = "-" + amountEntered;
             }
-            if (number != null) {
-                if (!amountEntered.isEmpty()) {
+            if ((number != null)) {
+                if (!amountEntered.isEmpty() && Integer.parseInt(amountEntered) != 0) {
                     String[] conversionNumber = number.split(" ");
                     number = "";
                     for (String i : conversionNumber) {
@@ -309,11 +309,11 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
     private void saveInLocalDatabase(String time, String number, String reason, String amountEntered) {
         Boolean result = db.insertData(time, number, reason, amountEntered, YES, NULL);
 
-        if (result == true) {
-            Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "Data Inserted Unsuccessfully", Toast.LENGTH_SHORT).show();
-        }
+//        if (result == true) {
+//            Toast.makeText(getContext(), "Data Inserted Successfully", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(getContext(), "Data Inserted Unsuccessfully", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     //    /**
