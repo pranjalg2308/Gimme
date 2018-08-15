@@ -163,12 +163,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        ImageView transactionHistory = findViewById(R.id.history);
-        transactionHistory.setOnClickListener(view -> {
-            Intent intent = new Intent(context, TransactionHistoryActivity.class);
-            startActivity(intent);
-        });
-
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);
         context = getApplicationContext();
