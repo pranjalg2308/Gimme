@@ -38,9 +38,9 @@ public class HistoryAdapter extends ArrayAdapter<HistoryArray> {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         phoneNumber = sharedPreferences.getString(phoneNumber, null);
         if (amount > 0) {
-            statement = "₹" + amount + " was given to " + phoneNumber + " for settling up";
+            statement = "₹" + amount + " was taken to " + phoneNumber + " for settling up";
         } else
-            statement = "₹" + (-1 * amount) + " was taken from " + phoneNumber + " for settling up";
+            statement = "₹" + (-1 * amount) + " was given from " + phoneNumber + " for settling up";
 
         historyStatement.setText(statement);
         time.setText(formatDate(currentElement.time));

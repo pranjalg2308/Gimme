@@ -115,6 +115,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
     }
+
     public Cursor getUserData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "select * from " + TABLE_NAME + " where " + COL_2 + " = '" + name + "'";
@@ -129,13 +130,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cr.moveToFirst();
             while (!cr.isAfterLast()) {
                 if ((cr.getString(4) + cr.getString(5)).equals("11"))
-                sum = sum + cr.getInt(2);
+                    sum = sum + cr.getInt(2);
                 cr.moveToNext();
             }
         }
         return sum;
     }
 
-
+    public boolean exists(String time) {
+        int exist = 0;
+        Cursor cr = getAllData();
+        cr.moveToFirst();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String numberTemp = cr.getString(0);
+                if ((numberTemp.equals(time))) {
+                    exist = 1;
+                    break;
+                }
+                cr.moveToNext();
+            }
+        }
+        if (exist == 1)
+            return true;
+        return false;
+    }
 }
-
