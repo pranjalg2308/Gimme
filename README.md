@@ -33,7 +33,7 @@ This application lets you:
 
 ## Licensing
 
-This project is licensed under Unlicense license. This license does not require
+This project is licensed under Apache License 2.0. This license does not require
 you to take the license with you to your project.
 
 [issues]:https://github.com/jehna/readme-best-practices/issues/new
