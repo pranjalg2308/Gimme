@@ -375,7 +375,8 @@ public class MessageRecieverService extends FirebaseMessagingService {
             } else {
                 message += " " + name;
             }
-            message = message + " " + reason;
+            if (location != -1)
+                message = message + " for " + reason;
             showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
         } else {
 
