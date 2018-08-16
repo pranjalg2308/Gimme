@@ -55,8 +55,7 @@ public class About extends AppCompatActivity implements View.OnClickListener {
 
     private void sendMail() {
 
-        String mailto = "mailto:pranjalg2308@gmail.com" +
-                "?cc=" + "shukladivyanshu967@gmail.com" +
+        String mailto = "mailto:noobdevindia@gmail.com" +
                 "&subject=" + Uri.encode("Gimme") +
                 "&body=" + Uri.encode("Hey,\n");
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
