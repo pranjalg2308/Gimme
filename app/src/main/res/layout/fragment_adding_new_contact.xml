@@ -6,101 +6,107 @@
     android:background="@color/white"
     tools:context=".AddingNewContactFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="32sp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:gravity="bottom"
-                android:text="₹"/>
-
-            <EditText
-                android:id="@+id/amount_entry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:maxLength="9"
-                android:hint="Enter Amount"
-                android:inputType="number" />
-        </LinearLayout>
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingTop="8dp"
-            android:scrollbars="none">
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/bn_amount_10"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:gravity="bottom"
+                    android:text="₹"
+                    android:textSize="32sp" />
+
+                <EditText
+                    android:id="@+id/amount_entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/my_button_bg"
-                    android:layout_marginLeft="8dp"
-                    android:text="+10" />
-
-                <Button
-                    android:id="@+id/bn_amount_50"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/my_button_bg"
-                    android:layout_marginLeft="8dp"
-                    android:text="+50" />
-
-                <Button
-                    android:id="@+id/bn_amount_100"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/my_button_bg"
-                    android:text="+100" />
-
-                <Button
-                    android:id="@+id/bn_amount_500"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/my_button_bg"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="+500" />
-
-                <Button
-                    android:id="@+id/bn_amount_1000"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/my_button_bg"
-                    android:baselineAligned="false"
-                    android:text="+1000" />
-
-
+                    android:ems="10"
+                    android:hint="Enter Amount"
+                    android:inputType="number"
+                    android:maxLength="9" />
             </LinearLayout>
 
-        </HorizontalScrollView>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="WAS"
-            android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:gravity="center"/>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingTop="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/bn_amount_10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/my_button_bg"
+                        android:text="+10" />
+
+                    <Button
+                        android:id="@+id/bn_amount_50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/my_button_bg"
+                        android:text="+50" />
+
+                    <Button
+                        android:id="@+id/bn_amount_100"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/my_button_bg"
+                        android:text="+100" />
+
+                    <Button
+                        android:id="@+id/bn_amount_500"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/my_button_bg"
+                        android:text="+500" />
+
+                    <Button
+                        android:id="@+id/bn_amount_1000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/my_button_bg"
+                        android:baselineAligned="false"
+                        android:text="+1000" />
+
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="WAS"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <RadioGroup
                 android:id="@+id/idClaim"
@@ -126,74 +132,76 @@
             </RadioGroup>
 
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TO/FROM "
-            android:textSize="16dp"
-            android:gravity="center"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-
-
-            <FrameLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="TO/FROM "
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/contacts"
-                    android:hint="Name"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/bn_clear_txt"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_close" />
-            </FrameLayout>
+                    <AutoCompleteTextView
+                        android:id="@+id/contacts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name" />
 
+                    <Button
+                        android:id="@+id/bn_clear_txt"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/ic_close" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="FOR "
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/idReason"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:ems="10"
+                android:hint="Discription (Optional)"
+                android:maxLength="40" />
+
+
+            <Button
+                android:id="@+id/bn_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:background="@color/colorPrimaryDark"
+                android:shadowColor="@color/colorPrimaryDark"
+                android:shadowRadius="10"
+                android:text="SAVE"
+                android:textColor="@color/white" />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="FOR "
-            android:textSize="16dp"
-            android:gravity="center"
-            android:textStyle="bold" />
+    </ScrollView>
 
-        <EditText
-            android:id="@+id/idReason"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:maxLength="40"
-            android:hint="Discription (Optional)" />
-
-
-        <Button
-            android:id="@+id/bn_save"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:background="@color/colorPrimaryDark"
-            android:shadowColor="@color/colorPrimaryDark"
-            android:shadowRadius="10"
-            android:text="SAVE"
-            android:textColor="@color/white" />
-    </LinearLayout>
 
 </FrameLayout>

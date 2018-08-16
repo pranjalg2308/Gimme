@@ -377,7 +377,6 @@ public class MessageRecieverService extends FirebaseMessagingService {
             }
             message = message + " " + reason;
             showNotifications(title, message, phoneNumber, timeStamp, reason, receiverKey, senderKey, code);
-
         } else {
 
             Boolean result = db.updateData(timeStamp, code.charAt(0) + "", code.charAt(1) + "");
@@ -408,10 +407,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         String devicetoken = FirebaseInstanceId.getInstance().getToken();
-        if (devicetoken != null) {
+        if (mAuth.getCurrentUser() != null) {
             String online_user_id = mAuth.getCurrentUser().getUid();
             databaseReference.child(online_user_id).child("device_number").setValue(phonenumber);
-
             databaseReference.child(online_user_id).child("device_token").setValue(devicetoken);
         }
     }
