@@ -41,7 +41,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private TextView NavHeaderUserName;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private ImageView NavHeaderImageView;
     static Context context;
     private DataBaseHelper db;
@@ -159,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         scheduleJob();
         appIsInForeground = true;
 //        MobileAds.initialize(this, String.valueOf(R.string.banner_ad_unit_id));
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         contactdetails = new ArrayList<>();
         db = new DataBaseHelper(this);

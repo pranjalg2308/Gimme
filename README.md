@@ -1,4 +1,6 @@
 # GIMME
+
+![cover photo](https://user-images.githubusercontent.com/35169520/44276139-3d14c200-a264-11e8-9d3e-bfb87967467d.png)
 > An Android Application that lets you manage and sync your expenses with your friends and family. 
 
 This Application lets  you manage the money you or your friends owe you.
@@ -29,6 +31,10 @@ This application lets you:
 
 # Screenshots
 
+![s1](https://user-images.githubusercontent.com/35169520/44283294-8ae8f480-a27b-11e8-9190-b18543ff8137.png)
+![s2](https://user-images.githubusercontent.com/35169520/44283297-8b818b00-a27b-11e8-8a4e-aacf0c850f6f.png)
+![s3](https://user-images.githubusercontent.com/35169520/44283299-8c1a2180-a27b-11e8-9577-33fb756c341f.png)
+![s4](https://user-images.githubusercontent.com/35169520/44283300-8cb2b800-a27b-11e8-86b7-7b089a31151e.png)
 
 
 ## Licensing

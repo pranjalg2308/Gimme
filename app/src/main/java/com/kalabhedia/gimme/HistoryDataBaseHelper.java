@@ -38,7 +38,21 @@ public class HistoryDataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_1, time);
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, money);
-        result = db.insert(TABLE_NAME, null, contentValues);
+        Cursor cr = getAllData();
+        cr.moveToFirst();
+        if (cr != null && cr.getCount() > 0) {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String numberTemp = cr.getString(0);
+                if ((numberTemp.equals(time))) {
+                    exist = 1;
+                    break;
+                }
+                cr.moveToNext();
+            }
+        }
+        if (exist == 0)
+            result = db.insert(TABLE_NAME, null, contentValues);
         db.close();
         if (result == -1)
             return false;

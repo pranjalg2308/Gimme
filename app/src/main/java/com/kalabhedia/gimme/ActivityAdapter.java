@@ -170,9 +170,10 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             case "01":
                 holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_accept));
                 holder.bnRefresh.setVisibility(View.GONE);
+                break;
             case "03":
                 holder.bnRefresh.setVisibility(View.GONE);
-                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_pending));
+                holder.bnAccept.setBackground(ContextCompat.getDrawable(context, R.drawable.activity_item_view_button_accept));
                 break;
             case "11":
                 holder.bnAccept.setText("Accepted");
@@ -238,9 +239,9 @@ public class ActivityAdapter extends ArrayAdapter<ActivityArray> {
             holder.tvMoney.setText("");
             holder.tvReason.setText("");
             if (code1.equals("3"))
-                holder.tvOwe.setText("You asks " + statement + " for settle up" + checkCode);
+                holder.tvOwe.setText("You asks " + statement + " for settle up");
             else
-                holder.tvOwe.setText(statement + " ask you for settle up" + checkCode);
+                holder.tvOwe.setText(statement + " ask you for settle up");
 
 
             holder.im.setImageResource(R.drawable.circle_settle);

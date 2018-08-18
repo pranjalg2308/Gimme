@@ -184,7 +184,7 @@
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:ems="10"
-                android:hint="Discription (Optional)"
+                android:hint="Description (Optional)"
                 android:maxLength="40" />
 
 
