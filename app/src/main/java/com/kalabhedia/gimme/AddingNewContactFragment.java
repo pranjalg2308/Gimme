@@ -182,56 +182,58 @@ public class AddingNewContactFragment extends Fragment implements View.OnClickLi
                 amountEntered = "-" + amountEntered;
             }
             if ((number != null)) {
-                if (!amountEntered.isEmpty() && Integer.parseInt(amountEntered) != 0) {
-                    String[] conversionNumber = number.split(" ");
-                    number = "";
-                    for (String i : conversionNumber) {
-                        number += i;
-                    }
-                    if (!number.startsWith("+91")) {
-                        number = "+91" + number;
-                    }
-
-                    Cursor cr = onlineUserDataBase.getAllData();
-                    cr.moveToFirst();
-                    if (cr != null && cr.getCount() > 0) {
-                        cr.moveToLast();
-                        do {
-                            if (cr.getString(0).equals(number))
-                                receiverKey = cr.getString(1);
+                if (!amountEntered.isEmpty()) {
+                    if (Integer.parseInt(amountEntered) != 0) {
+                        String[] conversionNumber = number.split(" ");
+                        number = "";
+                        for (String i : conversionNumber) {
+                            number += i;
                         }
-                        while (cr.moveToPrevious());
-                    }
-                    if (receiverKey == null) {
-                        open(view);
-                        button.setEnabled(true);
-                    } else {
-                        if (!senderUserID.equals(receiverKey)) {
-                            button.setEnabled(false);
+                        if (!number.startsWith("+91")) {
+                            number = "+91" + number;
+                        }
 
-                            reason = reason.trim();
-                            sendNotificationToUser(timeStamp,
-                                    senderUserID,
-                                    receiverKey,
-                                    phoneNumber,
-                                    (-1 * Integer.parseInt(amountEntered)) + "",
-                                    reason,
-                                    "01");
-
-
-                            saveInLocalDatabase(timeStamp, number, reason, amountEntered);
-
-                            OneFragment.fab.setVisibility(View.VISIBLE);
-                            ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
-                            amount.setFocusable(false);
-                            contact.setFocusable(false);
-                            ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
-                            getFragmentManager().beginTransaction()
-                                    .remove(AddingNewContactFragment.this).commit();
-
-                            ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                        Cursor cr = onlineUserDataBase.getAllData();
+                        cr.moveToFirst();
+                        if (cr != null && cr.getCount() > 0) {
+                            cr.moveToLast();
+                            do {
+                                if (cr.getString(0).equals(number))
+                                    receiverKey = cr.getString(1);
+                            }
+                            while (cr.moveToPrevious());
+                        }
+                        if (receiverKey == null) {
+                            open(view);
+                            button.setEnabled(true);
                         } else {
-                            alertmessage();
+                            if (!senderUserID.equals(receiverKey)) {
+                                button.setEnabled(false);
+
+                                reason = reason.trim();
+                                sendNotificationToUser(timeStamp,
+                                        senderUserID,
+                                        receiverKey,
+                                        phoneNumber,
+                                        (-1 * Integer.parseInt(amountEntered)) + "",
+                                        reason,
+                                        "01");
+
+
+                                saveInLocalDatabase(timeStamp, number, reason, amountEntered);
+
+                                OneFragment.fab.setVisibility(View.VISIBLE);
+                                ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                                amount.setFocusable(false);
+                                contact.setFocusable(false);
+                                ((MainActivity) getActivity()).actionbar.setTitle("Gimme");
+                                getFragmentManager().beginTransaction()
+                                        .remove(AddingNewContactFragment.this).commit();
+
+                                ((MainActivity) getActivity()).viewPager.setVisibility(View.VISIBLE);
+                            } else {
+                                alertmessage();
+                            }
                         }
                     }
                 } else {

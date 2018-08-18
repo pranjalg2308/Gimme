@@ -94,12 +94,11 @@ public class OneFragment extends Fragment {
     }
 
 
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            getChildFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
 }
