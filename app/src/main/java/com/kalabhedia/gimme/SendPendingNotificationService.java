@@ -80,9 +80,9 @@ public class SendPendingNotificationService extends JobService {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications");
 //        Query applesQuery = ref.child(receiverUserID).orderByChild("From").equalTo(senderUserID);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     for (DataSnapshot appleSnapshot : data.getChildren()) {
                         if (appleSnapshot.child("From").getValue(String.class).equals(senderUserID))
