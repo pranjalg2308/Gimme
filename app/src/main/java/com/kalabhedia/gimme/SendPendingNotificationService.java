@@ -93,7 +93,7 @@ public class SendPendingNotificationService extends JobService {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("Notification", "onCancelled", databaseError.toException());
             }
         });

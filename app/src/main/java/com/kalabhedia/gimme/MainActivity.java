@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private DataBaseHelper db;
     public static boolean appIsInForeground;
     ProgressBar progressBar;
+    static ValueEventListener eventListener;
     private AdView mAdView;
     private static final String TAG = "MainActivity";
 
@@ -98,12 +99,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSupportActionModeStarted(mode);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        appIsInForeground = false;
-    }
-
     public static void Dataupdate() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Gimme", Context.MODE_PRIVATE);
         TreeSet<String> contactsContainingApp = new TreeSet<>();
@@ -112,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         OnlineUserDataBase onlineUserDataBase = new OnlineUserDataBase(context);
         DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users");
         database.keepSynced(true);
-        database.addListenerForSingleValueEvent(
+        eventListener = database.addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -141,18 +136,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        appIsInForeground = false;
+        getSupportLoaderManager().destroyLoader(1);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         appIsInForeground = false;
+        getSupportLoaderManager().destroyLoader(1);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         contactdetails = new ArrayList<>();
+        Dataupdate();
         if (checkExternalPermission())
-            getSupportLoaderManager().initLoader(1, null, this);
+            getSupportLoaderManager().restartLoader(1, null, this);
         appIsInForeground = true;
+
     }
 
     @Override
@@ -175,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
@@ -381,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             editor.clear();
             HashMap<String, String> item;
             while (!cursor.isAfterLast()) {
+
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 item = new HashMap<>();
