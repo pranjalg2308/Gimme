@@ -108,7 +108,7 @@ public class ThreeFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            getFragmentManager().beginTransaction().detach(this).attach(this).commitAllowingStateLoss();
         }
     }
 

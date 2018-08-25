@@ -353,13 +353,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (previousFragment != null) {
             // Removing previous fragment from history
-            getSupportFragmentManager().beginTransaction().remove(previousFragment).commit();
+            getSupportFragmentManager().beginTransaction().remove(previousFragment).commitAllowingStateLoss();
             getSupportFragmentManager().popBackStack();
         }
 
         // Bringing new fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment)
-                .addToBackStack(fragment.getClass().getSimpleName()).commit();
+                .addToBackStack(fragment.getClass().getSimpleName()).commitAllowingStateLoss();
     }
 
     @Override
