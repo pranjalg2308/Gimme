@@ -77,9 +77,9 @@ public class MessageRecieverService extends FirebaseMessagingService {
         FirebaseDatabase.getInstance().getReference().keepSynced(true);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Notifications").child(receiverUserID);
         ref.keepSynced(true);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
                     if (appleSnapshot.getKey().equals(notificationid))
                         appleSnapshot.getRef().removeValue();
