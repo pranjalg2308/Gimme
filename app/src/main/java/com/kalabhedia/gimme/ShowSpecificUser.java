@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -22,6 +21,7 @@ public class ShowSpecificUser extends AppCompatActivity {
         setContentView(R.layout.activity_show_specific_user);
         bnSettle = findViewById(R.id.settle_up_button);
         Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
         phoneNumber = bundle.getString("phoneNumber");
         amount = bundle.getString("amount");
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Gimme", Context.MODE_PRIVATE);
@@ -43,17 +43,14 @@ public class ShowSpecificUser extends AppCompatActivity {
         String senderKey = sharedPref.getString("currentUserId", null);
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
         String phNumber = preferences.getString("phonenumber", null);
-        bnSettle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long time = System.currentTimeMillis();
-                String timeStamp = "" + time;
-                DataBaseHelper db = new DataBaseHelper(getBaseContext());
-                Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
-                AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phNumber, "0", "", "03");
-                bnSettle.setText("Settle Pending");
-                bnSettle.setClickable(false);
-            }
+        bnSettle.setOnClickListener(view -> {
+            long time = System.currentTimeMillis();
+            String timeStamp = "" + time;
+            DataBaseHelper db = new DataBaseHelper(getBaseContext());
+            Boolean result = db.insertData(timeStamp, phoneNumber, "", "0", "3", "0");
+            AddingNewContactFragment.sendNotificationToUser(timeStamp, senderKey, receiverId, phNumber, "0", "", "03");
+            bnSettle.setText("Settle Pending");
+            bnSettle.setClickable(false);
         });
     }
 
